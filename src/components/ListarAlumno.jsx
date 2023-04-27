@@ -19,7 +19,6 @@ const ListarAlumno = () => {
     e.preventDefault();
     setAlumnoEliminado(al)
     setOpen(true)
-
   };
   const handleClose = () => {
     setAlumnoEliminado(null);
