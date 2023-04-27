@@ -26,7 +26,6 @@ const ListarAlumno = () => {
     // setSelectedEvents([]);
   }
 
-
   useEffect(() => {
     getAlumnos();
   }, [paginaNumero]);
@@ -47,7 +46,6 @@ const ListarAlumno = () => {
       console.log(error);
     }
   }
-
   // Función para eliminar un alumno
   const eliminarAlumno = async (e, message) => {
     e.preventDefault();
