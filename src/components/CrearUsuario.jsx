@@ -118,6 +118,7 @@ const CrearUsuario = () => {
                 <option value="Gastronomía internacional">Gastronomía internacional</option>
                 <option value="Ingeniería en administración">Ingeniería en administración</option>
                 <option value="Ingeniería en infraestructura">Ingeniería en infraestructura</option>
+                <option value="Ingeniería en informatica">Ingeniería en informatica</option>
                 <option value="Ingeniería en administración de recursos humanos">Ingeniería en administración de recursos humanos</option>
                 <option value="Ingeniería en marketing">Ingeniería en marketing</option>
                 <option value="Ingeniería en comercio exterior">Ingeniería en comercio exterior</option>
