@@ -19,14 +19,12 @@ const ListarAlumno = () => {
     e.preventDefault();
     setAlumnoEliminado(al)
     setOpen(true)
-
   };
   const handleClose = () => {
     setAlumnoEliminado(null);
     setOpen(false);
     // setSelectedEvents([]);
   }
-
 
   useEffect(() => {
     getAlumnos();
@@ -48,7 +46,6 @@ const ListarAlumno = () => {
       console.log(error);
     }
   }
-
   // Función para eliminar un alumno
   const eliminarAlumno = async (e, message) => {
     e.preventDefault();
