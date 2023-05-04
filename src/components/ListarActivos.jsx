@@ -139,7 +139,6 @@ const ListarActivos = () => {
       return;
     }
   }
-
   // Función para manejar el cambio de página
   const handlePageClick = (e) => {
     const paginaSeleccionada = e.selected; // Página seleccionada
