@@ -116,7 +116,6 @@ const ListarActivos = () => {
   }
 
   const handleInputValue = (e) => {
-    
     formatearRut(e);
   }
 
