@@ -22,7 +22,7 @@ const BotonesPerfil = () => {
 
     const getReservasByAlumno = async (fecha = new Date()) => {
         try {
-            const res = await axios.post('https://caf-desarrollo.ivaras.cl/api/reservas/alumno', { rut: alumno.rut, fecha });
+            const res = await axios.post('https://caf.ivaras.cl/api/reservas/alumno', { rut: alumno.rut, fecha });
             setReservasAlumno(res?.data ?? []);
         } catch (error) {
             console.log(error);

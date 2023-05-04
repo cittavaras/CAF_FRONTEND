@@ -41,7 +41,7 @@ const Login = () => {
       return;
     }
     else {
-      const res = await axios.post(`https://caf-desarrollo.ivaras.cl/api/alumnos/login`, { correo: alumno, password: contraseña });
+      const res = await axios.post(`https://caf.ivaras.cl/api/alumnos/login`, { correo: alumno, password: contraseña });
       console.log(res);
       try {
         const usuario = res?.data?.respAlumno

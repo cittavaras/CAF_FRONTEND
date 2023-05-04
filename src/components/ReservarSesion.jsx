@@ -87,7 +87,7 @@ const ReservarSesion = (props) => {
     setLoading(true);
     setEventos([]);
     try {
-      const res = await axios.get('https://caf-desarrollo.ivaras.cl/api/sesiones', {
+      const res = await axios.get('https://caf.ivaras.cl/api/sesiones', {
         params: {
           fecha: fechaActual
         }
@@ -106,7 +106,7 @@ const ReservarSesion = (props) => {
         rut: alumno.rut,
         sesiones: selectedEvents,
       }
-      const res = await axios.post('https://caf-desarrollo.ivaras.cl/api/reservas', body);
+      const res = await axios.post('https://caf.ivaras.cl/api/reservas', body);
       console.log(res);
       alert('Sesiones Reservadas');
       props.handleClose();
@@ -238,7 +238,7 @@ const ReservarSesion = (props) => {
   const getAlumnosByNumeroSesion = async () => {
     try {
       console.log('fechaActual', fechaActual)
-      const res = await axios.get(`https://caf-desarrollo.ivaras.cl/api/sesiones/${selectedSesion.id}/alumnos`, {
+      const res = await axios.get(`https://caf.ivaras.cl/api/sesiones/${selectedSesion.id}/alumnos`, {
         params: {
           fecha: fechaActual
         }
@@ -252,7 +252,7 @@ const ReservarSesion = (props) => {
 
   const tomarAsistencia = async (reservaId, asistencia) =>{
     try {
-      await axios.put(`https://caf-desarrollo.ivaras.cl/api/sesiones/reserva/${reservaId}/asistencia`, {asistencia: asistencia});
+      await axios.put(`https://caf.ivaras.cl/api/sesiones/reserva/${reservaId}/asistencia`, {asistencia: asistencia});
       
     } catch (error) {
       console.log(error);

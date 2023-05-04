@@ -21,7 +21,7 @@ class ListarAlumno extends Component {
   // Función para obtener la lista de alumnos
   getAlumnos = async () => {
     try {
-      const res = await axios.get('https://caf-desarrollo.ivaras.cl/api/alumnos');
+      const res = await axios.get('https://caf.ivaras.cl/api/alumnos');
       // Filtrar los alumnos que son del tipo 'Alumno' y que no estén activos
       const alumnos = res.data.alumnos.filter(alumno => alumno.tipoUsuario === 'Alumno' && alumno.active === false);
       const startIndex = this.state.paginaNumero * this.state.porPagina;
@@ -38,7 +38,7 @@ class ListarAlumno extends Component {
   // Función para eliminar un alumno
   eliminarAlumno = async (id) => {
     
-    const alu = await axios.delete(`https://caf-desarrollo.ivaras.cl/api/alumnos/${id}`);
+    const alu = await axios.delete(`https://caf.ivaras.cl/api/alumnos/${id}`);
     clg(alu);
     this.getAlumnos();
   }
@@ -46,7 +46,7 @@ class ListarAlumno extends Component {
 
   // Función para aceptar un alumno
   aceptarAlumno = async (id) => {
-    const res = await axios.put(`https://caf-desarrollo.ivaras.cl/api/alumnos/${id}`, { active: true });
+    const res = await axios.put(`https://caf.ivaras.cl/api/alumnos/${id}`, { active: true });
     this.getAlumnos();
     console.log(res);
     console.log(res.data.alumnos);

@@ -42,7 +42,7 @@ const ListarActivos = () => {
   // Función para obtener la lista de alumnos
   const getAlumnos = async () => {
     try {
-      const res = await axios.get('https://caf-desarrollo.ivaras.cl/api/alumnos');
+      const res = await axios.get('https://caf.ivaras.cl/api/alumnos');
       // Filtrar los alumnos que son del tipo 'Alumno' y que no estén activos
       const alumnos = res.data.alumnos.filter(alumno => alumno.tipoUsuario === 'Alumno' && alumno.active === true);
       const startIndex = paginaNumero * porPagina;
@@ -58,11 +58,11 @@ const ListarActivos = () => {
 
   const actualizarAlumno = async (e) => {
     e.preventDefault();
-    const res = await axios.get(`https://caf-desarrollo.ivaras.cl/api/alumnos/${search}`);
-    // const res = await axios.put(`https://caf-desarrollo.ivaras.cl/api/alumnos/${id}`, { active: true });
+    const res = await axios.get(`https://caf.ivaras.cl/api/alumnos/${search}`);
+    // const res = await axios.put(`https://caf.ivaras.cl/api/alumnos/${id}`, { active: true });
     // const { correo, nombre } = res.data;
     await axios
-      .post('https://caf-desarrollo.ivaras.cl/api/alumnos', { rut: search, })
+      .post('https://caf.ivaras.cl/api/alumnos', { rut: search, })
       .then((response) => {
         console.log('Email sent successfully:', response.data);
       })
@@ -95,8 +95,8 @@ const ListarActivos = () => {
       return;
     }
     else {
-      // const res = await axios.post(`https://caf-desarrollo.ivaras.cl/api/alumnos/${alumnoSeleccionado._id}`);
-      await axios.post(`https://caf-desarrollo.ivaras.cl/api/metricas/`, metricas);
+      // const res = await axios.post(`https://caf.ivaras.cl/api/alumnos/${alumnoSeleccionado._id}`);
+      await axios.post(`https://caf.ivaras.cl/api/metricas/`, metricas);
       console.log(metricas);
       alert('Metricas registradas');
       handleClose();
@@ -122,7 +122,7 @@ const ListarActivos = () => {
   // Filtrar por rut
   const filtrarAlumnos = async (e) => {
     e.preventDefault();
-    const res = await axios.get('https://caf-desarrollo.ivaras.cl/api/alumnos');
+    const res = await axios.get('https://caf.ivaras.cl/api/alumnos');
     const alumno = res.data.alumnos.filter(alumno => alumno.tipoUsuario === 'Alumno' && alumno.rut === search);
     if (!search) {
       alert('Ingrese un rut');

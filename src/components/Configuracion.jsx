@@ -65,7 +65,7 @@ const Configuracion = () => {
         return;
       }
 
-      await axios.put(`https://caf-desarrollo.ivaras.cl/api/alumnos/rut/${alumno.rut}`, newAlumno);
+      await axios.put(`https://caf.ivaras.cl/api/alumnos/rut/${alumno.rut}`, newAlumno);
       alert('Alumno actualizado')
       navigate('/landing')
     }

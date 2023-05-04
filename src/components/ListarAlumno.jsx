@@ -33,7 +33,7 @@ const ListarAlumno = () => {
   // Función para obtener la lista de alumnos
   const getAlumnos = async () => {
     try {
-      const res = await axios.get('https://caf-desarrollo.ivaras.cl/api/alumnos');
+      const res = await axios.get('https://caf.ivaras.cl/api/alumnos');
       // Filtrar los alumnos que son del tipo 'Alumno' y que no estén activos
       const alumnos = res.data.alumnos.filter(alumno => alumno.tipoUsuario === 'Alumno' && alumno.active === false);
       const startIndex = paginaNumero * porPagina;
@@ -49,10 +49,10 @@ const ListarAlumno = () => {
   // Función para eliminar un alumno
   const eliminarAlumno = async (e, message) => {
     e.preventDefault();
-    const res = await axios.delete(`https://caf-desarrollo.ivaras.cl/api/alumnos/${alumnoEliminado._id}`);
+    const res = await axios.delete(`https://caf.ivaras.cl/api/alumnos/${alumnoEliminado._id}`);
 
     await axios
-      .post('https://caf-desarrollo.ivaras.cl/api/send-email', {
+      .post('https://caf.ivaras.cl/api/send-email', {
         to: alumnoEliminado?.correo,
         subject: 'Solicitud declinada CAF IVARAS',
         text: `${alumnoEliminado?.nombre}, ${message} `,
@@ -72,13 +72,13 @@ const ListarAlumno = () => {
 
   // Función para aceptar un alumno
   const aceptarAlumno = async (alumno) => {
-    const res = await axios.put(`https://caf-desarrollo.ivaras.cl/api/alumnos/${alumno._id}`, { active: true });
+    const res = await axios.put(`https://caf.ivaras.cl/api/alumnos/${alumno._id}`, { active: true });
     await axios
-      .post('https://caf-desarrollo.ivaras.cl/api/send-email', {
+      .post('https://caf.ivaras.cl/api/send-email', {
         to: alumno.correo,
         subject: 'Solicitud Aceptada CAF IVARAS',
-        text: `${alumno.nombre}, Le informamos que su cuenta ha sido activada exitosamente, recuerde que para ingresar necesita su correo y el rut como contraseña sin puntos, sin guion y sin digito verificador guiense por el siguiente link https://caf-desarrollo.ivaras.cl`,
-        html: `<strong>${alumno.nombre}</strong>, Le informamos que su cuenta ha sido activada exitosamente, recuerde que para ingresar necesita su correo y el rut como contraseña sin puntos, sin guion y sin digito verificador guiense por el siguiente link https://caf-desarrollo.ivaras.cl`,
+        text: `${alumno.nombre}, Le informamos que su cuenta ha sido activada exitosamente, recuerde que para ingresar necesita su correo y el rut como contraseña sin puntos, sin guion y sin digito verificador guiense por el siguiente link https://caf.ivaras.cl`,
+        html: `<strong>${alumno.nombre}</strong>, Le informamos que su cuenta ha sido activada exitosamente, recuerde que para ingresar necesita su correo y el rut como contraseña sin puntos, sin guion y sin digito verificador guiense por el siguiente link https://caf.ivaras.cl`,
       })
       .then((response) => {
         console.log('Email sent successfully:', response.data);

@@ -23,7 +23,7 @@ const Metrica = () => {
   const MetricasAlumno = async () => {
     // const datosSesion = sessionStorage.getItem("alumno_sesion");
     const { rut } = JSON.parse(sessionStorage.getItem('alumno_sesion'));
-    const res = await axios.post('https://caf-desarrollo.ivaras.cl/api/metricas/alumno', { rut });
+    const res = await axios.post('https://caf.ivaras.cl/api/metricas/alumno', { rut });
     console.log(res.data)
     const metricaAlumno = res.data;
     setMetricas(metricaAlumno);

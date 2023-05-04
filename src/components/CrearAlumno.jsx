@@ -19,7 +19,7 @@ const CrearAlumno = () => {
 
   useEffect(() => {
     const getAlumnos = async () => {
-      const res = await axios.get('https://caf-desarrollo.ivaras.cl/api/alumnos');
+      const res = await axios.get('https://caf.ivaras.cl/api/alumnos');
       setAlumnos(res.data);
     };
 
@@ -80,10 +80,10 @@ const CrearAlumno = () => {
         tipoUsuario,
       };
 
-      await axios.post('https://caf-desarrollo.ivaras.cl/api/alumnos', newAlumno);
+      await axios.post('https://caf.ivaras.cl/api/alumnos', newAlumno);
 
       await axios
-        .post('https://caf-desarrollo.ivaras.cl/api/send-email', {
+        .post('https://caf.ivaras.cl/api/send-email', {
           to: correo,
           subject: 'Registro CAF Ivaras',
           text: `${nombre}: nos es grato saber que estas interesado(a) en nuestros servicios de CAF Ivaras. En los proximos días activaremos tu cuenta y te enviaremos un correo notificandote como acceder a la plataforma y a sus servicios. Atentamente, el equipo de CAF Ivaras`,

@@ -19,7 +19,7 @@ const CrearUsuario = () => {
 
   useEffect(() => {
     const getAlumnos = async () => {
-      const res = await axios.get('https://caf-desarrollo.ivaras.cl/api/alumnos');
+      const res = await axios.get('https://caf.ivaras.cl/api/alumnos');
       setAlumnos(res.data);
     };
 
@@ -74,7 +74,7 @@ const CrearUsuario = () => {
         tipoUsuario,
       };
 
-      await axios.post('https://caf-desarrollo.ivaras.cl/api/alumnos', newAlumno);
+      await axios.post('https://caf.ivaras.cl/api/alumnos', newAlumno);
       alert('Usuario creado');
       navigate('/landing');
     }
