@@ -4,6 +4,7 @@ import axios from 'axios';
 import ReactPaginate from 'react-paginate';
 import MotivoRechazo from './MotivoRechazo';
 import BotonesPerfil from './BotonesPerfil';
+import baseURL from '../helpers/rutaBase';
 
 const ListarAlumno = () => {
   const [alumnos, setAlumnos] = useState([]);
@@ -19,12 +20,14 @@ const ListarAlumno = () => {
     e.preventDefault();
     setAlumnoEliminado(al)
     setOpen(true)
+
   };
   const handleClose = () => {
     setAlumnoEliminado(null);
     setOpen(false);
     // setSelectedEvents([]);
   }
+
 
   useEffect(() => {
     getAlumnos();
@@ -33,26 +36,24 @@ const ListarAlumno = () => {
   // Función para obtener la lista de alumnos
   const getAlumnos = async () => {
     try {
-      const res = await axios.get('https://caf.ivaras.cl/api/alumnos');
-      // Filtrar los alumnos que son del tipo 'Alumno' y que no estén activos
+      const res = await axios.get(baseURL + '/alumnos');
       const alumnos = res.data.alumnos.filter(alumno => alumno.tipoUsuario === 'Alumno' && alumno.active === false);
       const startIndex = paginaNumero * porPagina;
-      // Seleccionar los alumnos de la página actual según el índice de inicio y la cantidad de elementos por página
       const alumnosSeleccionados = alumnos.slice(startIndex, startIndex + porPagina);
-      // Actualizar el estado con los alumnos seleccionados y el total de alumnos obtenidos
       setAlumnos(alumnosSeleccionados);
       setTotalCount(alumnos.length);
     } catch (error) {
       console.log(error);
     }
   }
+
   // Función para eliminar un alumno
   const eliminarAlumno = async (e, message) => {
     e.preventDefault();
-    const res = await axios.delete(`https://caf.ivaras.cl/api/alumnos/${alumnoEliminado._id}`);
+    const res = await axios.delete(`${baseURL}/alumnos/${alumnoEliminado._id}`);
 
     await axios
-      .post('https://caf.ivaras.cl/api/send-email', {
+      .post(baseURL + '/send-email', {
         to: alumnoEliminado?.correo,
         subject: 'Solicitud declinada CAF IVARAS',
         text: `${alumnoEliminado?.nombre}, ${message} `,
@@ -72,13 +73,13 @@ const ListarAlumno = () => {
 
   // Función para aceptar un alumno
   const aceptarAlumno = async (alumno) => {
-    const res = await axios.put(`https://caf.ivaras.cl/api/alumnos/${alumno._id}`, { active: true });
+    const res = await axios.put(`${baseURL}/alumnos/${alumno._id}`, { active: true });
     await axios
-      .post('https://caf.ivaras.cl/api/send-email', {
+      .post(baseURL + '/send-email', {
         to: alumno.correo,
         subject: 'Solicitud Aceptada CAF IVARAS',
-        text: `${alumno.nombre}, Le informamos que su cuenta ha sido activada exitosamente, recuerde que para ingresar necesita su correo y el rut como contraseña sin puntos, sin guion y sin digito verificador guiense por el siguiente link https://caf.ivaras.cl`,
-        html: `<strong>${alumno.nombre}</strong>, Le informamos que su cuenta ha sido activada exitosamente, recuerde que para ingresar necesita su correo y el rut como contraseña sin puntos, sin guion y sin digito verificador guiense por el siguiente link https://caf.ivaras.cl`,
+        text: `${alumno.nombre}, Le informamos que su cuenta ha sido activada exitosamente, recuerde que para ingresar necesita su correo y el rut como contraseña sin puntos, sin guion y sin digito verificador guiense por el siguiente link https://caf-desarrollo.ivaras.cl`,
+        html: `<strong>${alumno.nombre}</strong>, Le informamos que su cuenta ha sido activada exitosamente, recuerde que para ingresar necesita su correo y el rut como contraseña sin puntos, sin guion y sin digito verificador guiense por el siguiente link https://caf-desarrollo.ivaras.cl`,
       })
       .then((response) => {
         console.log('Email sent successfully:', response.data);
@@ -93,12 +94,11 @@ const ListarAlumno = () => {
     getAlumnos();
   }
 
-
-  // Función para manejar el cambio de página
   const handlePageClick = (e) => {
-    const paginaSeleccionada = e.selected; // Página seleccionada
+    const paginaSeleccionada = e.selected;
     setPaginaNumero(paginaSeleccionada);
-  }; // fin de handlePageClick
+  };
+  
   return (
     <>
       <DivT>

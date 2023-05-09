@@ -3,6 +3,7 @@ import axios from 'axios';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import BotonesPerfil from './BotonesPerfil';
+import baseURL from '../helpers/rutaBase';
 
 const CrearUsuario = () => {
 
@@ -19,7 +20,7 @@ const CrearUsuario = () => {
 
   useEffect(() => {
     const getAlumnos = async () => {
-      const res = await axios.get('https://caf.ivaras.cl/api/alumnos');
+      const res = await axios.get(baseURL + '/alumnos');
       setAlumnos(res.data);
     };
 
@@ -74,7 +75,7 @@ const CrearUsuario = () => {
         tipoUsuario,
       };
 
-      await axios.post('https://caf.ivaras.cl/api/alumnos', newAlumno);
+      await axios.post(baseURL + '/alumnos', newAlumno);
       alert('Usuario creado');
       navigate('/landing');
     }
@@ -86,9 +87,8 @@ const CrearUsuario = () => {
     return expresionRegular.test(correo);
   };
 
-  const formatearRut = () => {
-    console.log(rut)
-    const rutSinFormatear = rut.replace(/\./g, "").replace("-", "");
+ const formatearRut = () => {
+    const rutSinFormatear = rut.replace(/\./g, "").replace("-", "").trim(); // eliminamos los espacios en blanco al final
     const dv = rutSinFormatear.slice(-1);
     const rutNum = rutSinFormatear.slice(0, -1);
     const rutFormateado = rutNum.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "-" + dv;
@@ -177,20 +177,8 @@ const CrearUsuario = () => {
 const OuterContainer = styled.div`
   display: flex;
   margin-top: 70px;
-/*   justify-content: center; */
-/*   align-items: center; */
-/*   height: 100vh; */
-/*   border-style: solid;
-  border-width: 2px; */
 `;
 
-/* const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: bottom;
-  align-items: center;
-  align-items: left;
-`; */
 
 const Container = styled.div`
   display: flex;
@@ -200,7 +188,6 @@ const Container = styled.div`
   padding: 20px;
   border-radius: 5px;
   opacity: 0.9;
-  /* padding-right: 100px; */
 `;
 
 const Login = styled.div`

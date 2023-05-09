@@ -4,7 +4,18 @@ import styled from 'styled-components';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import BotonesPerfil from '../components/BotonesPerfil';
-import { LineChart, Line, ResponsiveContainer, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar } from 'recharts';
+import baseURL from '../helpers/rutaBase';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from 'recharts';
+
 
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet"></link>
 
@@ -23,7 +34,7 @@ const Metrica = () => {
   const MetricasAlumno = async () => {
     // const datosSesion = sessionStorage.getItem("alumno_sesion");
     const { rut } = JSON.parse(sessionStorage.getItem('alumno_sesion'));
-    const res = await axios.post('https://caf.ivaras.cl/api/metricas/alumno', { rut });
+    const res = await axios.post(baseURL + '/metricas/alumno', { rut });
     console.log(res.data)
     const metricaAlumno = res.data;
     setMetricas(metricaAlumno);
@@ -82,6 +93,51 @@ const Metrica = () => {
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = tableInstance;
 
+
+  const BarChartExample = () => {
+    const [selectedMetric, setSelectedMetric] = useState('edad');
+    const data = [
+      { name: 'Edad', uv: metricas?.edad ?? 0 },
+      { name: 'Altura', uv: metricas?.altura ?? 0 },
+      { name: 'Peso corporal', uv: metricas?.peso ?? 0 },
+      { name: 'Porcentaje de grasa corporal', uv: metricas?.porcentajeGrasaCorporal ?? 0 },
+      { name: 'Porcentaje de músculo', uv: metricas?.porcentajeGrasaMuscular ?? 0 },
+      { name: 'Índice de masa corporal (IMC)', uv: metricas?.imc ?? 0 },
+      { name: 'Grasa visceral', uv: metricas?.grasaVisceral ?? 0 },
+    ];
+  
+    const handleMetricChange = (metric) => {
+      setSelectedMetric(metric);
+    }
+  
+    const filteredData = data.filter(item => item.name === selectedMetric);
+  
+    return (
+      <div>
+        <h2>{selectedMetric}</h2>
+        <button onClick={() => handleMetricChange('edad')}>Edad</button>
+        <button onClick={() => handleMetricChange('altura')}>Altura</button>
+        <button onClick={() => handleMetricChange('peso corporal')}>Peso corporal</button>
+        <button onClick={() => handleMetricChange('porcentaje de grasa corporal')}>Porcentaje de grasa corporal</button>
+        <button onClick={() => handleMetricChange('porcentaje de músculo')}>Porcentaje de músculo</button>
+        <button onClick={() => handleMetricChange('índice de masa corporal (IMC)')}>Índice de masa corporal (IMC)</button>
+        <button onClick={() => handleMetricChange('grasa visceral')}>Grasa visceral</button>
+        <ResponsiveContainer width="100%" height={400}>
+          <BarChart data={filteredData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="uv" fill="#8884d8" />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+    );
+  };
+  
+  
+
   return (
     <MetricaContainer>
       <BotonesPerfil />
@@ -115,25 +171,7 @@ const Metrica = () => {
           })}
         </tbody>
       </MetricaTable>
-      <ResponsiveContainer width={600} height={300}>
-
-        <BarChart
-          dataGrafico={datas}
-          width={500}
-          height={300}
-          margin={{
-            top: 5, right: 30, left: 20, bottom: 5,
-          }}
-        >
-          <CartesianGrid strokeDasharray="4 1 2" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Bar dataKey="edad" fill='#6b48ff' />
-          <Bar dataKey="altura" fill='#1ee3cf' />
-        </BarChart>
-      </ResponsiveContainer>
+        {BarChartExample()}
     </MetricaContainer>
 
   );

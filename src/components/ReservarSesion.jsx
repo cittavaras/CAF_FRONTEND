@@ -2,15 +2,15 @@ import axios from 'axios';
 import styled from "styled-components";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles"; //TODO
-
+import baseURL from '../helpers/rutaBase';
 
 import React, { useState, useEffect } from "react";
-import { Button, Dialog, DialogContent, Container, DialogActions, DialogTitle, IconButton, Typography, Box } from "@mui/material";
+import { Button, Dialog, DialogContent, Container, DialogActions, DialogTitle, IconButton, Typography, Box, Grid } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "../../node_modules/react-big-calendar/lib/css/react-big-calendar.css";
-
 
 import "moment/locale/es";
 import useAuth from '../auth/useAuth';
@@ -34,6 +34,8 @@ const messages = {
   today: 'Hoy',
   next: 'Siguiente',
   previous: 'Anterior',
+  week: 'Semana',
+  day: 'Día'
 };
 
 const alumno_sesion = JSON.parse(sessionStorage.getItem("alumno_sesion"));
@@ -68,6 +70,7 @@ const ReservarSesion = (props) => {
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  //const [views, setViews] = useState([isMobile? ["day"]: ["week", "day"]);
   const { alumno, hasRole } = useAuth();
   const [selectedEvents, setSelectedEvents] = useState([]);
   const [sesiones, setSesiones] = useState([]);
@@ -87,12 +90,13 @@ const ReservarSesion = (props) => {
     setLoading(true);
     setEventos([]);
     try {
-      const res = await axios.get('https://caf.ivaras.cl/api/sesiones', {
+      const res = await axios.get(baseURL + '/sesiones', {
         params: {
           fecha: fechaActual
         }
       });
       setSesiones(res?.data ?? []);
+      console.log("res?.data", res?.data);
     } catch (error) {
       console.log(error);
     }
@@ -105,8 +109,9 @@ const ReservarSesion = (props) => {
       const body = {
         rut: alumno.rut,
         sesiones: selectedEvents,
+        fecha: fechaActual
       }
-      const res = await axios.post('https://caf.ivaras.cl/api/reservas', body);
+      const res = await axios.post(baseURL + '/reservas', body);
       console.log(res);
       alert('Sesiones Reservadas');
       props.handleClose();
@@ -168,32 +173,36 @@ const ReservarSesion = (props) => {
       fontSize: fontSize,
     };
     style.backgroundColor = event.isValid ? style.backgroundColor : "#676d70";
-      return {
-        style,
-        children: (
-          <Button
-            variant="contained"
-            color={isSelected ? "secondary" : "primary"}
-            onClick={() => handleEventClick(event)}
-            disabled={!event?.isValid || sesionPasada}
-            style={{
-              fontFamily: "Roboto, sans-serif",
-              fontWeight: 500,
-              textTransform: "none",
-              padding: "4px 8px",
-            }}
-          >
-            {event.title} 
-          </Button>
-        )
-      };
-      };
+    return {
+      style,
+      children: (
+        <Button
+          variant="contained"
+          color={isSelected ? "secondary" : "primary"}
+          onClick={() => handleEventClick(event)}
+          style={{
+            fontFamily: "Roboto, sans-serif",
+            fontWeight: 500,
+            textTransform: "none",
+            padding: "4px 8px",
+          }}
+        >
+          {event.title}
+        </Button>
+      )
+    };
+  };
 
   const handleEventClick = (event) => {
     console.log(event.cantidadUsuarios);
     if (hasRole(roles.alumno)) {
       const fechaActual = moment();
       if (!event.isValid) {
+        alert("La sesion esta completa");
+        return;
+      }
+      else if (event.desactivada) {
+        alert('No se puede hacer clic en una sesión desactivada');
         return;
       }
       if (moment(event.start).isBefore(fechaActual)) {
@@ -219,11 +228,16 @@ const ReservarSesion = (props) => {
       } else {
         alert(`¡Solo se permiten seleccionar hasta ${maxSelections} eventos!`);
       }
-    } else if (hasRole(roles.admin ) || hasRole(roles.instructor)){
-      if (event.cantidadUsuarios <= 0) {
+    } else if (hasRole(roles.admin) || hasRole(roles.instructor)) {
+      if (hasRole(roles.instructor) && event.desactivada) {
+        alert('No se puede hacer clic en una sesión desactivada');
+        return;
+      }
+      else if (hasRole(roles.instructor) && event.cantidadUsuarios <= 0) {
         alert('No se puede hacer clic en una sesión sin alumnos');
         return;
       }
+
       setActiveStep(1);
       setSelectedSesion(event);
     }
@@ -237,55 +251,78 @@ const ReservarSesion = (props) => {
 
   const getAlumnosByNumeroSesion = async () => {
     try {
-      console.log('fechaActual', fechaActual)
-      const res = await axios.get(`https://caf.ivaras.cl/api/sesiones/${selectedSesion.id}/alumnos`, {
+      const res = await axios.get(`${baseURL}/sesiones/${selectedSesion.id}/alumnos`, {
         params: {
           fecha: fechaActual
         }
       });
       setAlumnosSesion(res?.data ?? []);
-      console.log('res', res);
+      console.log("res?.data", res?.data);
     } catch (error) {
       console.log(error);
     }
   }
 
-  const tomarAsistencia = async (reservaId, asistencia) =>{
+  const tomarAsistencia = async (reservaId, asistencia) => {
     try {
-      await axios.put(`https://caf.ivaras.cl/api/sesiones/reserva/${reservaId}/asistencia`, {asistencia: asistencia});
-      
+      await axios.put(`${baseURL}/sesiones/reserva/${reservaId}/asistencia`, { asistencia: asistencia });
     } catch (error) {
       console.log(error);
+    }
   }
-}
 
-return (
-  <Container maxWidth="lg"
-  style={{ marginTop: '70px' }}
-  backgroundColor="red"
-  >
-    {props.open && <Dialog open={props.open} onClose={props.handleClose} fullWidth maxWidth="md" scroll={'paper'} /*fullScreen={isSmallScreen}*/>
-      <StyledDialogTitle  >
-        <StyledIconButton
-          aria-label="close"
-          onClick={props.handleClose}
-          sx={{
-            position: 'absolute',
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </StyledIconButton>
-      </StyledDialogTitle>
-      <StyledDialogContent style={{ minWidth: '500px'}} theme={theme}>
+  const desactivarSesion = async () => {
+    try {
+      setLoading(true);
+      await axios.put(`${baseURL}/sesiones/${selectedSesion.id}/desactivar`, {fecha: fechaActual, activar: selectedSesion.desactivada});
+      setSelectedSesion({...selectedSesion, desactivada:!selectedSesion.desactivada});
+      setLoading(false);
+      getSesiones();
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
-        <TitleContainer>
-          <CalendarTitle variant="h4" component="h2">{CALENDAR_TITLE}</CalendarTitle>
-        </TitleContainer>
-        <CalendarParagraph variant="body1" component="p">{CALENDAR_PARAGRAPH}</CalendarParagraph>
-          {(hasRole(roles.admin ) || hasRole(roles.instructor)) &&
+  return (
+    <Container maxWidth="lg"
+      style={{ marginTop: '70px' }}
+      backgroundColor="red"
+    >
+      {props.open && <Dialog open={props.open} onClose={props.handleClose} fullWidth maxWidth="md" scroll={'paper'} /*fullScreen={isSmallScreen}*/>
+        <StyledDialogTitle  >
+          <StyledIconButton
+            aria-label="back"
+            onClick={handleBackClick}
+            disabled={activeStep === 0}
+            sx={{
+              position: 'absolute',
+              left: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <ArrowBackIcon />
+          </StyledIconButton>
+          <StyledIconButton
+            aria-label="close"
+            onClick={props.handleClose}
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </StyledIconButton>
+        </StyledDialogTitle>
+        <StyledDialogContent style={{ minWidth: '500px', width: '100%' }} theme={theme}>
+
+          <TitleContainer>
+            <CalendarTitle variant="h4" component="h2">{CALENDAR_TITLE}</CalendarTitle>
+          </TitleContainer>
+          <CalendarParagraph variant="body1" component="p">{CALENDAR_PARAGRAPH}</CalendarParagraph>
+          {(hasRole(roles.admin) || hasRole(roles.instructor)) &&
             <Stepper activeStep={activeStep} alternativeLabel>
               <Step>
                 <StepLabel>Selector</StepLabel>
@@ -301,8 +338,8 @@ return (
               events={eventos}
               startAccessor="start"
               endAccessor="end"
-              defaultView="week"
-              views={["week"]}
+              defaultView={isMobile? "day": "week"}
+              views={["week", "day"]}
               selectable={false}
               onSelectEvent={handleEventClick}
               eventPropGetter={eventStyleGetter}
@@ -311,23 +348,28 @@ return (
               date={fechaActual}
               onNavigate={handleNavigate}
               disabled={loading}
-              messages={ messages }
+              messages={messages}
               isMobile={isMobile}
               slotDuration={40}
             />
           )}
           {activeStep === 1 && (
             <>
-              <AlumnosSesion alumnosSesion={alumnosSesion} setAlumnosSesion={setAlumnosSesion} tomarAsistencia={tomarAsistencia}/>
-              <Button variant="contained" color="primary" onClick={handleBackClick}>
-                Regresar
-              </Button>
+              <AlumnosSesion alumnosSesion={alumnosSesion} setAlumnosSesion={setAlumnosSesion} tomarAsistencia={tomarAsistencia} />
+              <div className='d-flex  justify-content-between' style ={{ marginTop: '20px'}}>
+                { hasRole(roles.admin) && <button variant="contained" className= {selectedSesion.desactivada ? "btn btn-outline-success" : "btn btn-outline-danger"} onClick={desactivarSesion} disabled={loading}>
+                  {selectedSesion.desactivada ? "Activar sesion" : "Desactivar sesion"}
+                </button>}
+                <button variant="contained" className="btn btn-success " onClick={handleBackClick}>
+                  Guardar asistencia
+                </button>
+              </div>
             </>
           )}
         </StyledDialogContent>
 
         <DialogActions>
-          {hasRole(roles.alumno) &&
+          {activeStep === 0 && hasRole(roles.alumno) &&
             <Button autoFocus color="success" variant="contained" onClick={crearReservas}>
               Confirmar reserva
             </Button>
@@ -351,7 +393,8 @@ const generateTrainingEvents = (sesiones = [], fechaActual) => {
       end,
       isValid: sesion.count < sesion.cantidadUsuarios,
       dia: sesion.dia,
-      cantidadUsuarios: sesion.count
+      cantidadUsuarios: sesion.count,
+      desactivada: sesion.desactivada
     };
     return newSesion;
   })

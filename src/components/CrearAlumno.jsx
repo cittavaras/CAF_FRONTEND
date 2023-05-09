@@ -3,6 +3,7 @@ import axios from 'axios';
 import styled from 'styled-components';
 import '../pages/css/style.css';
 import { useNavigate } from 'react-router-dom';
+import baseURL from '../helpers/rutaBase';
 
 const CrearAlumno = () => {
 
@@ -19,7 +20,7 @@ const CrearAlumno = () => {
 
   useEffect(() => {
     const getAlumnos = async () => {
-      const res = await axios.get('https://caf.ivaras.cl/api/alumnos');
+      const res = await axios.get(baseURL + '/alumnos');
       setAlumnos(res.data);
     };
 
@@ -51,13 +52,13 @@ const CrearAlumno = () => {
   };
 
   const formatearRut = () => {
-    console.log(rut)
-    const rutSinFormatear = rut.replace(/\./g, "").replace("-", "");
+    const rutSinFormatear = rut.replace(/\./g, "").replace("-", "").trim(); // eliminamos los espacios en blanco al final
     const dv = rutSinFormatear.slice(-1);
     const rutNum = rutSinFormatear.slice(0, -1);
     const rutFormateado = rutNum.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "-" + dv;
     setRut(rutFormateado);
   }
+  
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -80,10 +81,11 @@ const CrearAlumno = () => {
         tipoUsuario,
       };
 
-      await axios.post('https://caf.ivaras.cl/api/alumnos', newAlumno);
+      const res = await axios.post(baseURL + '/alumnos', newAlumno);
+      console.log(res);
 
       await axios
-        .post('https://caf.ivaras.cl/api/send-email', {
+        .post(baseURL + '/send-email', {
           to: correo,
           subject: 'Registro CAF Ivaras',
           text: `${nombre}: nos es grato saber que estas interesado(a) en nuestros servicios de CAF Ivaras. En los proximos días activaremos tu cuenta y te enviaremos un correo notificandote como acceder a la plataforma y a sus servicios. Atentamente, el equipo de CAF Ivaras`,
@@ -176,20 +178,9 @@ const CrearAlumno = () => {
 
 const OuterContainer = styled.div`
   display: flex;
-/*   justify-content: center; */
-/*   align-items: center; */
-/*   height: 100vh; */
-/*   border-style: solid;
-  border-width: 2px; */
 `;
 
-/* const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: bottom;
-  align-items: center;
-  align-items: left;
-`; */
+
 
 const Container = styled.div`
   display: flex;
@@ -199,7 +190,6 @@ const Container = styled.div`
   padding: 20px;
   border-radius: 5px;
   opacity: 0.9;
-  /* padding-right: 100px; */
 `;
 
 const Login = styled.div`

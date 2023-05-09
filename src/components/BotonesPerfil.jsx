@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import roles from "../helpers/roles";
 import useAuth from '../auth/useAuth';
 import ReservarSesion from './ReservarSesion';
+import baseURL from '../helpers/rutaBase';
 
 const BotonesPerfil = () => {
     const { alumno, hasRole } = useAuth();
@@ -22,8 +23,9 @@ const BotonesPerfil = () => {
 
     const getReservasByAlumno = async (fecha = new Date()) => {
         try {
-            const res = await axios.post('https://caf.ivaras.cl/api/reservas/alumno', { rut: alumno.rut, fecha });
+            const res = await axios.post(baseURL + '/reservas/alumno', { rut: alumno.rut, fecha });
             setReservasAlumno(res?.data ?? []);
+            console.log("res?.data", res?.data );
         } catch (error) {
             console.log(error);
         }

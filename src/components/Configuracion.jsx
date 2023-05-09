@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import '../pages/css/style.css';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../auth/useAuth';
+import baseURL from '../helpers/rutaBase';
 
 const Configuracion = () => {
 
@@ -65,7 +66,7 @@ const Configuracion = () => {
         return;
       }
 
-      await axios.put(`https://caf.ivaras.cl/api/alumnos/rut/${alumno.rut}`, newAlumno);
+      await axios.put(`${baseURL}/alumnos/rut/${alumno.rut}`, newAlumno);
       alert('Alumno actualizado')
       navigate('/landing')
     }

@@ -9,6 +9,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import Container from '@mui/material/Container';
 import RegistroMetricas from './RegistroMetricas';
 import BotonesPerfil from './BotonesPerfil';
+import baseURL from '../helpers/rutaBase';
 
 const ListarActivos = () => {
   const [alumnos, setAlumnos] = useState([]);
@@ -33,8 +34,6 @@ const ListarActivos = () => {
     // setSelectedEvents([]);
   }
 
-
-
   useEffect(() => {
     getAlumnos();
   }, [paginaNumero]);
@@ -42,13 +41,10 @@ const ListarActivos = () => {
   // Función para obtener la lista de alumnos
   const getAlumnos = async () => {
     try {
-      const res = await axios.get('https://caf.ivaras.cl/api/alumnos');
-      // Filtrar los alumnos que son del tipo 'Alumno' y que no estén activos
+      const res = await axios.get(baseURL + '/alumnos');
       const alumnos = res.data.alumnos.filter(alumno => alumno.tipoUsuario === 'Alumno' && alumno.active === true);
       const startIndex = paginaNumero * porPagina;
-      // Seleccionar los alumnos de la página actual según el índice de inicio y la cantidad de elementos por página
       const alumnosSeleccionados = alumnos.slice(startIndex, startIndex + porPagina);
-      // Actualizar el estado con los alumnos seleccionados y el total de alumnos obtenidos
       setAlumnos(alumnosSeleccionados);
       setTotalCount(alumnos.length);
     } catch (error) {
@@ -58,20 +54,15 @@ const ListarActivos = () => {
 
   const actualizarAlumno = async (e) => {
     e.preventDefault();
-    const res = await axios.get(`https://caf.ivaras.cl/api/alumnos/${search}`);
-    // const res = await axios.put(`https://caf.ivaras.cl/api/alumnos/${id}`, { active: true });
-    // const { correo, nombre } = res.data;
+    const res = await axios.get(`${baseURL}/alumnos/${search}`);
     await axios
-      .post('https://caf.ivaras.cl/api/alumnos', { rut: search, })
+      .post(baseURL + '/alumnos', { rut: search, })
       .then((response) => {
         console.log('Email sent successfully:', response.data);
       })
       .catch((error) => {
         console.error('Error sending email:', error);
       });
-
-    // console.log(res);
-    // console.log(res?.data);
 
     getAlumnos();
   }
@@ -95,8 +86,7 @@ const ListarActivos = () => {
       return;
     }
     else {
-      // const res = await axios.post(`https://caf.ivaras.cl/api/alumnos/${alumnoSeleccionado._id}`);
-      await axios.post(`https://caf.ivaras.cl/api/metricas/`, metricas);
+      await axios.post(`${baseURL}/metricas/`, metricas);
       console.log(metricas);
       alert('Metricas registradas');
       handleClose();
@@ -108,21 +98,23 @@ const ListarActivos = () => {
 
   const formatearRut = (e) => {
     console.log(e.target.value)
-    const rutSinFormatear = e.target.value.replace(/\./g, "").replace("-", "");
+    const rutSinFormatear = e.target.value.replace(/\./g, "").replace("-", "").trim();
     const dv = rutSinFormatear.slice(-1);
     const rutNum = rutSinFormatear.slice(0, -1);
     const rutFormateado = rutNum.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "-" + dv;
     setSearch(rutFormateado);
+    search.trim();
   }
 
   const handleInputValue = (e) => {
+    
     formatearRut(e);
   }
 
   // Filtrar por rut
   const filtrarAlumnos = async (e) => {
     e.preventDefault();
-    const res = await axios.get('https://caf.ivaras.cl/api/alumnos');
+    const res = await axios.get(baseURL + '/alumnos');
     const alumno = res.data.alumnos.filter(alumno => alumno.tipoUsuario === 'Alumno' && alumno.rut === search);
     if (!search) {
       alert('Ingrese un rut');
@@ -139,6 +131,7 @@ const ListarActivos = () => {
       return;
     }
   }
+
   // Función para manejar el cambio de página
   const handlePageClick = (e) => {
     const paginaSeleccionada = e.selected; // Página seleccionada

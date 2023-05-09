@@ -12,18 +12,6 @@ const RegistroMetricas = (props) => {
   const [peso, setPeso] = useState("");
   const [porcentajeGrasaMuscular, setPorcentajeGrasaMuscular] = useState("");
 
-
-
-  // let metricas = {};
-  // metricas.rut = props?.alumnoSeleccionado?.rut;
-  // metricas.edad = edad;
-  // metricas.imc = imc;
-  // metricas.grasaVisceral = grasaVisceral;
-  // metricas.altura = altura;
-  // metricas.porcentajeGrasaCorporal = porcentajeGrasaCorporal;
-  // metricas.peso = peso;
-  // metricas.porcentajeGrasaMuscular = porcentajeGrasaMuscular;
-
   let metricas = {
     edad,
     imc,
@@ -35,6 +23,27 @@ const RegistroMetricas = (props) => {
   };
   metricas.rut = props?.alumnoSeleccionado?.rut;
 
+  const onSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!edad || !imc || !grasaVisceral || !altura || !porcentajeGrasaCorporal || !peso || !porcentajeGrasaMuscular) {
+      alert('Todos los campos son obligatorios');
+      return;
+    } else if (edad < 15 || edad > 90) {
+      alert('La edad debe estar entre 15 y 90 años');
+      return;
+    } else if (imc < 10 || imc > 45) {
+      alert('El IMC debe estar entre 10 y 45');
+      return;
+    } else if (altura > 3.0) {
+      alert('La altura debe ser menor a 3.0');
+      return;
+    } else if (porcentajeGrasaCorporal < 1 || porcentajeGrasaCorporal > 100) {
+      alert('El porcentaje de grasa corporal debe estar entre 1 y 100');
+      return;
+    }  else {props.registrarMetricas(e, metricas);};
+  };
+  
 
   return (
     <Container maxWidth="lg" style={{ marginTop: '70px' }}>
@@ -136,7 +145,10 @@ const RegistroMetricas = (props) => {
           </DialogContent>
 
           <DialogActions>
-            <Button autoFocus color="success" variant="contained" onClick={(e) => props.registrarMetricas(e, metricas)}>
+            {/*<Button autoFocus color="success" variant="contained" onClick={(e) => props.registrarMetricas(e, metricas)}>
+              Confirmar Registro de Metricas
+            </Button> */}
+            <Button autoFocus color="success" variant="contained" onClick={onSubmit}>
               Confirmar Registro de Metricas
             </Button>
           </DialogActions>
