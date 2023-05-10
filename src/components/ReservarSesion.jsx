@@ -173,6 +173,7 @@ const ReservarSesion = (props) => {
       fontSize: fontSize,
     };
     style.backgroundColor = event.isValid ? style.backgroundColor : "#676d70";
+    style.backgroundColor = !event.desactivada ? style.backgroundColor : "#8c9599";
     return {
       style,
       children: (
