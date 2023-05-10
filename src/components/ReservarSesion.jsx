@@ -288,7 +288,8 @@ const ReservarSesion = (props) => {
       style={{ marginTop: '70px' }}
       backgroundColor="red"
     >
-      {props.open && <Dialog open={props.open} onClose={props.handleClose} fullWidth maxWidth="md" scroll={'paper'} /*fullScreen={isSmallScreen}*/>
+      {props.open && <Dialog open={props.open} onClose={props.handleClose} fullWidth maxWidth="md" scroll={'paper'} 
+      fullScreen={isMobile}>
         <StyledDialogTitle  >
           <StyledIconButton
             aria-label="back"
@@ -470,8 +471,7 @@ const CustomCalendar = styled(Calendar)`
 `;
 const StyledDialogContent = styled(DialogContent)`
   ${({ theme }) => theme.breakpoints.down("sm")} {
-    min-width: 710px;
-    overflow-x: auto;
+  
   }
 `;
 

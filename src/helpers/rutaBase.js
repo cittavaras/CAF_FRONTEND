@@ -1,5 +1,5 @@
 const baseURL = 
-    "https://caf.ivaras.cl/api"
+    "http://192.168.100.20:4000/api"
 ;
 
 export default baseURL;
