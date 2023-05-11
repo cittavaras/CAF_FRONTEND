@@ -9,7 +9,7 @@ import baseURL from '../helpers/rutaBase';
 const ListarAlumno = () => {
   const [alumnos, setAlumnos] = useState([]);
   const [paginaNumero, setPaginaNumero] = useState(0);
-  const [porPagina, setPorPagina] = useState(6);
+  const [porPagina, setPorPagina] = useState(5);
   const [totalCount, setTotalCount] = useState(0);
   const [alumnoEliminado, setAlumnoEliminado] = useState(null);
 
@@ -154,13 +154,13 @@ const ListarAlumno = () => {
 };
 
 const DivT = styled.div`
-  font-family: 'Kodchasan';
+  font-family: 'lato', sans-serif;
   margin-top: 100px;
   top: 100px;
 `;
 
 const Div = styled.div`
-  font-family: 'Kodchasan';
+  font-family: 'lato', sans-serif;
   top: 10px;
 `;
 

@@ -2,31 +2,24 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import React, { useEffect } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../pages/css/style.css';
-
 import Inicio from "../pages/Inicio"
 import Bienvenida from '../pages/Bienvenida';
 import CrearAlumno from '../components/CrearAlumno'
-
 import Notificacion from "../pages/notificacion";
-
 import LandingPageAlumno from "../pages/LadingPageAlumno";
 import Login from '../pages/Login';
 import MetricaAlumno from '../pages/MetricaAlumno';
 import ListarAlumno from "../components/ListarAlumno";
-
 import NotFoundPage from "../pages/NotFoundPage";
-
 import AgendaReserva from "../components/AgendaReserva";
-
 import Layout from "../layouts/Layout";
-
 import useAuth from '../auth/useAuth';
 import roles from '../helpers/roles';
 import routes from '../helpers/routes';
 import CrearUsuario from "../components/CrearUsuario";
 import ListarActivos from "../components/ListarActivos";
 import Configuracion from "../components/Configuracion";
-
+import ModificarEliminarUsuario from "../components/ModificarEliminarUsuario";
 
 export default function AppRouter() {
   const { isLogged } = useAuth();
@@ -104,6 +97,11 @@ export default function AppRouter() {
           <Route path="/listarActivos" element={
             <PrivateRoute hasRole={roles.instructor} >
               <ListarActivos />
+            </PrivateRoute>}
+          />
+          <Route path="/mantenedor" element={
+            <PrivateRoute hasRole={roles.admin} >
+              <ModificarEliminarUsuario />
             </PrivateRoute>}
           />
         </Routes>
