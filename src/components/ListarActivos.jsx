@@ -142,11 +142,11 @@ const ListarActivos = () => {
         <DivT>
         <BotonesPerfil/>
           <Div className="row">
-            <TarjetaContainer>
+            <div>
               <h2>
                 <Paper
                   component="form"
-                  sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}
+                  sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400, marginLeft: 'auto', marginRight: 'auto'  }}
                 >
                   <InputBase
                     sx={{ ml: 1, flex: 1 }}
@@ -161,7 +161,7 @@ const ListarActivos = () => {
               </h2>
               {
                 alumnos.map(alumno => (
-                  <Card className="col-md-4 p-2" key={alumno._id}>
+                  <card className="col-md-4 p-2" key={alumno._id}>
                     <div className="card">
 
                       <div className="card-header d-flex justify-content-between">
@@ -183,10 +183,10 @@ const ListarActivos = () => {
                     {open && <RegistroMetricas open={open} setOpen={setOpen} handleClose={handleClose} registrarMetricas={registrarMetricas} alumnoSeleccionado={alumnoSeleccionado}
                     />
                     }
-                  </Card>
+                  </card>
                 ))
               }
-            </TarjetaContainer>
+            </div>
           </Div>
 
           <ReactPaginate
@@ -210,42 +210,16 @@ const ListarActivos = () => {
   );
 };
 
-const Card = styled.div`
-  width: 500px; // Tamaño fijo de la tarjeta
-  height: 300px;
-  background-color: white;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-  padding: 20px;
-  margin: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  @media (max-width: 768px) { // Media query para pantallas más pequeñas
-    width: 100%; // La tarjeta ocupa el ancho completo de la pantalla
-    height: auto; // La altura se ajusta automáticamente al contenido
-    margin: 10px 0; // Se quita el margen horizontal y se agrega un margen vertical
-  }
-`;
 
 const DivT = styled.div`
-  font-family: 'lato', sans-serif;
   margin-top: 100px;
   top: 100px;
 `;
 
 const Div = styled.div`
-  font-family: 'lato', sans-serif;
   top: 10px;
 `;
 
-const TarjetaContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-`;
 
 
 export default ListarActivos;

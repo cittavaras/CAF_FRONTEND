@@ -14,11 +14,30 @@ const ModificarUsuario = (props) => {
     const [active, setActive] = useState('true');
     const [tipoUsuario, setTipoUsuario] = useState('');
 
+    let actualizar = {
+        nombre,
+        rut,
+        contraseña,
+        correo,
+        carrera,
+        jornada,
+        active,
+        tipoUsuario,
+      };
+      actualizar._id = props?.alumnoModificado?._id;
 
     const onSubmit = async (e) => {
         e.preventDefault();
-
-    };
+    
+        if (!nombre || !rut || !contraseña || !confirmarContraseña|| !correo || !carrera || !jornada || !tipoUsuario) {
+            alert('Todos los campos son obligatorios');
+            return;
+        }
+        else if (contraseña !== confirmarContraseña) {
+            alert('Las contraseñas no coinciden');
+            return;
+        } else {props.modificarAlumno(e, actualizar);}
+      };
 
     useEffect(() => {
         if (props.alumnoModificado) {
@@ -30,7 +49,7 @@ const ModificarUsuario = (props) => {
             setTipoUsuario(props.alumnoModificado.tipoUsuario)
         }
       }, [props.alumnoModificado]);
-
+    
     return (
         <Container maxWidth="lg" style={{ marginTop: '70px' }}>
             {props.open && (
@@ -51,7 +70,6 @@ const ModificarUsuario = (props) => {
                             <CloseIcon />
                         </IconButton>
                     </DialogTitle>
-
                     <DialogContent>
                         <TextField
                             type="text"
@@ -152,7 +170,7 @@ const ModificarUsuario = (props) => {
 
                     <DialogActions>
                         <Button autoFocus color="success" variant="contained" onClick={onSubmit}>
-                            Confirmar Registro de Metricas
+                            Confirmar cambios
                         </Button>
                     </DialogActions>
                 </Dialog>

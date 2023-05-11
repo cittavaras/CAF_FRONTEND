@@ -104,10 +104,10 @@ const ListarAlumno = () => {
       <DivT>
       <BotonesPerfil/>
         <Div className="row" >
-          <TarjetaContainer>
+          <div>
             {
               alumnos.map(alumno => (
-                <Card className="col-md-4 p-2" key={alumno._id}>
+                <card className="col-md-4 p-2" key={alumno._id}>
                   <div className="card">
                     <div className="card-header d-flex justify-content-between">
                       <h3>{alumno.nombre}</h3>
@@ -127,10 +127,10 @@ const ListarAlumno = () => {
                     </div>
                   </div>
                   {open && <MotivoRechazo open={open} setOpen={setOpen} handleClose={handleClose} alumnoEliminado={alumnoEliminado} eliminarAlumno={eliminarAlumno} />}
-                </Card>
+                </card>
               ))
             }
-          </TarjetaContainer>
+          </div>
         </Div>
 
         <ReactPaginate
@@ -154,41 +154,12 @@ const ListarAlumno = () => {
 };
 
 const DivT = styled.div`
-  font-family: 'lato', sans-serif;
   margin-top: 100px;
   top: 100px;
 `;
 
 const Div = styled.div`
-  font-family: 'lato', sans-serif;
   top: 10px;
 `;
-
-const Card = styled.div`
-  width: 500px; // Tamaño fijo de la tarjeta
-  height: 300px;
-  background-color: white;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-  padding: 20px;
-  margin: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  @media (max-width: 768px) { // Media query para pantallas más pequeñas
-    width: 100%; // La tarjeta ocupa el ancho completo de la pantalla
-    height: auto; // La altura se ajusta automáticamente al contenido
-    margin: 10px 0; // Se quita el margen horizontal y se agrega un margen vertical
-  }
-`;
-
-const TarjetaContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-`;
-
 
 export default ListarAlumno;
