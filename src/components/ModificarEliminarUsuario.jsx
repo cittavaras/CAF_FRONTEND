@@ -106,7 +106,7 @@ const ModificarEliminarUsuario = () => {
     const {
       nombre,
       rut,
-      contraseña,
+      password: contraseña,
       correo,
       carrera,
       jornada,
