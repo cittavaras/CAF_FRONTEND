@@ -106,14 +106,14 @@ const ModificarEliminarUsuario = () => {
     const {
       nombre,
       rut,
-      password: contraseña,
+      contraseña,
       correo,
       carrera,
       jornada,
       tipoUsuario,
     } = actualizar
 
-    if (!nombre || !rut || !contraseña || !correo || !carrera || !jornada || !tipoUsuario) {
+    if (!nombre || !rut || !contraseña|| !correo || !carrera || !jornada || !tipoUsuario) {
       alert('Debe completar todos los campos');
       return;
     }
