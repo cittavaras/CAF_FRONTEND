@@ -4,11 +4,36 @@ import styled from 'styled-components';
 import '../pages/css/style.css';
 import { useNavigate } from 'react-router-dom';
 import baseURL from '../helpers/rutaBase';
+import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@mui/material';
+import useMediaQuery from '@mui/material/useMediaQuery';
+
+
+
 
 const CrearAlumno = () => {
 
+  const [open, setOpen] = useState(false);
+  
+  const handleClickOpen = (e) => {
+    e.preventDefault();
+    if (!nombre || !rut || !correo || !carrera || !jornada) {
+      alert('Todos los campos son obligatorios');
+      return;
+    } else if (!validarCorreoElectronico(correo)) {
+      alert('El correo debe ser de duoc');
+      return;
+    }
+    else{
+      setOpen(true);
+    };
+    
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+  
   const navigate = useNavigate();
-
+  
   const [alumnos, setAlumnos] = useState([]);
   const [nombre, setNombre] = useState('');
   const [rut, setRut] = useState('');
@@ -62,14 +87,7 @@ const CrearAlumno = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-
-    if (!nombre || !rut || !correo || !carrera || !jornada) {
-      alert('Todos los campos son obligatorios');
-      return;
-    } else if (!validarCorreoElectronico(correo)) {
-      alert('El correo debe ser de duoc');
-      return;
-    } else {
+      console.log({nombre, rut, correo, carrera, jornada, active, tipoUsuario})
       correo.toLowerCase();
       const newAlumno = {
         nombre,
@@ -80,7 +98,7 @@ const CrearAlumno = () => {
         active,
         tipoUsuario,
       };
-
+      console.log(newAlumno)
       const res = await axios.post(baseURL + '/alumnos', newAlumno);
       console.log(res);
 
@@ -99,7 +117,7 @@ const CrearAlumno = () => {
         });
 
       navigate('/notificacion');
-    }
+    
   };
   
 
@@ -164,9 +182,30 @@ const CrearAlumno = () => {
                 <option value="vespertino">Vespertino</option>
               </SelectJ>
             </div>
-            <Button className="button" onClick={onSubmit}>
+            <Button className="button" onClick={(e) => {handleClickOpen(e)}}>
               ENVIAR SOLICITUD
             </Button>
+            <Dialog
+              open={open}
+              onClose={handleClose}
+            >
+              <DialogTitle aria-label="confirmacion">
+                {"¿Están correctos estos datos?"}
+              </DialogTitle>
+              <DialogContent>
+                <DialogContentText>
+                  Correo: {correo} <br />
+                  Rut: {rut}
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleClose}>Cancelar</Button>
+                <Button onClick={(e) => {onSubmit(e)}} >
+                  Aceptar
+                </Button>
+              </DialogActions>
+            </Dialog>
+
           </form>
         </Login>
       </Container>
