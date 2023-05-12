@@ -17,7 +17,7 @@ const ModificarUsuario = (props) => {
     let actualizar = {
         nombre,
         rut,
-        contraseña,
+        password: contraseña,
         correo,
         carrera,
         jornada,
