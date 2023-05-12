@@ -73,7 +73,7 @@ const ListarAlumno = () => {
 
   // Función para aceptar un alumno
   const aceptarAlumno = async (alumno) => {
-    const res = await axios.put(`${baseURL}/alumnos/${alumno._id}`, { active: true });
+    const res = await axios.put(`${baseURL}/alumnos/aceptar/${alumno._id}`, { active: true });
     await axios
       .post(baseURL + '/send-email', {
         to: alumno.correo,

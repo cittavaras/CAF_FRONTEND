@@ -8,7 +8,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import Container from '@mui/material/Container';
 import BotonesPerfil from './BotonesPerfil';
 import baseURL from '../helpers/rutaBase';
-import MotivoRechazo from './MotivoRechazo';
+import ConfirmarEliminar from './ConfirmarEliminar';
 import ModificarUsuario from './ModificarUsuario';
 
 const ModificarEliminarUsuario = () => {
@@ -106,7 +106,7 @@ const ModificarEliminarUsuario = () => {
     const {
       nombre,
       rut,
-      contraseña,
+      password: contraseña,
       correo,
       carrera,
       jornada,
@@ -127,23 +127,9 @@ const ModificarEliminarUsuario = () => {
 
   }
 
-  const eliminarAlumno = async (e, message) => {
+  const eliminarAlumno = async (e) => {
     e.preventDefault();
     const res = await axios.delete(`${baseURL}/alumnos/${alumnoEliminado._id}`);
-
-    await axios
-      .post(baseURL + '/send-email', {
-        to: alumnoEliminado?.correo,
-        subject: 'Eliminacion cuenta CAF IVARAS',
-        text: `${alumnoEliminado?.nombre}, ${message} `,
-        html: `<strong>${alumnoEliminado?.nombre}</strong>, ${message}`,
-      })
-      .then((response) => {
-        console.log('Email sent successfully:', response.data);
-      })
-      .catch((error) => {
-        console.error('Error sending email:', error);
-      });
 
     handleClose();
     getAlumnos();
@@ -199,7 +185,7 @@ const ModificarEliminarUsuario = () => {
                       <button type="button" className="btn btn-danger" onClick={(e) => { handleOpen(e, alumno) }} >
                         Eliminar
                       </button>
-                      {open && <MotivoRechazo open={open} setOpen={setOpen} handleClose={handleClose} alumnoEliminado={alumnoEliminado} eliminarAlumno={eliminarAlumno} />}
+                      {open && <ConfirmarEliminar open={open} setOpen={setOpen} handleClose={handleClose} alumnoEliminado={alumnoEliminado} eliminarAlumno={eliminarAlumno} />}
                       </div>
                     </div>  
                   </card>
