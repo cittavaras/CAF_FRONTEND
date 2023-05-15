@@ -34,6 +34,7 @@ const messages = {
   today: 'Hoy',
   next: 'Siguiente',
   previous: 'Anterior',
+  month: 'Mes',
   week: 'Semana',
   day: 'Día'
 };
@@ -317,7 +318,7 @@ const ReservarSesion = (props) => {
             <CloseIcon />
           </StyledIconButton>
         </StyledDialogTitle>
-        <StyledDialogContent style={{ minWidth: '500px', width: '100%' }} theme={theme}>
+        <StyledDialogContent fullScreen={isMobile} style={{ minWidth: '500px', width: '100%' }} theme={theme}>
 
           <TitleContainer>
             <CalendarTitle variant="h4" component="h2">{CALENDAR_TITLE}</CalendarTitle>
@@ -340,7 +341,7 @@ const ReservarSesion = (props) => {
               startAccessor="start"
               endAccessor="end"
               defaultView={isMobile? "day": "week"}
-              views={["week", "day"]}
+              views={["month","week", "day"]}
               selectable={false}
               onSelectEvent={handleEventClick}
               eventPropGetter={eventStyleGetter}

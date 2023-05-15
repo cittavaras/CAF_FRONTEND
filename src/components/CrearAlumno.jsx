@@ -194,8 +194,12 @@ const CrearAlumno = () => {
               </DialogTitle>
               <DialogContent>
                 <DialogContentText>
+                  IMPORTANTE: Una vez enviada la solicitud, no se podrá modificar. Asegurate de que los datos sean correctos. <br /><br />
                   Correo: {correo} <br />
-                  Rut: {rut}
+                  Rut: {rut} <br />
+                  Nombre: {nombre} <br />
+                  Carrera: {carrera} <br />
+                  Jornada: {jornada}
                 </DialogContentText>
               </DialogContent>
               <DialogActions>
