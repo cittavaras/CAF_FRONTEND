@@ -95,7 +95,6 @@ const Metrica = () => {
     [metricasRecientes]
   );
 
-
   const columns = React.useMemo(
     () => [{ Header: 'Métricas de seguimiento del alumno', accessor: 'metrica' },
     { Header: 'Valor', accessor: 'valor' }],

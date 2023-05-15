@@ -23,21 +23,63 @@ const ModificarUsuario = (props) => {
         jornada,
         active,
         tipoUsuario,
-      };
-      actualizar._id = props?.alumnoModificado?._id;
+    };
+    actualizar._id = props?.alumnoModificado?._id;
+
+    const calcularDigitoVerificador = (rutSinDigito) => {
+        let suma = 0;
+        let multiplicador = 2;
+
+        // Itera de derecha a izquierda multiplicando y sumando los dígitos
+        for (let i = rutSinDigito.length - 1; i >= 0; i--) {
+            suma += parseInt(rutSinDigito[i]) * multiplicador;
+            multiplicador = multiplicador === 7 ? 2 : multiplicador + 1;
+        }
+
+        // Calcula el dígito verificador como el complemento de la suma módulo 11
+        const digito = 11 - (suma % 11);
+
+        // Devuelve el dígito verificador, considerando casos especiales
+        if (digito === 11) {
+            return "0";
+        } else if (digito === 10) {
+            return "K";
+        } else {
+            return digito.toString();
+        }
+    };
+
+    const formatearRut = () => {
+        const rutSinFormatear = rut.replace(/\./g, "").replace("-", "").trim();
+        const rutNum = rutSinFormatear.slice(0, -1);
+        const dvIngresado = rutSinFormatear.slice(-1);
+        const dvCalculado = calcularDigitoVerificador(rutNum);
+
+        if (dvIngresado.toUpperCase() === dvCalculado) {
+            const rutFormateado = rutNum.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "-" + dvIngresado;
+            setRut(rutFormateado);
+        } else {
+            alert("El RUT ingresado no es válido");
+            setRut("")
+        }
+    };
 
     const onSubmit = async (e) => {
         e.preventDefault();
-    
-        if (!nombre || !rut || !contraseña || !confirmarContraseña|| !correo || !carrera || !jornada || !tipoUsuario) {
+
+        if (!nombre || !rut || !contraseña || !confirmarContraseña || !correo || !carrera || !jornada || !tipoUsuario) {
             alert('Todos los campos son obligatorios');
             return;
         }
         else if (contraseña !== confirmarContraseña) {
             alert('Las contraseñas no coinciden');
             return;
-        } else {props.modificarAlumno(e, actualizar);}
-      };
+        }
+        else if (!validarCorreoElectronico(correo)) {
+            alert('El correo debe ser de duoc');
+            return;
+        } else { props.modificarAlumno(e, actualizar); }
+    };
 
     useEffect(() => {
         if (props.alumnoModificado) {
@@ -48,8 +90,13 @@ const ModificarUsuario = (props) => {
             setJornada(props.alumnoModificado.jornada)
             setTipoUsuario(props.alumnoModificado.tipoUsuario)
         }
-      }, [props.alumnoModificado]);
-    
+    }, [props.alumnoModificado]);
+
+    const validarCorreoElectronico = (correo) => {
+        const expresionRegular = /^[a-zA-Z0-9._%+-]+@(duocuc\.cl|profesor\.duoc\.cl|duoc\.cl)$/;
+        return expresionRegular.test(correo);
+    };
+
     return (
         <Container maxWidth="lg" style={{ marginTop: '70px' }}>
             {props.open && (
@@ -86,7 +133,9 @@ const ModificarUsuario = (props) => {
                             label="Rut"
                             variant="outlined"
                             fullWidth
+                            placeholder="12.345.678-9"
                             value={rut}
+                            onBlur={formatearRut}
                             onChange={(event) => setRut(event.target.value)}
                         />
                     </DialogContent>
