@@ -4,33 +4,48 @@ import axios from 'axios';
 import ReactPaginate from 'react-paginate';
 import Paper from '@mui/material/Paper';
 import InputBase from '@mui/material/InputBase';
-import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import Container from '@mui/material/Container';
-import RegistroMetricas from './RegistroMetricas';
 import BotonesPerfil from './BotonesPerfil';
 import baseURL from '../helpers/rutaBase';
+import ConfirmarEliminar from './ConfirmarEliminar';
+import ModificarUsuario from './ModificarUsuario';
 
-const ListarActivos = () => {
+const ModificarEliminarUsuario = () => {
   const [alumnos, setAlumnos] = useState([]);
   const [paginaNumero, setPaginaNumero] = useState(0);
   const [porPagina, setPorPagina] = useState(5);
   const [totalCount, setTotalCount] = useState(0);
   const [search, setSearch] = useState('');
   const [alumnoSeleccionado, setAlumnoSeleccionado] = useState(null);
+  const [alumnoEliminado, setAlumnoEliminado] = useState(null);
+  const [alumnoModificado, setAlumnoModificado] = useState(null);
 
 
   const [open, setOpen] = useState(false);
+  const [openModificar, setOpenModificar] = useState(false);
 
   const handleOpen = (e, al) => {
     e.preventDefault();
-    setAlumnoSeleccionado(al)
+    setAlumnoEliminado(al)
     setOpen(true)
 
   };
   const handleClose = () => {
-    setAlumnoSeleccionado(null);
+    setAlumnoEliminado(null);
     setOpen(false);
+    // setSelectedEvents([]);
+  }
+
+  const handleOpenModificar = (e, al) => {
+    e.preventDefault();
+    setAlumnoModificado(al)
+    setOpenModificar(true)
+
+  };
+  const handleCloseModificar = () => {
+    setAlumnoModificado(null);
+    setOpenModificar(false);
     // setSelectedEvents([]);
   }
 
@@ -50,50 +65,6 @@ const ListarActivos = () => {
     } catch (error) {
       console.log(error);
     }
-  }
-
-  const actualizarAlumno = async (e) => {
-    e.preventDefault();
-    const res = await axios.get(`${baseURL}/alumnos/${search}`);
-    await axios
-      .post(baseURL + '/alumnos', { rut: search, })
-      .then((response) => {
-        console.log('Email sent successfully:', response.data);
-      })
-      .catch((error) => {
-        console.error('Error sending email:', error);
-      });
-
-    getAlumnos();
-  }
-
-  const registrarMetricas = async (e, metricas) => {
-    e.preventDefault();
-    const {
-      edad,
-      imc,
-      grasaVisceral,
-      altura,
-      porcentajeGrasaCorporal,
-      peso,
-      porcentajeGrasaMuscular,
-      rut,
-    } = metricas
-
-
-    if (!edad || !imc || !grasaVisceral || !altura || !porcentajeGrasaCorporal || !peso || !porcentajeGrasaMuscular) {
-      alert('Debe completar todos los campos');
-      return;
-    }
-    else {
-      await axios.post(`${baseURL}/metricas/`, metricas);
-      console.log(metricas);
-      alert('Metricas registradas');
-      handleClose();
-    }
-
-    getAlumnos();
-
   }
 
   const formatearRut = (e) => {
@@ -130,6 +101,40 @@ const ListarActivos = () => {
       return;
     }
   }
+  const modificarAlumno = async (e, actualizar) => {
+    e.preventDefault();
+    const {
+      nombre,
+      rut,
+      password: contraseña,
+      correo,
+      carrera,
+      jornada,
+      tipoUsuario,
+    } = actualizar
+
+    if (!nombre || !rut || !contraseña|| !correo || !carrera || !jornada || !tipoUsuario) {
+      alert('Debe completar todos los campos');
+      return;
+    }
+    else {
+      await axios.put(`${baseURL}/alumnos/${alumnoModificado._id}`, actualizar);
+      console.log(actualizar);
+      alert('Datos del alumno actualizadas con éxito');
+      handleCloseModificar();
+    }
+    getAlumnos();
+
+  }
+
+  const eliminarAlumno = async (e) => {
+    e.preventDefault();
+    const res = await axios.delete(`${baseURL}/alumnos/${alumnoEliminado._id}`);
+
+    handleClose();
+    getAlumnos();
+
+  }
 
   // Función para manejar el cambio de página
   const handlePageClick = (e) => {
@@ -146,7 +151,7 @@ const ListarActivos = () => {
               <h2>
                 <Paper
                   component="form"
-                  sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400, marginLeft: 'auto', marginRight: 'auto'  }}
+                  sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400, marginLeft: 'auto', marginRight: 'auto' }}
                 >
                   <InputBase
                     sx={{ ml: 1, flex: 1 }}
@@ -163,13 +168,12 @@ const ListarActivos = () => {
                 alumnos.map(alumno => (
                   <card className="col-md-4 p-2" key={alumno._id}>
                     <div className="card">
-
                       <div className="card-header d-flex justify-content-between">
                         <h3>{alumno.nombre}</h3>
-                        {/* <button type='button' className="btn btn-secondary" onClick={() => { aceptarAlumno(alumno._id) }}> */}
-                        <button type='button' className="btn btn-secondary" onClick={(e) => { handleOpen(e, alumno) }}>
-                          Registrar metricas alumno
+                        <button type='button' className="btn btn-secondary" onClick={(e) => { handleOpenModificar(e, alumno) }}>
+                          Modificar datos
                         </button>
+                        {openModificar && <ModificarUsuario open={openModificar} setOpen={setOpenModificar} handleClose={handleCloseModificar} alumnoModificado={alumnoModificado} modificarAlumno={modificarAlumno} />}
                       </div>
                       <div className="card-body">
                         <p>Rut: {alumno.rut}</p>
@@ -177,12 +181,13 @@ const ListarActivos = () => {
                         <p>Carrera: {alumno.carrera}</p>
                       </div>
                       <div className="card-footer">
-
+                      
+                      <button type="button" className="btn btn-danger" onClick={(e) => { handleOpen(e, alumno) }} >
+                        Eliminar
+                      </button>
+                      {open && <ConfirmarEliminar open={open} setOpen={setOpen} handleClose={handleClose} alumnoEliminado={alumnoEliminado} eliminarAlumno={eliminarAlumno} />}
                       </div>
-                    </div>
-                    {open && <RegistroMetricas open={open} setOpen={setOpen} handleClose={handleClose} registrarMetricas={registrarMetricas} alumnoSeleccionado={alumnoSeleccionado}
-                    />
-                    }
+                    </div>  
                   </card>
                 ))
               }
@@ -210,7 +215,6 @@ const ListarActivos = () => {
   );
 };
 
-
 const DivT = styled.div`
   margin-top: 100px;
   top: 100px;
@@ -221,5 +225,4 @@ const Div = styled.div`
 `;
 
 
-
-export default ListarActivos;
+export default ModificarEliminarUsuario;

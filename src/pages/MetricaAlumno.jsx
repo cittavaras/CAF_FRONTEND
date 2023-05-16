@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTable } from 'react-table';
+import { Container, Box } from '@mui/system';
 import styled from 'styled-components';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
@@ -14,16 +15,20 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  LineChart,
+  Line,
 } from 'recharts';
 
 
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet"></link>
 
 const Metrica = () => {
+  const [metricasRecientes, setMetricasRecientes] = useState([]);
   const [metricas, setMetricas] = useState([]);
   useEffect(() => {
 
-    MetricasAlumno();
+    MetricasRecientes();
+    Metricas();
 
   }, []);
 
@@ -31,54 +36,64 @@ const Metrica = () => {
   //   console.log(metricas);
   // }, [metricas]);
 
-  const MetricasAlumno = async () => {
+  const MetricasRecientes = async () => {
     // const datosSesion = sessionStorage.getItem("alumno_sesion");
     const { rut } = JSON.parse(sessionStorage.getItem('alumno_sesion'));
     const res = await axios.post(baseURL + '/metricas/alumno', { rut });
-    console.log(res.data)
+    const metricaAlumno = res.data;
+    setMetricasRecientes(metricaAlumno);
+  }
+
+  const Metricas = async () => {
+    const  { rut } = JSON.parse(sessionStorage.getItem('alumno_sesion'));
+    const res = await axios.get(baseURL + '/metricas/', { params: { rut } });
+    console.log(rut);
+    console.log(res);
+    console.log("Todas las metricas",res.data)
     const metricaAlumno = res.data;
     setMetricas(metricaAlumno);
   }
 
-  const datas = [
-    { name: 'Byron', edad: 24, altura: 1.80 },
-    { name: 'Javier', edad: 23, altura: 1.70 },
-    { name: 'Cristian', edad: 22, altura: 1.60 },
-    { name: 'Jorge', edad: 21, altura: 1.50 },
-    { name: 'Javiera', edad: 20, altura: 1.40 },
-  ]
-  const dataGrafico = [
-    { name: 'Edad', uv: metricas?.edad ?? 0, pv: 2400, amt: 2400, },
-    { name: 'Altura', uv: metricas?.altura ?? 0, pv: 1398, amt: 2210, },
-    { name: 'Peso corporal', uv: metricas?.peso ?? 0, pv: 9800, amt: 2290, },
-    { name: 'Porcentaje de grasa corporal', uv: metricas?.porcentajeGrasaCorporal ?? 0, pv: 3908, amt: 2000, },
-    { name: 'Porcentaje de músculo', uv: metricas?.porcentajeGrasaMuscular ?? 0, pv: 4800, amt: 2181, },
 
-    { name: 'Índice de masa corporal (IMC)', uv: metricas?.imc ?? 0, pv: 3800, amt: 2500, },
-    { name: 'Grasa visceral', uv: metricas?.grasaVisceral ?? 0, pv: 4300, amt: 2100, },
-  ];
+
+  // const datas = [
+  //   { name: 'Byron', edad: 24, altura: 1.80 },
+  //   { name: 'Javier', edad: 23, altura: 1.70 },
+  //   { name: 'Cristian', edad: 22, altura: 1.60 },
+  //   { name: 'Jorge', edad: 21, altura: 1.50 },
+  //   { name: 'Javiera', edad: 20, altura: 1.40 },
+  // ]
+  // const dataGrafico = [
+  //   { name: 'Edad', uv: metricas?.edad ?? 0, pv: 2400, amt: 2400, },
+  //   { name: 'Altura', uv: metricas?.altura ?? 0, pv: 1398, amt: 2210, },
+  //   { name: 'Peso corporal', uv: metricas?.peso ?? 0, pv: 9800, amt: 2290, },
+  //   { name: 'Porcentaje de grasa corporal', uv: metricas?.porcentajeGrasaCorporal ?? 0, pv: 3908, amt: 2000, },
+  //   { name: 'Porcentaje de músculo', uv: metricas?.porcentajeGrasaMuscular ?? 0, pv: 4800, amt: 2181, },
+
+  //   { name: 'Índice de masa corporal (IMC)', uv: metricas?.imc ?? 0, pv: 3800, amt: 2500, },
+  //   { name: 'Grasa visceral', uv: metricas?.grasaVisceral ?? 0, pv: 4300, amt: 2100, },
+  // ];
 
 
   // Datos de ejemplo
   const data = React.useMemo(
     () => {
-      if (metricas) {
+      if (metricasRecientes) {
         return [
-          { metrica: 'Edad', valor: `${metricas?.edad ?? 'No registra métricas'}` },
-          { metrica: 'Altura', valor: `${metricas?.altura ?? 'No registra métricas'}` },
-          { metrica: 'Peso corporal', valor: `${metricas?.peso ?? 'No registra métricas'}` },
-          { metrica: 'Porcentaje de grasa corporal', valor: `${metricas?.porcentajeGrasaCorporal ?? 'No registra métricas'}` },
-          { metrica: 'Porcentaje de músculo', valor: `${metricas?.porcentajeGrasaMuscular ?? 'No registra métricas'}` },
-          { metrica: 'Índice de masa corporal (IMC)', valor: `${metricas?.imc ?? 'No registra métricas'}` },
-          { metrica: 'Grasa visceral', valor: `${metricas?.grasaVisceral ?? 'No registra métricas'}` }
+          { metrica: 'Edad', valor: `${metricasRecientes?.edad ?? 'No registra métricas'}` },
+          { metrica: 'Altura', valor: `${metricasRecientes?.altura ?? 'No registra métricas'}` },
+          { metrica: 'Peso corporal', valor: `${metricasRecientes?.peso ?? 'No registra métricas'}` },
+          { metrica: 'Porcentaje de grasa corporal', valor: `${metricasRecientes?.porcentajeGrasaCorporal ?? 'No registra métricas'}` },
+          { metrica: 'Porcentaje de músculo', valor: `${metricasRecientes?.porcentajeGrasaMuscular ?? 'No registra métricas'}` },
+          { metrica: 'Índice de masa corporal (IMC)', valor: `${metricasRecientes?.imc ?? 'No registra métricas'}` },
+          { metrica: 'Grasa visceral', valor: `${metricasRecientes?.grasaVisceral ?? 'No registra métricas'}` }
         ];
       } else {
         return [];
       }
     },
-    [metricas]
+    [metricasRecientes]
   );
-
 
   const columns = React.useMemo(
     () => [{ Header: 'Métricas de seguimiento del alumno', accessor: 'metrica' },
@@ -96,84 +111,114 @@ const Metrica = () => {
 
   const BarChartExample = () => {
     const [selectedMetric, setSelectedMetric] = useState('edad');
-    const data = [
-      { name: 'Edad', uv: metricas?.edad ?? 0 },
-      { name: 'Altura', uv: metricas?.altura ?? 0 },
-      { name: 'Peso corporal', uv: metricas?.peso ?? 0 },
-      { name: 'Porcentaje de grasa corporal', uv: metricas?.porcentajeGrasaCorporal ?? 0 },
-      { name: 'Porcentaje de músculo', uv: metricas?.porcentajeGrasaMuscular ?? 0 },
-      { name: 'Índice de masa corporal (IMC)', uv: metricas?.imc ?? 0 },
-      { name: 'Grasa visceral', uv: metricas?.grasaVisceral ?? 0 },
-    ];
-  
+
+    const obtenerPropiedad = (arregloObjetos, nombrePropiedad) => {
+      let arregloPropiedades = [];
+
+      for (let i = 0; i < arregloObjetos.length; i++) {
+        arregloPropiedades.push(arregloObjetos[i][nombrePropiedad]);
+      }
+
+      return arregloPropiedades;
+    }
+
+    const personasSinUnidadDeMedida = metricas.map(metrica => {
+      const nuevaMetrica = { ...metrica };
+      nuevaMetrica.edad = parseInt(nuevaMetrica.edad);
+      nuevaMetrica.altura = parseFloat(nuevaMetrica.altura);
+      nuevaMetrica.peso = parseFloat(nuevaMetrica.peso);
+      nuevaMetrica.imc = parseFloat(nuevaMetrica.imc);
+      nuevaMetrica.porcentajeGrasaCorporal = parseInt(nuevaMetrica.porcentajeGrasaCorporal);
+      nuevaMetrica.grasaVisceral = parseFloat(nuevaMetrica.grasaVisceral);
+      nuevaMetrica.porcentajeGrasaMuscular = parseInt(nuevaMetrica.porcentajeGrasaMuscular);
+      return nuevaMetrica;
+    });
+
+
+
+    // const data = [
+    //   { name: 'edad', uv: metricas?.edad ?? 0 },
+    //   { name: 'edad', uv: metricas?.edad ?? 5 },
+    //   { name: 'altura', uv: metricas?.altura ?? 0 },
+    //   { name: 'peso corporal', uv: metricas?.peso ?? 0 },
+    //   { name: 'porcentaje de grasa corporal', uv: metricas?.porcentajeGrasaCorporal ?? 0 },
+    //   { name: 'porcentaje de músculo', uv: metricas?.porcentajeGrasaMuscular ?? 0 },
+    //   { name: 'imc', uv: metricas?.imc ?? 0 },
+    //   { name: 'grasa visceral', uv: metricas?.grasaVisceral ?? 0 },
+    // ];
+
     const handleMetricChange = (metric) => {
       setSelectedMetric(metric);
     }
-  
-    const filteredData = data.filter(item => item.name === selectedMetric);
-  
+
+    // const filteredData = obtenerPropiedad(personasSinUnidadDeMedida, selectedMetric);
+    // console.log(selectedMetric)
+    // console.log(filteredData);
+
     return (
-      <div>
-        <h2>{selectedMetric}</h2>
-        <button onClick={() => handleMetricChange('edad')}>Edad</button>
-        <button onClick={() => handleMetricChange('altura')}>Altura</button>
-        <button onClick={() => handleMetricChange('peso corporal')}>Peso corporal</button>
-        <button onClick={() => handleMetricChange('porcentaje de grasa corporal')}>Porcentaje de grasa corporal</button>
-        <button onClick={() => handleMetricChange('porcentaje de músculo')}>Porcentaje de músculo</button>
-        <button onClick={() => handleMetricChange('índice de masa corporal (IMC)')}>Índice de masa corporal (IMC)</button>
-        <button onClick={() => handleMetricChange('grasa visceral')}>Grasa visceral</button>
-        <ResponsiveContainer width="100%" height={400}>
-          <BarChart data={filteredData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="uv" fill="#8884d8" />
-          </BarChart>
+      <div className='container-sm row'  >
+        <h2 className='text-white'>{selectedMetric}</h2>
+        <button className='btn btn-dark col-md-2 me-2 my-1' onClick={() => handleMetricChange('edad')}>Edad</button>
+        <button className='btn btn-dark col-md-2 me-2 my-1' onClick={() => handleMetricChange('altura')}>Altura</button>
+        <button className='btn btn-dark col-md-2 me-2 my-1' onClick={() => handleMetricChange('peso')}>Peso corporal</button>
+        <button className='btn btn-dark col-md-2 me-2 my-1' onClick={() => handleMetricChange('porcentajeGrasaCorporal')}>Porcentaje de grasa corporal</button>
+        <button className='btn btn-dark col-md-2 me-2 my-1' onClick={() => handleMetricChange('porcentajeGrasaMuscular')}>Porcentaje de músculo</button>
+        <button className='btn btn-dark col-md-2 me-2 my-1' onClick={() => handleMetricChange('imc')}>Índice de masa corporal (IMC)</button>
+        <button className='btn btn-dark col-md-2 me-2 my-1' onClick={() => handleMetricChange('grasaVisceral')}>Grasa visceral</button>
+        <ResponsiveContainer width="100%" height={650}>
+          <Box sx={{ bgcolor: '#fff' }} >
+
+            <LineChart width={500} className='mx-auto my-auto' height={600} data={personasSinUnidadDeMedida}>
+              <Line type="monotone" dataKey={selectedMetric} stroke="#8884d8" />
+              <CartesianGrid stroke="#ccc" />
+              <XAxis dataKey="name" />
+              <YAxis />
+            </LineChart>
+          </Box>
         </ResponsiveContainer>
       </div>
     );
   };
-  
-  
+
+
 
   return (
-    <MetricaContainer>
-      <BotonesPerfil />
-      <MetricaTitle>Métricas de seguimiento del alumno</MetricaTitle>
-      <MetricaTable {...getTableProps()}>
-        <thead>
-          {headerGroups.map(headerGroup => (
-            <MetricaRow {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map(column => (
-                <MetricaHeader {...column.getHeaderProps()}>
-                  {column.render('Header')}
-                </MetricaHeader>
-              ))}
-            </MetricaRow>
-          ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {rows.map(row => {
-            prepareRow(row);
-            return (
-              <MetricaRow {...row.getRowProps()}>
-                {row.cells.map(cell => {
-                  return (
-                    <MetricaCell {...cell.getCellProps()}>
-                      {cell.render('Cell')}
-                    </MetricaCell>
-                  );
-                })}
+    <Container maxWidth="sm">
+      <MetricaContainer>
+        <BotonesPerfil />
+        <MetricaTitle>Métricas de seguimiento del alumno</MetricaTitle>
+        <MetricaTable className='container-sm' {...getTableProps()}>
+          <thead>
+            {headerGroups.map(headerGroup => (
+              <MetricaRow {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map(column => (
+                  <MetricaHeader {...column.getHeaderProps()}>
+                    {column.render('Header')}
+                  </MetricaHeader>
+                ))}
               </MetricaRow>
-            );
-          })}
-        </tbody>
-      </MetricaTable>
-        {BarChartExample()}
-    </MetricaContainer>
-
+            ))}
+          </thead>
+          <tbody {...getTableBodyProps()}>
+            {rows.map(row => {
+              prepareRow(row);
+              return (
+                <MetricaRow {...row.getRowProps()}>
+                  {row.cells.map(cell => {
+                    return (
+                      <MetricaCell {...cell.getCellProps()}>
+                        {cell.render('Cell')}
+                      </MetricaCell>
+                    );
+                  })}
+                </MetricaRow>
+              );
+            })}
+          </tbody>
+        </MetricaTable>
+      </MetricaContainer>
+      {BarChartExample()}
+    </Container>
   );
 };
 

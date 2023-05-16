@@ -76,14 +76,43 @@ const CrearAlumno = () => {
     }
   };
 
-  const formatearRut = () => {
-    const rutSinFormatear = rut.replace(/\./g, "").replace("-", "").trim(); // eliminamos los espacios en blanco al final
-    const dv = rutSinFormatear.slice(-1);
-    const rutNum = rutSinFormatear.slice(0, -1);
-    const rutFormateado = rutNum.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "-" + dv;
-    setRut(rutFormateado);
-  }
+  const calcularDigitoVerificador = (rutSinDigito) => {
+    let suma = 0;
+    let multiplicador = 2;
   
+    // Itera de derecha a izquierda multiplicando y sumando los dígitos
+    for (let i = rutSinDigito.length - 1; i >= 0; i--) {
+      suma += parseInt(rutSinDigito[i]) * multiplicador;
+      multiplicador = multiplicador === 7 ? 2 : multiplicador + 1;
+    }
+  
+    // Calcula el dígito verificador como el complemento de la suma módulo 11
+    const digito = 11 - (suma % 11);
+  
+    // Devuelve el dígito verificador, considerando casos especiales
+    if (digito === 11) {
+      return "0";
+    } else if (digito === 10) {
+      return "K";
+    } else {
+      return digito.toString();
+    }
+  };
+  
+  const formatearRut = () => {
+    const rutSinFormatear = rut.replace(/\./g, "").replace("-", "").trim();
+    const rutNum = rutSinFormatear.slice(0, -1);
+    const dvIngresado = rutSinFormatear.slice(-1);
+    const dvCalculado = calcularDigitoVerificador(rutNum);
+  
+    if (dvIngresado.toUpperCase() === dvCalculado) {
+      const rutFormateado = rutNum.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "-" + dvIngresado;
+      setRut(rutFormateado);
+    } else {
+      alert("El RUT ingresado no es válido");
+      setRut("")
+    }
+  };  
 
   const onSubmit = async (e) => {
     e.preventDefault();

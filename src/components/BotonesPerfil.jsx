@@ -49,6 +49,7 @@ const BotonesPerfil = () => {
                 <button className='btn' style={{ backgroundColor: '#C0D437', color: '#042945', marginRight: '10px', fontWeight: 'bold', marginBottom: '10px' }} onClick={handleOpen}>Gestionar bloques</button>
                 <Link className='btn' to="/crearUsuario" style={{ backgroundColor: '#E6E7E9', color: '#042945', marginRight: '10px', fontWeight: 'bold', marginBottom: '10px' }}>Crear Usuarios</Link>
                 <Link className='btn' to="/listar" style={{ backgroundColor: '#FCB32E', color: '#042945', marginRight: '10px', fontWeight: 'bold', marginBottom: '10px' }}>Solicitudes de cuentas de usuarios pendientes</Link>
+                <Link className='btn' to="/mantenedor" style={{ backgroundColor: '#042945', color: '#FCB32E', fontWeight: 'bold', marginBottom: '10px' }}>Mantenedor de usuarios</Link>
             </>}
             {hasRole(roles.instructor) && <>
                 <button className='btn' style={{ backgroundColor: '#C0D437', color: '#042945', marginRight: '10px', fontWeight: 'bold', marginBottom: '10px' }} onClick={handleOpen}>Gestionar bloques</button>
