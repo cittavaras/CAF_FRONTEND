@@ -71,7 +71,9 @@ const ReservarSesion = (props) => {
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  //const [views, setViews] = useState([isMobile? ["day"]: ["week", "day"]);
+  //const [views, setViews] = useState([isMobile? ["day"]: ["week", "day"]]);
+  const [views, setViews] = useState(['month', 'week', 'day']);
+
   const { alumno, hasRole } = useAuth();
   const [selectedEvents, setSelectedEvents] = useState([]);
   const [sesiones, setSesiones] = useState([]);
@@ -81,7 +83,7 @@ const ReservarSesion = (props) => {
   const [activeStep, setActiveStep] = useState(0);
   const [selectedSesion, setSelectedSesion] = useState(null);
   const [alumnosSesion, setAlumnosSesion] = useState([]);
-
+  const [view, setView] = useState(isMobile? "day": "month");
   const handleNavigate = (date, view) => {
     setFechaActual(date);
     setSelectedEvents([]);
@@ -160,6 +162,11 @@ const ReservarSesion = (props) => {
     }
   }, [selectedSesion]);
 
+  useEffect(() => {
+    setViews(['month', 'week', 'day']);
+  }, []);
+
+  
   const eventStyleGetter = (event) => {
     const fontSize = isMobile ? "0.7em" : "1em";
     const fechaActual = moment();
@@ -288,6 +295,15 @@ const ReservarSesion = (props) => {
       console.log(error);
     }
   }
+  const handleViewChange = (view) => {
+    console.log(view);
+    setView(view);
+    const mes = 5; // mayo
+    const anio = 2023;
+    const eventosMes = generateTrainingEventsForMonth(mes, anio, sesiones);
+    console.log("eventosMes", eventosMes);
+    setEventos(eventosMes);
+  };
 
   return (
     <Container maxWidth="lg"
@@ -295,7 +311,7 @@ const ReservarSesion = (props) => {
       backgroundColor="red"
     >
       {props.open && <Dialog open={props.open} onClose={props.handleClose} fullWidth maxWidth="md" scroll={'paper'} 
-      fullScreen={isMobile}>
+       /*fullScreen={isSmallScreen}*/>
         <StyledDialogTitle  >
           <StyledIconButton
             aria-label="back"
@@ -323,7 +339,7 @@ const ReservarSesion = (props) => {
             <CloseIcon />
           </StyledIconButton>
         </StyledDialogTitle>
-        <StyledDialogContent fullScreen={isMobile} style={{ minWidth: '500px', width: '100%' }} theme={theme}>
+        <StyledDialogContent style={{ minWidth: '500px', width: '100%' }} theme={theme}>
 
           <TitleContainer>
             <CalendarTitle variant="h4" component="h2">{CALENDAR_TITLE}</CalendarTitle>
@@ -345,11 +361,13 @@ const ReservarSesion = (props) => {
               events={eventos}
               startAccessor="start"
               endAccessor="end"
-              defaultView={isMobile? "day": "week"}
-              views={["month","week", "day"]}
+              defaultView={isMobile? "day": "month"}
+              views={views}
+              view={view}
               selectable={false}
               onSelectEvent={handleEventClick}
               eventPropGetter={eventStyleGetter}
+              onView={handleViewChange}
               min={new Date(0, 0, 0, 8, 31)}
               max={new Date(0, 0, 0, 21, 10)}
               date={fechaActual}
@@ -358,6 +376,7 @@ const ReservarSesion = (props) => {
               messages={messages}
               isMobile={isMobile}
               slotDuration={40}
+              style={{ minHeight: 500 }}
             />
           )}
           {activeStep === 1 && (
@@ -408,16 +427,31 @@ const generateTrainingEvents = (sesiones = [], fechaActual) => {
   return newSesiones;
 };
 
+const generateTrainingEventsForMonth = (month, year, sesiones) => {
+  const startOfMonth = moment(`${year}-${month}-01`, "YYYY-MM-DD").toDate();
+  const endOfMonth = moment(startOfMonth).endOf('month').toDate();
+  const monthEvents = [];
+  
+  for (let day = 1; day <= moment(endOfMonth).date(); day++) {
+    const date = moment(`${year}-${month}-${day}`, "YYYY-MM-DD").toDate();
+    const sesionesDia = sesiones.filter(sesion => moment(sesion.fecha).isoWeekday() === moment(date).isoWeekday());
+    const eventsDia = generateTrainingEvents(sesionesDia, date);
+    monthEvents.push(...eventsDia);
+  }
+
+  return monthEvents;
+};
+
 const CustomCalendar = styled(Calendar)`
   .rbc-calendar {
     min-height: 120vh;
     background-color: #000000; //cambio1
-    min-height: ${({ isMobile }) => (isMobile ? "100vh" : "120vh")};
+    min-height: ${({ isMobile }) => (isMobile ? "80vh" : "120vh")};
     background-color: #000000;
     max-width: 100%;
     min-height: 100vh;
     background-color: #000000;
-
+    
   }
   .rbc-toolbar {
     background-color: #ffffff;
@@ -459,6 +493,8 @@ const CustomCalendar = styled(Calendar)`
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     
   }
+  
+
   @media (max-width: 600px) {
   .rbc-event-content {
     white-space: normal;
@@ -477,7 +513,8 @@ const CustomCalendar = styled(Calendar)`
 `;
 const StyledDialogContent = styled(DialogContent)`
   ${({ theme }) => theme.breakpoints.down("sm")} {
-  
+    min-width: 710px;
+    overflow-x: auto;
   }
 `;
 
