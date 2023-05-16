@@ -162,9 +162,10 @@ const ReservarSesion = (props) => {
   const eventStyleGetter = (event) => {
     const fontSize = isMobile ? "0.7em" : "1em";
     const fechaActual = moment();
-    const sesionPasada = moment(event.start).isBefore(fechaActual)
-    const colorSesion = sesionPasada ? "green" : "yellow"
-    const isSelected = selectedEvents.map(e => e.id).includes(event.id);
+    const sesionPasada = moment(event.start).isBefore(fechaActual);
+    const asistio = props.reservasAlumno.some((reserva) => reserva.numeroSesion === event.id && reserva.asistencia);
+    const colorSesion = sesionPasada ? (asistio ? "green" : "red") : "yellow";
+    const isSelected = selectedEvents.map((e) => e.id).includes(event.id);
     const style = {
       backgroundColor: isSelected ? colorSesion : "#2980b9",
       borderRadius: "0",
@@ -172,7 +173,9 @@ const ReservarSesion = (props) => {
       display: "block",
       fontSize: fontSize,
     };
-    style.backgroundColor = event.isValid ? style.backgroundColor : "#676d70";
+    if (!isSelected){
+      style.backgroundColor = event.isValid ? style.backgroundColor : "#676d70"
+    }
     style.backgroundColor = !event.desactivada ? style.backgroundColor : "#8c9599";
     return {
       style,
@@ -195,10 +198,10 @@ const ReservarSesion = (props) => {
   };
 
   const handleEventClick = (event) => {
-    console.log(event.cantidadUsuarios);
     if (hasRole(roles.alumno)) {
+      const isSelected = selectedEvents.map((e) => e.id).includes(event.id);
       const fechaActual = moment();
-      if (!event.isValid) {
+      if (!isSelected && !event.isValid) {
         alert("La sesion esta completa");
         return;
       }
