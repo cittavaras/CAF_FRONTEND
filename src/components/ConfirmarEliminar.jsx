@@ -1,6 +1,5 @@
-import { Button, Dialog, DialogContent, Container, DialogActions, DialogTitle, IconButton, TextField, DialogContentText } from "@mui/material";
+import { Button, Dialog, Container, DialogActions, DialogTitle, IconButton, TextField, DialogContentText } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
-import { color } from "@mui/system";
 
 const ConfirmarEliminar = (props) => {
 

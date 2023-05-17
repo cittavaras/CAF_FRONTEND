@@ -88,9 +88,6 @@ const ListarAlumno = () => {
         console.error('Error sending email:', error);
       });
 
-    console.log(res);
-    console.log(res?.data);
-
     getAlumnos();
   }
 
