@@ -168,7 +168,7 @@ const ReservarSesion = (props) => {
     const fechaActual = moment();
     const sesionPasada = moment(event.start).isBefore(fechaActual);
     const asistio = props.reservasAlumno.some((reserva) => reserva.numeroSesion === event.id && reserva.asistencia);
-    const colorSesion = sesionPasada ? (asistio ? colorsCalendar.asistio : colorsCalendar.red) : colorsCalendar.reserva;
+    const colorSesion = sesionPasada ? (asistio ? colorsCalendar.asistio : colorsCalendar.falta) : colorsCalendar.reserva;
     const isSelected = selectedEvents.map((e) => e.id).includes(event.id);
     const style = {
       backgroundColor: isSelected ? colorSesion : colorsCalendar.disponible,
