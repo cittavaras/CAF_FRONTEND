@@ -4,7 +4,6 @@ import axios from 'axios';
 import ReactPaginate from 'react-paginate';
 import Paper from '@mui/material/Paper';
 import InputBase from '@mui/material/InputBase';
-import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import Container from '@mui/material/Container';
 import RegistroMetricas from './RegistroMetricas';

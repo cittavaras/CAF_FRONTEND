@@ -5,25 +5,24 @@ import { useTheme } from "@mui/material/styles"; //TODO
 import baseURL from '../helpers/rutaBase';
 
 import React, { useState, useEffect } from "react";
-import { Button, Dialog, DialogContent, Container, DialogActions, DialogTitle, IconButton, Typography, Box, Grid } from "@mui/material";
+import { Button, Dialog, DialogContent, Container, DialogActions, DialogTitle, IconButton, Typography, Box } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "../../node_modules/react-big-calendar/lib/css/react-big-calendar.css";
-
 import "moment/locale/es";
 import useAuth from '../auth/useAuth';
 import roles from '../helpers/roles';
-
 import { withResizeDetector } from 'react-resize-detector';
-
 import AlumnosSesion from "./AlumnosSesion";
 import {
   Stepper,
   Step,
   StepLabel,
 } from "@mui/material";
+import Chip from '@mui/material/Chip';
+import Stack from '@mui/material/Stack';
 
 moment.locale("es");
 moment.weekdays(true, 2)
@@ -37,8 +36,6 @@ const messages = {
   week: 'Semana',
   day: 'Día'
 };
-
-const alumno_sesion = JSON.parse(sessionStorage.getItem("alumno_sesion"));
 
 const CALENDAR_TITLE = "Reserva tu Entrenamiento";
 const CALENDAR_PARAGRAPH = "Selecciona Mes y Día que deseas agendar para ver los bloques disponibles. Luego selecciona el bloque que deseas reservar. Recuerda que solo puedes reservar 3 bloques por semana.";
@@ -96,7 +93,6 @@ const ReservarSesion = (props) => {
         }
       });
       setSesiones(res?.data ?? []);
-      console.log("res?.data", res?.data);
     } catch (error) {
       console.log(error);
     }
@@ -112,7 +108,6 @@ const ReservarSesion = (props) => {
         fecha: fechaActual
       }
       const res = await axios.post(baseURL + '/reservas', body);
-      console.log(res);
       alert('Sesiones Reservadas');
       props.handleClose();
     } catch (error) {
@@ -159,24 +154,33 @@ const ReservarSesion = (props) => {
     }
   }, [selectedSesion]);
 
+  const colorsCalendar = {
+    asistio: "green",
+    falta: "red",
+    reserva: "yellow",
+    disponible: "#2980b9",
+    sinCupo: "#44494b",
+    desactivada: "#8c9599"
+  }
+
   const eventStyleGetter = (event) => {
     const fontSize = isMobile ? "0.7em" : "1em";
     const fechaActual = moment();
     const sesionPasada = moment(event.start).isBefore(fechaActual);
     const asistio = props.reservasAlumno.some((reserva) => reserva.numeroSesion === event.id && reserva.asistencia);
-    const colorSesion = sesionPasada ? (asistio ? "green" : "red") : "yellow";
+    const colorSesion = sesionPasada ? (asistio ? colorsCalendar.asistio : colorsCalendar.red) : colorsCalendar.reserva;
     const isSelected = selectedEvents.map((e) => e.id).includes(event.id);
     const style = {
-      backgroundColor: isSelected ? colorSesion : "#2980b9",
+      backgroundColor: isSelected ? colorSesion : colorsCalendar.disponible,
       borderRadius: "0",
       opacity: 1,
       display: "block",
       fontSize: fontSize,
     };
-    if (!isSelected){
-      style.backgroundColor = event.isValid ? style.backgroundColor : "#676d70"
+    if (!isSelected) {
+      style.backgroundColor = event.isValid ? style.backgroundColor : colorsCalendar.sinCupo
     }
-    style.backgroundColor = !event.desactivada ? style.backgroundColor : "#8c9599";
+    style.backgroundColor = !event.desactivada ? style.backgroundColor : colorsCalendar.desactivada;
     return {
       style,
       children: (
@@ -261,7 +265,6 @@ const ReservarSesion = (props) => {
         }
       });
       setAlumnosSesion(res?.data ?? []);
-      console.log("res?.data", res?.data);
     } catch (error) {
       console.log(error);
     }
@@ -278,14 +281,38 @@ const ReservarSesion = (props) => {
   const desactivarSesion = async () => {
     try {
       setLoading(true);
-      await axios.put(`${baseURL}/sesiones/${selectedSesion.id}/desactivar`, {fecha: fechaActual, activar: selectedSesion.desactivada});
-      setSelectedSesion({...selectedSesion, desactivada:!selectedSesion.desactivada});
+      await axios.put(`${baseURL}/sesiones/${selectedSesion.id}/desactivar`, { fecha: fechaActual, activar: selectedSesion.desactivada });
+      setSelectedSesion({ ...selectedSesion, desactivada: !selectedSesion.desactivada });
       setLoading(false);
       getSesiones();
+      if (!selectedSesion.desactivada === true) {
+        // Obtener la lista de alumnos de la sesión desactivada
+        await getAlumnosByNumeroSesion();
+        const alumnos = alumnosSesion
+        // Enviar correo a cada alumno
+        for (const alumno of alumnos) {
+          await enviarCorreo(alumno);
+          console.log("alumno", alumno);
+        }
+      }
     } catch (error) {
-      console.log(error);
+      console.error('Error al desactivar la sesión:', error);
     }
-  }
+  };
+
+  const enviarCorreo = async (alumno) => {
+    try {
+      await axios.post(baseURL + '/send-email', {
+        to: alumno.correo,
+        subject: 'Sesión Desactivada CAF IVARAS',
+        text: `Estimado ${alumno.nombre}, Le informamos que la sesión ha sido desactivada. Puede revisarlo en el calendario`,
+        html: `<p>Estimado <strong>${alumno.nombre}</strong>,</p><p>Le informamos que la sesión ha sido desactivada. Puede revisarlo en el calendario</p>`,
+      });
+      console.log(`Correo enviado a ${alumno.nombre}`);
+    } catch (error) {
+      console.error('Error al enviar el correo:', error);
+    }
+  };
 
   return (
     <Container maxWidth="lg"
@@ -337,12 +364,22 @@ const ReservarSesion = (props) => {
             </Stepper>
           }
           {activeStep === 0 && (
+            <>
+            <Stack direction="row" spacing={1} justifyContent="center">
+              <Chip label="Asistió" size="small" style={{ backgroundColor: colorsCalendar.asistio, color: 'white'}}/>
+              <Chip label="Falta" size="small" style={{ backgroundColor: colorsCalendar.falta, color: 'white'}}/>
+              <Chip label="Reserva" size="small" style={{ backgroundColor: colorsCalendar.reserva, color: 'black'}}/>
+              <Chip label="Disponible" size="small" style={{ backgroundColor: colorsCalendar.disponible, color: 'white'}}/>
+              <Chip label="Sin Cupo" size="small" style={{ backgroundColor: colorsCalendar.sinCupo, color: 'white'}}/>
+              <Chip label="Desactivada" size="small" style={{ backgroundColor: colorsCalendar.desactivada, color: 'white'}}/>
+            </Stack>
+            
             <CustomCalendar
               localizer={localizer}
               events={eventos}
               startAccessor="start"
               endAccessor="end"
-              defaultView={isMobile? "day": "week"}
+              defaultView={isMobile ? "day" : "week"}
               views={["week", "day"]}
               selectable={false}
               onSelectEvent={handleEventClick}
@@ -356,12 +393,12 @@ const ReservarSesion = (props) => {
               isMobile={isMobile}
               slotDuration={40}
             />
-          )}
+          </>)}
           {activeStep === 1 && (
             <>
               <AlumnosSesion alumnosSesion={alumnosSesion} setAlumnosSesion={setAlumnosSesion} tomarAsistencia={tomarAsistencia} />
-              <div className='d-flex  justify-content-between' style ={{ marginTop: '20px'}}>
-                { hasRole(roles.admin) && <button variant="contained" className= {selectedSesion.desactivada ? "btn btn-outline-success" : "btn btn-outline-danger"} onClick={desactivarSesion} disabled={loading}>
+              <div className='d-flex  justify-content-between' style={{ marginTop: '20px' }}>
+                {hasRole(roles.admin) && <button variant="contained" className={selectedSesion.desactivada ? "btn btn-outline-success" : "btn btn-outline-danger"} onClick={desactivarSesion} disabled={loading}>
                   {selectedSesion.desactivada ? "Activar sesion" : "Desactivar sesion"}
                 </button>}
                 <button variant="contained" className="btn btn-success " onClick={handleBackClick}>
