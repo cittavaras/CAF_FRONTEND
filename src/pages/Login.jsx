@@ -11,6 +11,7 @@ import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
 import { CardActionArea } from '@mui/material';
 import ButtonBase from '@mui/material/ButtonBase';
+import ivaras from './img/ivaras.png';
 
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet"></link>
 
@@ -104,7 +105,7 @@ const Login = () => {
               <div style={{ color: '#FFF', textDecoration: 'none' }}>Sitio Desarrollado por : </div>
   
               <Link to="/nosotros">
-               <img src="http://justificaciones.ivaras.cl/build/images/ivaras.png" alt=""  style={{height:"100px", width:"100%"}}/>   
+               <img src={ivaras} alt="Sobre Nosotros"  style={{height:"100px", width:"100%"}}/>   
               </Link>
           
               
