@@ -20,6 +20,7 @@ import CrearUsuario from "../components/CrearUsuario";
 import ListarActivos from "../components/ListarActivos";
 import Configuracion from "../components/Configuracion";
 import ModificarEliminarUsuario from "../components/ModificarEliminarUsuario";
+import SobreNosotros from "../pages/SobreNosotros";
 
 export default function AppRouter() {
   const { isLogged } = useAuth();
@@ -60,6 +61,11 @@ export default function AppRouter() {
           <Route path="/notificacion" element={
             <PublicRoute>
               <Notificacion />
+            </PublicRoute>}
+          />
+          <Route path="/nosotros" element={
+            <PublicRoute>
+              <SobreNosotros />
             </PublicRoute>}
           />
 
