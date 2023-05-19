@@ -109,11 +109,36 @@ const ReservarSesion = (props) => {
       }
       const res = await axios.post(baseURL + '/reservas', body);
       alert('Sesiones Reservadas');
+
+      const reservas = await props.getReservasByAlumno(fechaActual);
+
+      await enviarCorreoReservasCreadas(alumno, reservas);
+
       props.handleClose();
     } catch (error) {
       console.log(error);
     }
   }
+
+  const enviarCorreoReservasCreadas = async (alumno, reservas) => {
+    try {
+      let sesionesReservadasText = '';
+      for (const reserva of reservas) {
+        const textoSesion = `Número de Sesión: ${reserva.numeroSesion}, Día de Reserva: ${reserva.diaReserva}\n`;
+        sesionesReservadasText += textoSesion;
+      }
+      await axios.post(baseURL + '/send-email', {
+        to: alumno.correo,
+        subject: 'Reserva de Sesiones CAF IVARAS',
+        text: `Estimado ${alumno.nombre}, Le informamos que ha realizado una reserva para las siguientes sesiones:\n${sesionesReservadasText}.`,
+        html: `<p>Estimado <strong>${alumno.nombre}</strong>,</p><p>Le informamos que ha realizado una reserva para las siguientes sesiones:</p><p>${sesionesReservadasText}</p>`,
+      });
+
+      console.log(`Correo de reserva enviado a ${alumno.nombre}`);
+    } catch (error) {
+      console.error('Error al enviar el correo de reserva:', error);
+    }
+  };
 
   useEffect(() => {
     getSesiones();
@@ -286,27 +311,27 @@ const ReservarSesion = (props) => {
       setLoading(false);
       getSesiones();
       if (!selectedSesion.desactivada === true) {
-        // Obtener la lista de alumnos de la sesión desactivada
         await getAlumnosByNumeroSesion();
         const alumnos = alumnosSesion
-        // Enviar correo a cada alumno
         for (const alumno of alumnos) {
-          await enviarCorreo(alumno);
-          console.log("alumno", alumno);
+          await enviarCorreoSesionDesactivada(alumno);
+          await axios.delete(`${baseURL}/reservas/${alumno.reservaId}`)
         }
+        await getAlumnosByNumeroSesion();
+        getSesiones();
       }
     } catch (error) {
       console.error('Error al desactivar la sesión:', error);
     }
   };
 
-  const enviarCorreo = async (alumno) => {
+  const enviarCorreoSesionDesactivada = async (alumno) => {
     try {
       await axios.post(baseURL + '/send-email', {
         to: alumno.correo,
         subject: 'Sesión Desactivada CAF IVARAS',
-        text: `Estimado ${alumno.nombre}, Le informamos que la sesión ha sido desactivada. Puede revisarlo en el calendario`,
-        html: `<p>Estimado <strong>${alumno.nombre}</strong>,</p><p>Le informamos que la sesión ha sido desactivada. Puede revisarlo en el calendario</p>`,
+        text: `Estimado ${alumno.nombre}, Le informamos que la sesión ha sido desactivada. Puede revisarlo en el calendario. https://caf.ivaras.cl/`,
+        html: `<p>Estimado <strong>${alumno.nombre}</strong>,</p><p>Le informamos que la sesión ha sido desactivada. Puede revisarlo en el calendario. https://caf.ivaras.cl/</p>`,
       });
       console.log(`Correo enviado a ${alumno.nombre}`);
     } catch (error) {
@@ -365,35 +390,35 @@ const ReservarSesion = (props) => {
           }
           {activeStep === 0 && (
             <>
-            <Stack direction="row" spacing={1} justifyContent="center">
-              <Chip label="Asistió" size="small" style={{ backgroundColor: colorsCalendar.asistio, color: 'white'}}/>
-              <Chip label="Falta" size="small" style={{ backgroundColor: colorsCalendar.falta, color: 'white'}}/>
-              <Chip label="Reserva" size="small" style={{ backgroundColor: colorsCalendar.reserva, color: 'black'}}/>
-              <Chip label="Disponible" size="small" style={{ backgroundColor: colorsCalendar.disponible, color: 'white'}}/>
-              <Chip label="Sin Cupo" size="small" style={{ backgroundColor: colorsCalendar.sinCupo, color: 'white'}}/>
-              <Chip label="Desactivada" size="small" style={{ backgroundColor: colorsCalendar.desactivada, color: 'white'}}/>
-            </Stack>
-            
-            <CustomCalendar
-              localizer={localizer}
-              events={eventos}
-              startAccessor="start"
-              endAccessor="end"
-              defaultView={isMobile ? "day" : "week"}
-              views={["week", "day"]}
-              selectable={false}
-              onSelectEvent={handleEventClick}
-              eventPropGetter={eventStyleGetter}
-              min={new Date(0, 0, 0, 8, 31)}
-              max={new Date(0, 0, 0, 21, 10)}
-              date={fechaActual}
-              onNavigate={handleNavigate}
-              disabled={loading}
-              messages={messages}
-              isMobile={isMobile}
-              slotDuration={40}
-            />
-          </>)}
+              <Stack direction="row" spacing={1} justifyContent="center">
+                <Chip label="Asistió" size="small" style={{ backgroundColor: colorsCalendar.asistio, color: 'white' }} />
+                <Chip label="No asistió" size="small" style={{ backgroundColor: colorsCalendar.falta, color: 'white' }} />
+                <Chip label="Reservado" size="small" style={{ backgroundColor: colorsCalendar.reserva, color: 'black' }} />
+                <Chip label="Disponible" size="small" style={{ backgroundColor: colorsCalendar.disponible, color: 'white' }} />
+                <Chip label="Sin Cupo" size="small" style={{ backgroundColor: colorsCalendar.sinCupo, color: 'white' }} />
+                <Chip label="Desactivada" size="small" style={{ backgroundColor: colorsCalendar.desactivada, color: 'white' }} />
+              </Stack>
+
+              <CustomCalendar
+                localizer={localizer}
+                events={eventos}
+                startAccessor="start"
+                endAccessor="end"
+                defaultView={isMobile ? "day" : "week"}
+                views={["week", "day"]}
+                selectable={false}
+                onSelectEvent={handleEventClick}
+                eventPropGetter={eventStyleGetter}
+                min={new Date(0, 0, 0, 8, 31)}
+                max={new Date(0, 0, 0, 21, 10)}
+                date={fechaActual}
+                onNavigate={handleNavigate}
+                disabled={loading}
+                messages={messages}
+                isMobile={isMobile}
+                slotDuration={40}
+              />
+            </>)}
           {activeStep === 1 && (
             <>
               <AlumnosSesion alumnosSesion={alumnosSesion} setAlumnosSesion={setAlumnosSesion} tomarAsistencia={tomarAsistencia} />
