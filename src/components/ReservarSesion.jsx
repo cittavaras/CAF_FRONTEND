@@ -330,8 +330,8 @@ const ReservarSesion = (props) => {
       await axios.post(baseURL + '/send-email', {
         to: alumno.correo,
         subject: 'Sesión Desactivada CAF IVARAS',
-        text: `Estimado ${alumno.nombre}, Le informamos que la sesión ha sido desactivada. Puede revisarlo en el calendario. https://caf.ivaras.cl/`,
-        html: `<p>Estimado <strong>${alumno.nombre}</strong>,</p><p>Le informamos que la sesión ha sido desactivada. Puede revisarlo en el calendario. https://caf.ivaras.cl/</p>`,
+        text: `Estimado ${alumno.nombre}, Lamentamos informarle que una de las sesiones que reservo ha sido desactivada. Recomendamos reservar otra sesion en el sitio. https://caf.ivaras.cl/`,
+        html: `<p>Estimado <strong>${alumno.nombre}</strong>,</p><p>Lamentamos informarle que una de las sesiones que reservo ha sido desactivada. Recomendamos reservar otra sesion en el sitio. https://caf.ivaras.cl/</p>`,
       });
       console.log(`Correo enviado a ${alumno.nombre}`);
     } catch (error) {
