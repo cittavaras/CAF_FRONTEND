@@ -23,13 +23,16 @@ const BotonesPerfil = () => {
 
     const getReservasByAlumno = async (fecha = new Date()) => {
         try {
-            const res = await axios.post(baseURL + '/reservas/alumno', { rut: alumno.rut, fecha });
-            setReservasAlumno(res?.data ?? []);
-            console.log("res?.data", res?.data );
+          const res = await axios.post(baseURL + '/reservas/alumno', { rut: alumno.rut, fecha });
+          const nuevasReservas = res?.data ?? [];
+          setReservasAlumno(nuevasReservas);
+          console.log("res?.data", nuevasReservas);
+          return nuevasReservas;
         } catch (error) {
-            console.log(error);
+          console.log(error);
         }
-    }
+      }
+      
 
     useEffect(() => {
         if (alumno != null && hasRole(roles.alumno)) {
