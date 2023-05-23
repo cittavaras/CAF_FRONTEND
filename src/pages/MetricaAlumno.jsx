@@ -110,7 +110,7 @@ const Metrica = () => {
 
 
   const BarChartExample = () => {
-    const [selectedMetric, setSelectedMetric] = useState('edad');
+    const [selectedMetric, setSelectedMetric] = useState('peso');
 
     const obtenerPropiedad = (arregloObjetos, nombrePropiedad) => {
       let arregloPropiedades = [];
@@ -157,9 +157,7 @@ const Metrica = () => {
 
     return (
       <div className='container-sm row'  >
-        <h2 className='text-white'>{selectedMetric}</h2>
-        <button className='btn btn-dark col-md-2 me-2 my-1' onClick={() => handleMetricChange('edad')}>Edad</button>
-        <button className='btn btn-dark col-md-2 me-2 my-1' onClick={() => handleMetricChange('altura')}>Altura</button>
+        <h2 className='text-white'>{selectedMetric.charAt(0).toUpperCase() + selectedMetric.slice(1)}</h2>
         <button className='btn btn-dark col-md-2 me-2 my-1' onClick={() => handleMetricChange('peso')}>Peso corporal</button>
         <button className='btn btn-dark col-md-2 me-2 my-1' onClick={() => handleMetricChange('porcentajeGrasaCorporal')}>Porcentaje de grasa corporal</button>
         <button className='btn btn-dark col-md-2 me-2 my-1' onClick={() => handleMetricChange('porcentajeGrasaMuscular')}>Porcentaje de músculo</button>
@@ -167,7 +165,6 @@ const Metrica = () => {
         <button className='btn btn-dark col-md-2 me-2 my-1' onClick={() => handleMetricChange('grasaVisceral')}>Grasa visceral</button>
         <ResponsiveContainer width="100%" height={650}>
           <Box sx={{ bgcolor: '#fff' }} >
-
             <LineChart width={500} className='mx-auto my-auto' height={600} data={personasSinUnidadDeMedida}>
               <Line type="monotone" dataKey={selectedMetric} stroke="#8884d8" />
               <CartesianGrid stroke="#ccc" />
