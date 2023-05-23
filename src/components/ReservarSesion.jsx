@@ -411,40 +411,6 @@ const ReservarSesion = (props) => {
           }
           {activeStep === 0 && (
             <>
-<<<<<<< HEAD
-            <Stack direction="row" spacing={1} justifyContent="center">
-              <Chip label="Asistió" size="small" style={{ backgroundColor: colorsCalendar.asistio, color: 'white'}}/>
-              <Chip label="Falta" size="small" style={{ backgroundColor: colorsCalendar.falta, color: 'white'}}/>
-              <Chip label="Reserva" size="small" style={{ backgroundColor: colorsCalendar.reserva, color: 'black'}}/>
-              <Chip label="Disponible" size="small" style={{ backgroundColor: colorsCalendar.disponible, color: 'white'}}/>
-              <Chip label="Sin Cupo" size="small" style={{ backgroundColor: colorsCalendar.sinCupo, color: 'white'}}/>
-              <Chip label="Desactivada" size="small" style={{ backgroundColor: colorsCalendar.desactivada, color: 'white'}}/>
-            </Stack>
-            
-            <CustomCalendar
-              localizer={localizer}
-              events={eventos}
-              startAccessor="start"
-              endAccessor="end"
-              defaultView={isMobile? "day": "week"}
-              views={views}
-              view={view}
-              selectable={false}
-              onSelectEvent={handleEventClick}
-              eventPropGetter={eventStyleGetter}
-              onView={handleViewChange}
-              min={new Date(0, 0, 0, 8, 31)}
-              max={new Date(0, 0, 0, 21, 10)}
-              date={fechaActual}
-              onNavigate={handleNavigate}
-              disabled={loading}
-              messages={messages}
-              isMobile={isMobile}
-              slotDuration={40}
-              style={{ minHeight: 500 }}
-            />
-          </>)}
-=======
               <Stack direction="row" spacing={1} justifyContent="center">
                 <Chip label="Asistió" size="small" style={{ backgroundColor: colorsCalendar.asistio, color: 'white' }} />
                 <Chip label="No asistió" size="small" style={{ backgroundColor: colorsCalendar.falta, color: 'white' }} />
@@ -474,7 +440,7 @@ const ReservarSesion = (props) => {
                 slotDuration={40}
               />
             </>)}
->>>>>>> main
+
           {activeStep === 1 && (
             <>
               <AlumnosSesion alumnosSesion={alumnosSesion} setAlumnosSesion={setAlumnosSesion} tomarAsistencia={tomarAsistencia} />
