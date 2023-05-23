@@ -6,6 +6,12 @@ import useAuth from '../auth/useAuth';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import Chip from '@mui/material/Chip';
 import baseURL from '../helpers/rutaBase';
+import { height } from '@mui/system';
+import Card from '@mui/material/Card';
+import CardMedia from '@mui/material/CardMedia';
+import { CardActionArea } from '@mui/material';
+import ButtonBase from '@mui/material/ButtonBase';
+import ivaras from './img/ivaras.png';
 
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet"></link>
 
@@ -49,9 +55,9 @@ const Login = () => {
       try {
         const usuario = res?.data?.respAlumno
 
-        
+
         if (!!usuario && res.data.success) {
-          
+
           console.log('usuario', usuario);
           login(usuario);
           if (usuario.tipoUsuario === 'Admin') {
@@ -67,10 +73,10 @@ const Login = () => {
             navigate('/landing');
           }
         }
-        else  {
+        else {
           alert('El usuario o contraseña es incorrecto')
         }
-      }      
+      }
       catch (error) {
         console.log(error);
         alert('Ocurrió un error al iniciar sesión')
@@ -96,10 +102,13 @@ const Login = () => {
               <Button onClick={validacion}>INICIAR SESIÓN</Button>
               <div style={{ textAlign: 'center', marginTop: '20px' }}>
                 <Link to="/registro" style={{ borderBottom: '1px solid #FFF', color: '#FFF', textDecoration: 'none' }}>¿No tienes cuenta? Puedes crearte una aquí</Link></div>
-                <div style={{ color: '#FFF', textDecoration: 'none' }}>Creado por: </div>
-                <Chip color="primary" avatar={<LinkedInIcon>J</LinkedInIcon>} label="Javier Diaz Iturra" onClick={() => navigate('https://www.linkedin.com/in/javierdiaziturra/')}/>
-                <br />
-                <Chip color="primary" avatar={<LinkedInIcon>J</LinkedInIcon>} label="Byron Gonzalez" onClick={() => navigate('https://www.linkedin.com/in/byron-gonzalez-oyarce/')}/>
+              <div style={{ color: '#FFF', textDecoration: 'none' }}>Sitio Desarrollado por : </div>
+  
+              <Link to="/nosotros">
+               <img src={ivaras} alt="Sobre Nosotros"  style={{height:"100px", width:"100%"}}/>   
+              </Link>
+          
+              
             </Form>
           </Login0>
         </Wrapper>
