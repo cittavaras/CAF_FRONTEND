@@ -93,7 +93,7 @@ const Metrica = () => {
     return (
       <Box sx={{ minWidth: 120 }}>
       <FormControl fullWidth variant="filled" color="primary">
-        <InputLabel id="demo-simple-select-label" color="warning">Age</InputLabel>
+        <InputLabel id="demo-simple-select-label">Fecha</InputLabel>
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
