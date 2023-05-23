@@ -1,28 +1,25 @@
 import React, { useState } from "react";
-import {
-  Button,
-  Select,
-  MenuItem,
-  InputLabel,
-  FormControl,
-  Grid
-} from "@material-ui/core";
+
 import { Dialog, 
     DialogContent, 
     Container, 
     DialogActions, 
+    Button,
+    Select,
+    MenuItem,
     DialogTitle,
     Typography, 
     Box,
     IconButton } from  "@mui/material";
+
 import axios from "axios";
-import ReservarSesion from "./ReservarSesion";
+
 import styled from "styled-components";
 import { useTheme } from "@mui/material/styles"; //TODO
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import CloseIcon from '@mui/icons-material/Close';
-import { RiFileExcel2Line } from "react-icons/ri";
 
+import CloseIcon from '@mui/icons-material/Close';
+import DescriptionIcon from '@mui/icons-material/Description';
+import baseURL from '../helpers/rutaBase';
 
 const sortingOptions = [
   { value: "orderByRut", label: "Ordenar por RUT" },
@@ -87,8 +84,7 @@ const InformeAsistencia = (props) => {
         { order, direction }
       ];
 
-      const response = await axios.post(
-        "http://localhost:3000/attendanceSheet",
+      const response = await axios.post(`${baseURL}/reservas/reporte`,
         { orderBy }, //TODO: aqui agregan los filtros, id de cita etc
         { responseType: "blob" }
       );
@@ -206,7 +202,7 @@ const InformeAsistencia = (props) => {
             <br />
         <DialogActions>
           {<Button
-          startIcon={<RiFileExcel2Line />}
+          startIcon={<DescriptionIcon />}
           variant="contained"
           color= "success"
           onClick={handleDownloadClick}

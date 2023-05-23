@@ -426,7 +426,7 @@ const ReservarSesion = (props) => {
                 startAccessor="start"
                 endAccessor="end"
                 defaultView={isMobile ? "day" : "week"}
-                views={["week", "day"]}
+                views={views}
                 selectable={false}
                 onSelectEvent={handleEventClick}
                 eventPropGetter={eventStyleGetter}
