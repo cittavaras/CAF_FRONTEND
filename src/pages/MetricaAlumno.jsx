@@ -85,26 +85,34 @@ const Metrica = () => {
 
 
 
-  const handleChange = (event) => {
-    setFecha(event.target.value);
-    console.log(event);
+  const handleChange = async (event) => {
+    const selectedFecha = event.target.value;
+    setFecha(selectedFecha);
+  
+    const metricasAlumno = metricas.find((metrica) => metrica.fecha === selectedFecha);
+    setMetricasRecientes(metricasAlumno);
   };
 
   const ButtonDropdown = () => {
     return (
       <Box sx={{ minWidth: 120 }}>
-      <FormControl fullWidth variant="filled" color="primary">
-        <InputLabel id="demo-simple-select-label">Fecha</InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={fecha}
-          label="Fechas"
-          onChange={handleChange}
-        >
-          {metricas.map((metrica, i) => (
-            <MenuItem value={metrica.fecha} key= {i}>{metrica.fecha = moment(metrica.fecha).format('DD/MM/YYYY')}</MenuItem>
-          ))}
+        <FormControl fullWidth variant="filled" >
+          <InputLabel style={{color:'White'}} id="demo-simple-select-label">
+            Fecha
+          </InputLabel>
+          <Select
+            style={{color:'White'}}
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={fecha}
+            label="fecha"
+            onChange={handleChange}
+          >
+            {metricas.map((metrica, i) => (
+              <MenuItem value={metrica.fecha} key= {i}>
+                {moment(metrica.fecha).format('DD/MM/YYYY')}
+              </MenuItem>
+            ))}
         </Select>
       </FormControl>
     </Box>
@@ -122,7 +130,7 @@ const Metrica = () => {
         accessor: 'valor'
       },
     ],
-    [metricas]
+    [metricas, fecha]
   );
   const tableInstance = useTable({
     columns,
@@ -172,8 +180,9 @@ const Metrica = () => {
 
     const handleMetricChange = (metric) => {
       setSelectedMetric(metric);
+      
     }
-  
+    
     const filteredData = data.filter(item => item.name === selectedMetric);
   
     return (
@@ -204,7 +213,7 @@ const Metrica = () => {
     <Container maxWidth="sm">
       <MetricaContainer>
         <BotonesPerfil />
-        <MetricaTitle>Métricas de seguimiento del alumno</MetricaTitle>
+        <MetricaTitle>Métricas de seguimiento del alumno {moment(fecha).format('DD/MM/YYYY')}</MetricaTitle>
         <MetricaTable className='container-sm' {...getTableProps()}>
           <thead>
             {headerGroups.map(headerGroup => (
