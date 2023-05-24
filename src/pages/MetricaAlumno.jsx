@@ -184,23 +184,60 @@ const Metrica = () => {
     }
     
     const filteredData = data.filter(item => item.name === selectedMetric);
-  
+  //<h2 className='text-white'>{selectedMetric.charAt(0).toUpperCase() + selectedMetric.slice(1)}</h2>
     return (
       <div className='container-sm row'  >
-        <h2 className='text-white'>{selectedMetric.charAt(0).toUpperCase() + selectedMetric.slice(1)}</h2>
-        <button className='btn btn-dark col-md-2 me-2 my-1' onClick={() => handleMetricChange('peso')}>Peso corporal</button>
-        <button className='btn btn-dark col-md-2 me-2 my-1' onClick={() => handleMetricChange('porcentajeGrasaCorporal')}>Porcentaje de grasa corporal</button>
-        <button className='btn btn-dark col-md-2 me-2 my-1' onClick={() => handleMetricChange('porcentajeGrasaMuscular')}>Porcentaje de músculo</button>
-        <button className='btn btn-dark col-md-2 me-2 my-1' onClick={() => handleMetricChange('imc')}>Índice de masa corporal (IMC)</button>
-        <button className='btn btn-dark col-md-2 me-2 my-1' onClick={() => handleMetricChange('grasaVisceral')}>Grasa visceral</button>
+        <button className='btn btn-dark col-md-2 me-2 my-1' 
+          style={{ display: 'inline-flex', alignItems: 'center' }} 
+          onClick={() => handleMetricChange('peso')}>
+            Peso corporal
+        </button>
+        <button className='btn btn-dark col-md-2 me-2 my-1' 
+          style={{ display: 'inline-flex', alignItems: 'center' }} 
+          onClick={() => handleMetricChange('porcentajeGrasaCorporal')}>
+            % Grasa Corporal
+          </button>
+        <button className='btn btn-dark col-md-2 me-2 my-1'  
+          style={{ display: 'inline-flex', alignItems: 'center' }}
+          onClick={() => handleMetricChange('porcentajeGrasaMuscular')}>
+            % Grasa Muscular
+        </button>
+        <button className='btn btn-dark col-md-2 me-2 my-1' 
+          style={{ display: 'inline-flex', alignItems: 'center' }}
+          onClick={() => handleMetricChange('imc')}>
+            Índice de Masa Corporal (IMC)
+        </button>
+        <button className='btn btn-dark col-md-2 me-2 my-1' 
+          style={{ display: 'inline-flex', alignItems: 'center' }}
+          onClick={() => handleMetricChange('grasaVisceral')}>
+           Grasa Visceral
+        </button>
         <ResponsiveContainer width="100%" height={650}>
-          <Box sx={{ bgcolor: '#fff' }} >
+        <Box sx={{ bgcolor: 'rgba(255, 255, 255, 0.8)' }}>
             <LineChart width={500} className='mx-auto my-auto' height={600} data={personasSinUnidadDeMedida}>
               <Line type="monotone" dataKey={selectedMetric} stroke="#8884d8" />
               <CartesianGrid stroke="#ccc" />
-              <XAxis dataKey="name" />
-              <YAxis />
-            </LineChart>
+              <XAxis
+                dataKey="name"
+                label={{
+                  value: 'Fecha de registro',
+                  position: 'insideBottom',
+                  offset: 0,
+                }}
+              />
+              <YAxis
+                angle={90}
+                label={{
+                  value: selectedMetric.charAt(0).toUpperCase() + selectedMetric.slice(1),
+                  angle: -90,
+                  position: 'insideLeft',
+                }}
+              />
+              <Tooltip
+                labelFormatter={(value) => moment(value.fecha).format('DD/MM/YYYY')}
+                formatter={(value, name, entry) => [`${value} - ${moment(entry.payload.fecha).format('DD/MM/YYYY')}`, selectedMetric]}
+              />
+        </LineChart>
           </Box>
         </ResponsiveContainer>
       </div>
