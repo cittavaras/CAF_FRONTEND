@@ -63,12 +63,12 @@ const ModificarEliminarUsuario = () => {
       setAlumnos(alumnosSeleccionados);
       setTotalCount(alumnos.length);
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   }
 
   const formatearRut = (e) => {
-    console.log(e.target.value)
+    //console.log(e.target.value)
     const rutSinFormatear = e.target.value.replace(/\./g, "").replace("-", "").trim();
     const dv = rutSinFormatear.slice(-1);
     const rutNum = rutSinFormatear.slice(0, -1);
@@ -119,7 +119,7 @@ const ModificarEliminarUsuario = () => {
     }
     else {
       await axios.put(`${baseURL}/alumnos/${alumnoModificado._id}`, actualizar);
-      console.log(actualizar);
+      //console.log(actualizar);
       alert('Datos del alumno actualizadas con éxito');
       handleCloseModificar();
     }

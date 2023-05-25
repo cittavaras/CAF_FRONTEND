@@ -26,7 +26,7 @@ const Login = () => {
 
   const onChangeCorreo = (e) => {
     setAlumno(e.target.value.toLowerCase());
-    console.log(alumno);
+    //console.log(alumno);
   }
 
   const onChangeConstraseña = (e) => {
@@ -51,14 +51,14 @@ const Login = () => {
     }
     else {
       const res = await axios.post(`${baseURL}/alumnos/login`, { correo: alumno, password: contraseña });
-      console.log(res);
+      //console.log(res);
       try {
         const usuario = res?.data?.respAlumno
 
 
         if (!!usuario && res.data.success) {
 
-          console.log('usuario', usuario);
+          //console.log('usuario', usuario);
           login(usuario);
           if (usuario.tipoUsuario === 'Admin') {
             alert('Bienvenido administrador');
@@ -78,7 +78,7 @@ const Login = () => {
         }
       }
       catch (error) {
-        console.log(error);
+        //console.log(error);
         alert('Ocurrió un error al iniciar sesión')
       }
       ;

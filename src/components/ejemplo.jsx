@@ -31,7 +31,7 @@ class ListarAlumno extends Component {
       // Actualizar el estado con los alumnos seleccionados y el total de alumnos obtenidos
       this.setState({ alumnos: alumnosSeleccionados, totalCount: alumnos.length });
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   }
 
@@ -49,8 +49,8 @@ class ListarAlumno extends Component {
   aceptarAlumno = async (id) => {
     const res = await axios.put(`${baseURL}/alumnos/${id}`, { active: true });
     this.getAlumnos();
-    console.log(res);
-    console.log(res.data.alumnos);
+    //console.log(res);
+    //console.log(res.data.alumnos);
   }
     
   // Función para manejar el cambio de página

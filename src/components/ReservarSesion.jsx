@@ -94,7 +94,7 @@ const ReservarSesion = (props) => {
       });
       setSesiones(res?.data ?? []);
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
     setLoading(false);
   }
@@ -116,7 +116,7 @@ const ReservarSesion = (props) => {
 
       props.handleClose();
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   }
 
@@ -134,9 +134,9 @@ const ReservarSesion = (props) => {
         html: `<p>Estimado <strong>${alumno.nombre}</strong>,</p><p>Le informamos que ha realizado una reserva para las siguientes sesiones:</p><p>${sesionesReservadasText}</p>`,
       });
 
-      console.log(`Correo de reserva enviado a ${alumno.nombre}`);
+      //console.log(`Correo de reserva enviado a ${alumno.nombre}`);
     } catch (error) {
-      console.error('Error al enviar el correo de reserva:', error);
+      //console.error('Error al enviar el correo de reserva:', error);
     }
   };
 
@@ -291,7 +291,7 @@ const ReservarSesion = (props) => {
       });
       setAlumnosSesion(res?.data ?? []);
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   }
 
@@ -299,7 +299,7 @@ const ReservarSesion = (props) => {
     try {
       await axios.put(`${baseURL}/sesiones/reserva/${reservaId}/asistencia`, { asistencia: asistencia });
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   }
 
@@ -321,7 +321,7 @@ const ReservarSesion = (props) => {
         getSesiones();
       }
     } catch (error) {
-      console.error('Error al desactivar la sesión:', error);
+      //console.error('Error al desactivar la sesión:', error);
     }
   };
 
@@ -333,9 +333,9 @@ const ReservarSesion = (props) => {
         text: `Estimado ${alumno.nombre}, Lamentamos informarle que una de las sesiones que reservo ha sido desactivada. Recomendamos reservar otra sesion en el sitio. https://caf.ivaras.cl/`,
         html: `<p>Estimado <strong>${alumno.nombre}</strong>,</p><p>Lamentamos informarle que una de las sesiones que reservo ha sido desactivada. Recomendamos reservar otra sesion en el sitio. https://caf.ivaras.cl/</p>`,
       });
-      console.log(`Correo enviado a ${alumno.nombre}`);
+      //console.log(`Correo enviado a ${alumno.nombre}`);
     } catch (error) {
-      console.error('Error al enviar el correo:', error);
+      //console.error('Error al enviar el correo:', error);
     }
   };
 
