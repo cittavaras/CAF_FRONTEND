@@ -43,7 +43,7 @@ const ListarAlumno = () => {
       setAlumnos(alumnosSeleccionados);
       setTotalCount(alumnos.length);
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   }
 
@@ -60,10 +60,10 @@ const ListarAlumno = () => {
         html: `<strong>${alumnoEliminado?.nombre}</strong>, ${message}`,
       })
       .then((response) => {
-        console.log('Email sent successfully:', response.data);
+        //console.log('Email sent successfully:', response.data);
       })
       .catch((error) => {
-        console.error('Error sending email:', error);
+        //console.error('Error sending email:', error);
       });
 
     handleClose();
@@ -82,10 +82,10 @@ const ListarAlumno = () => {
         html: `<strong>${alumno.nombre}</strong>, Le informamos que su cuenta ha sido activada exitosamente, recuerde que para ingresar necesita su correo y el rut como contraseña sin puntos, sin guion y sin digito verificador guiense por el siguiente link https://caf-desarrollo.ivaras.cl`,
       })
       .then((response) => {
-        console.log('Email sent successfully:', response.data);
+       // console.log('Email sent successfully:', response.data);
       })
       .catch((error) => {
-        console.error('Error sending email:', error);
+        //console.error('Error sending email:', error);
       });
 
     getAlumnos();

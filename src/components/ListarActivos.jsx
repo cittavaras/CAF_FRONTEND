@@ -47,7 +47,7 @@ const ListarActivos = () => {
       setAlumnos(alumnosSeleccionados);
       setTotalCount(alumnos.length);
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   }
 
@@ -57,10 +57,10 @@ const ListarActivos = () => {
     await axios
       .post(baseURL + '/alumnos', { rut: search, })
       .then((response) => {
-        console.log('Email sent successfully:', response.data);
+        //console.log('Email sent successfully:', response.data);
       })
       .catch((error) => {
-        console.error('Error sending email:', error);
+        //console.error('Error sending email:', error);
       });
 
     getAlumnos();
@@ -86,7 +86,7 @@ const ListarActivos = () => {
     }
     else {
       await axios.post(`${baseURL}/metricas/`, metricas);
-      console.log(metricas);
+      //console.log(metricas);
       alert('Metricas registradas');
       handleClose();
     }
@@ -96,7 +96,7 @@ const ListarActivos = () => {
   }
 
   const formatearRut = (e) => {
-    console.log(e.target.value)
+    //console.log(e.target.value)
     const rutSinFormatear = e.target.value.replace(/\./g, "").replace("-", "").trim();
     const dv = rutSinFormatear.slice(-1);
     const rutNum = rutSinFormatear.slice(0, -1);

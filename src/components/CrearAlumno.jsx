@@ -111,7 +111,7 @@ const CrearAlumno = () => {
       };
 
       const res = await axios.post(baseURL + '/alumnos', newAlumno);
-      console.log(res);
+      //console.log(res);
 
       await axios
         .post(baseURL + '/send-email', {
@@ -121,10 +121,10 @@ const CrearAlumno = () => {
           html: `<strong>${nombre}</strong>: nos es grato saber que estas interesado(a) en nuestros servicios de CAF Ivaras. En los proximos días activaremos tu cuenta y te enviaremos un correo notificandote como acceder a la plataforma y a sus servicios. Atentamente, el equipo de CAF Ivaras`,
         })
         .then((response) => {
-          console.log('Email sent successfully:', response.data);
+          //console.log('Email sent successfully:', response.data);
         })
         .catch((error) => {
-          console.error('Error sending email:', error);
+         // console.error('Error sending email:', error);
         });
 
       navigate('/notificacion');

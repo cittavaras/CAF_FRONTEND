@@ -26,10 +26,10 @@ const BotonesPerfil = () => {
           const res = await axios.post(baseURL + '/reservas/alumno', { rut: alumno.rut, fecha });
           const nuevasReservas = res?.data ?? [];
           setReservasAlumno(nuevasReservas);
-          console.log("res?.data", nuevasReservas);
+          //console.log("res?.data", nuevasReservas);
           return nuevasReservas;
         } catch (error) {
-          console.log(error);
+          //console.log(error);
         }
       }
       

@@ -8,7 +8,7 @@ const CrearUsuarioForm = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    console.log(`Nuevo usuario: ${usuario}, ${contraseña}`);
+    //console.log(`Nuevo usuario: ${usuario}, ${contraseña}`);
   };
 
   return (

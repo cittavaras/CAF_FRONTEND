@@ -33,8 +33,8 @@ import {
 const Metrica = () => {
   const [metricasRecientes, setMetricasRecientes] = useState([]);
   const [metricas, setMetricas] = useState([]);
-  const [fecha, setFecha] = useState(null);
-  console.log(metricas);
+  const [fecha, setFecha] = useState([]);
+  //console.log(metricas);
   useEffect(() => {
     MetricasRecientes();
   }, []);
@@ -56,13 +56,13 @@ const Metrica = () => {
   const getMetricas = async () => {
     const  { rut } = JSON.parse(sessionStorage.getItem('alumno_sesion'));
     const res = await axios.get(baseURL + '/metricas/', { params: { rut } });
-    console.log(rut);
-    console.log(res);
-    console.log("Todas las metricas",res.data)
+  //  console.log(rut);
+ //   console.log(res);
+ //  // console.log("Todas las metricas",res.data)
     const metricaAlumno = res.data;
     setMetricas(metricaAlumno);
   }
-  console.log(fecha);
+  //console.log(fecha);
 
   // Datos de ejemplo
   const data = React.useMemo(() => {
