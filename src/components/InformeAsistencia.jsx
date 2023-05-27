@@ -85,7 +85,7 @@ const InformeAsistencia = (props) => {
       ];
 
       const response = await axios.post(`${baseURL}/reservas/reporte`,
-        { orderBy }, //TODO: aqui agregan los filtros, id de cita etc
+        { orderBy, startDate,endDate }, //TODO: aqui agregan los filtros, id de cita etc
         { responseType: "blob" }
       );
 
