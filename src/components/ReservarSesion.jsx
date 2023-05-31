@@ -33,9 +33,12 @@ const messages = {
   today: 'Hoy',
   next: 'Siguiente',
   previous: 'Anterior',
+  month: 'Mes',
   week: 'Semana',
   day: 'Día'
 };
+
+const alumno_sesion = JSON.parse(sessionStorage.getItem("alumno_sesion"));  
 
 const CALENDAR_TITLE = "Reserva tu Entrenamiento";
 const CALENDAR_PARAGRAPH = "Selecciona Mes y Día que deseas agendar para ver los bloques disponibles. Luego selecciona el bloque que deseas reservar. Recuerda que solo puedes reservar 3 bloques por semana.";
@@ -67,7 +70,9 @@ const ReservarSesion = (props) => {
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  //const [views, setViews] = useState([isMobile? ["day"]: ["week", "day"]);
+  //const [views, setViews] = useState([isMobile? ["day"]: ["week", "day"]]);
+  const [views, setViews] = useState(['month', 'week', 'day']);
+
   const { alumno, hasRole } = useAuth();
   const [selectedEvents, setSelectedEvents] = useState([]);
   const [sesiones, setSesiones] = useState([]);
@@ -77,7 +82,7 @@ const ReservarSesion = (props) => {
   const [activeStep, setActiveStep] = useState(0);
   const [selectedSesion, setSelectedSesion] = useState(null);
   const [alumnosSesion, setAlumnosSesion] = useState([]);
-
+  const [view, setView] = useState(isMobile? "day": "month");
   const handleNavigate = (date, view) => {
     setFechaActual(date);
     setSelectedEvents([]);
@@ -179,6 +184,11 @@ const ReservarSesion = (props) => {
     }
   }, [selectedSesion]);
 
+  useEffect(() => {
+    setViews(['month', 'week', 'day']);
+  }, []);
+
+  
   const colorsCalendar = {
     asistio: "green",
     falta: "red",
@@ -222,9 +232,10 @@ const ReservarSesion = (props) => {
         >
           {event.title}
         </Button>
-      )
+      ),
     };
   };
+  
 
   const handleEventClick = (event) => {
     if (hasRole(roles.alumno)) {
@@ -323,6 +334,15 @@ const ReservarSesion = (props) => {
     } catch (error) {
       //console.error('Error al desactivar la sesión:', error);
     }
+  }
+  const handleViewChange = (view) => {
+    console.log(view);
+    setView(view);
+    const mes = 5; // mayo
+    const anio = 2023;
+    const eventosMes = generateTrainingEventsForMonth(mes, anio, sesiones);
+    console.log("eventosMes", eventosMes);
+    setEventos(eventosMes);
   };
 
   const enviarCorreoSesionDesactivada = async (alumno) => {
@@ -344,7 +364,8 @@ const ReservarSesion = (props) => {
       style={{ marginTop: '70px' }}
       backgroundColor="red"
     >
-      {props.open && <Dialog open={props.open} onClose={props.handleClose} fullWidth maxWidth="md" scroll={'paper'} /*fullScreen={isSmallScreen}*/>
+      {props.open && <Dialog open={props.open} onClose={props.handleClose} fullWidth maxWidth="md" scroll={'paper'} 
+       /*fullScreen={isSmallScreen}*/>
         <StyledDialogTitle  >
           <StyledIconButton
             aria-label="back"
@@ -405,7 +426,7 @@ const ReservarSesion = (props) => {
                 startAccessor="start"
                 endAccessor="end"
                 defaultView={isMobile ? "day" : "week"}
-                views={["week", "day"]}
+                views={views}
                 selectable={false}
                 onSelectEvent={handleEventClick}
                 eventPropGetter={eventStyleGetter}
@@ -419,6 +440,7 @@ const ReservarSesion = (props) => {
                 slotDuration={40}
               />
             </>)}
+
           {activeStep === 1 && (
             <>
               <AlumnosSesion alumnosSesion={alumnosSesion} setAlumnosSesion={setAlumnosSesion} tomarAsistencia={tomarAsistencia} />
@@ -467,16 +489,31 @@ const generateTrainingEvents = (sesiones = [], fechaActual) => {
   return newSesiones;
 };
 
+const generateTrainingEventsForMonth = (month, year, sesiones) => {
+  const startOfMonth = moment(`${year}-${month}-01`, "YYYY-MM-DD").toDate();
+  const endOfMonth = moment(startOfMonth).endOf('month').toDate();
+  const monthEvents = [];
+  
+  for (let day = 1; day <= moment(endOfMonth).date(); day++) {
+    const date = moment(`${year}-${month}-${day}`, "YYYY-MM-DD").toDate();
+    const sesionesDia = sesiones.filter(sesion => moment(sesion.fecha).isoWeekday() === moment(date).isoWeekday());
+    const eventsDia = generateTrainingEvents(sesionesDia, date);
+    monthEvents.push(...eventsDia);
+  }
+
+  return monthEvents;
+};
+
 const CustomCalendar = styled(Calendar)`
   .rbc-calendar {
     min-height: 120vh;
     background-color: #000000; //cambio1
-    min-height: ${({ isMobile }) => (isMobile ? "100vh" : "120vh")};
+    min-height: ${({ isMobile }) => (isMobile ? "80vh" : "120vh")};
     background-color: #000000;
     max-width: 100%;
     min-height: 100vh;
     background-color: #000000;
-
+    
   }
   .rbc-toolbar {
     background-color: #ffffff;
@@ -518,6 +555,8 @@ const CustomCalendar = styled(Calendar)`
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     
   }
+  
+
   @media (max-width: 600px) {
   .rbc-event-content {
     white-space: normal;
