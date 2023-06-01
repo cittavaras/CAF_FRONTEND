@@ -20,7 +20,7 @@ const AlumnosSesion = ({ alumnosSesion = [], setAlumnosSesion, tomarAsistencia }
     }
 
     useEffect(() => {
-        console.log("AlumnosSesion actualizado");
+        //console.log("AlumnosSesion actualizado");
     }, [alumnosSesion]);
 
     return <TableContainer component={Paper}>

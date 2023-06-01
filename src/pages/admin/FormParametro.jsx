@@ -7,7 +7,7 @@ const SitioParamsForm = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    console.log(`Nuevo valor de parámetro: ${maxBloquesPorAlumno}`);
+    //console.log(`Nuevo valor de parámetro: ${maxBloquesPorAlumno}`);
   };
 
   return (
