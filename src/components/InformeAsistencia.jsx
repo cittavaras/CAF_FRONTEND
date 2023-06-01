@@ -79,10 +79,10 @@ const InformeAsistencia = (props) => {
   };
   const handleDownloadClick = async () => {
     try {
-      const orderBy = [
+      const orderBy = 
         // { order: "orderByDate", direction: "asc" },TODO: asi se mandaria a nivel de datos
         { order, direction }
-      ];
+      ;
 
       const response = await axios.post(`${baseURL}/reservas/reporte`,
         { orderBy, startDate,endDate }, //TODO: aqui agregan los filtros, id de cita etc
