@@ -100,7 +100,7 @@ const InformeAsistencia = (props) => {
       // Open the URL on new Window
       const link = document.createElement("a");
       link.href = fileURL;
-      link.setAttribute("download", "attendance.xlsx");
+      link.setAttribute("download", "Informe_de_asistencia.xlsx");
       document.body.appendChild(link);
       link.click();
       link.remove();
