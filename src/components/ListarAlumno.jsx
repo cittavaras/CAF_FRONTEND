@@ -78,8 +78,8 @@ const ListarAlumno = () => {
       .post(baseURL + '/send-email', {
         to: alumno.correo,
         subject: 'Solicitud Aceptada CAF IVARAS',
-        text: `${alumno.nombre}, Le informamos que su cuenta ha sido activada exitosamente, recuerde que para ingresar necesita su correo y el rut como contraseña sin puntos, sin guion y sin digito verificador guiense por el siguiente link https://caf-desarrollo.ivaras.cl`,
-        html: `<strong>${alumno.nombre}</strong>, Le informamos que su cuenta ha sido activada exitosamente, recuerde que para ingresar necesita su correo y el rut como contraseña sin puntos, sin guion y sin digito verificador guiense por el siguiente link https://caf-desarrollo.ivaras.cl`,
+        text: `${alumno.nombre}, Le informamos que su cuenta ha sido activada exitosamente, recuerde que para ingresar necesita su correo y el rut como contraseña sin puntos, sin guion y sin digito verificador guiense por el siguiente link https://caf.ivaras.cl`,
+        html: `<strong>${alumno.nombre}</strong>, Le informamos que su cuenta ha sido activada exitosamente, recuerde que para ingresar necesita su correo y el rut como contraseña sin puntos, sin guion y sin digito verificador guiense por el siguiente link https://caf.ivaras.cl`,
       })
       .then((response) => {
        // console.log('Email sent successfully:', response.data);
