@@ -71,7 +71,7 @@ const ReservarSesion = (props) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   //const [views, setViews] = useState([isMobile? ["day"]: ["week", "day"]]);
-  const [views, setViews] = useState(['month', 'week', 'day']);
+  const [views, setViews] = useState(['week', 'day']);
 
   const { alumno, hasRole } = useAuth();
   const [selectedEvents, setSelectedEvents] = useState([]);
@@ -185,7 +185,7 @@ const ReservarSesion = (props) => {
   }, [selectedSesion]);
 
   useEffect(() => {
-    setViews(['month', 'week', 'day']);
+    setViews(['week', 'day']);
   }, []);
 
   
