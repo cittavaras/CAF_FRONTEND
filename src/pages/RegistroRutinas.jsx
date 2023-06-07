@@ -25,6 +25,7 @@ const RegistroRutinas = (props) => {
         detalleRutina,
     };
     rutinas.rut = props?.alumnoSeleccionado?.rut;
+    
     const ejercicios = [
         { id: 1, nombre: "Sentadillas" },
         { id: 2, nombre: "Abdominales" },
