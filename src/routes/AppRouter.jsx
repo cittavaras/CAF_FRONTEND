@@ -21,6 +21,7 @@ import ListarActivos from "../components/ListarActivos";
 import Configuracion from "../components/Configuracion";
 import ModificarEliminarUsuario from "../components/ModificarEliminarUsuario";
 import SobreNosotros from "../pages/SobreNosotros";
+import RegistroRutinas from "../pages/RegistroRutinas";
 
 export default function AppRouter() {
   const { isLogged } = useAuth();
@@ -108,6 +109,11 @@ export default function AppRouter() {
           <Route path="/mantenedor" element={
             <PrivateRoute hasRole={roles.admin} >
               <ModificarEliminarUsuario />
+            </PrivateRoute>}
+          />
+          <Route path="/registroRutinas" element={
+            <PrivateRoute hasRole={roles.instructor} >
+              <RegistroRutinas />
             </PrivateRoute>}
           />
         </Routes>
