@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import styled from "styled-components";
 import useAuth from '../auth/useAuth';
 import roles from "../helpers/roles";
+import BotonesPerfil from '../components/BotonesPerfil';
 
 const Navigation = () => {
 
@@ -50,13 +51,14 @@ const Navigation = () => {
                     </div>
                 </nav>
             </div>
+            <BotonesPerfil/>
         </>
     )
 }
 
 const LI = styled.li`
     margin-left: auto;
-    right: 0;
+    right:0 ;
 `;
 
 const LI1 = styled.li`

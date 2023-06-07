@@ -6,13 +6,36 @@ import useAuth from '../auth/useAuth';
 import ReservarSesion from './ReservarSesion';
 import InformeAsistencia from './InformeAsistencia';
 import baseURL from '../helpers/rutaBase';
+import HomeIcon from '@mui/icons-material/Home';
+import Box from '@mui/material/Box';
+import BottomNavigation from '@mui/material/BottomNavigation';
+import BottomNavigationAction from '@mui/material/BottomNavigationAction';
+import RestoreIcon from '@mui/icons-material/Restore';
+import { useNavigate } from 'react-router-dom';
+import QueryStatsIcon from '@mui/icons-material/QueryStats';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import styled from "styled-components";
+
+const AlumnoContainer = styled.div`
+    bottom: 0;
+    align-items: center;
+    padding-left: 50%;
+    padding-right: 50%;
+    width: 100%;
+    background-color: #1E1E1E;
+`;
+
 
 const BotonesPerfil = () => {
-    const { alumno, hasRole } = useAuth();
+    
+    //const {alumno, hasRole} = useAuth();
+    const {alumno, hasRole} = useAuth();
 
     const [open, setOpen] = useState(false);
     const [asistenciaOpen, setAsistenciaOpen] = useState(false);
     const [reservasAlumno, setReservasAlumno] = useState([]);
+
+    const navigate = useNavigate();    
 
     const handleOpen = () => {
         setOpen(true)
@@ -22,7 +45,15 @@ const BotonesPerfil = () => {
         await getReservasByAlumno();
         // setSelectedEvents([]);
     }
-
+    const handleButtonClick = () => {
+        navigate('/metrica');
+      };
+      const handleHome = () => {
+        navigate('/landing');
+      };
+    const handleGraficos = () => {
+        navigate('/graficos');
+    };
     const handleOpenInforme = () => {
         setAsistenciaOpen(true)
     };
@@ -43,19 +74,62 @@ const BotonesPerfil = () => {
           //console.log(error);
         }
       }
-      
+    const [value, setValue] = React.useState(0);
+
 
     useEffect(() => {
         if (alumno != null && hasRole(roles.alumno)) {
             getReservasByAlumno()
         }
     }, [alumno]);
+
     return (
-        <div className=' d-flex  flex-sm-row flex-column  '>
+        <div className='d-flex flex-column' style={{marginTop:'100px'}}>
             {hasRole(roles.alumno) && <>
-                <button className='btn' style={{ backgroundColor: '#C0D437', color: '#042945', marginRight: '10px', fontWeight: 'bold', marginBottom: '10px' }} onClick={handleOpen}>Reservar Sesión</button>
-                <Link className='btn' to="/metrica" style={{ backgroundColor: '#042945', color: '#E6E7E9', marginRight: '10px', fontWeight: 'bold', marginBottom: '10px' }}>Historial Avance</Link>
-                <Link className='btn' style={{ backgroundColor: '#042945', color: '#FCB32E', fontWeight: 'bold', marginBottom: '10px' }}>Rutina de trabajo</Link>
+                <AlumnoContainer className='fixed-bottom container-xl '>
+                <Box>
+                    <BottomNavigation
+                        showLabels
+                        value={value}
+                        onChange={(event, newValue) => {
+                        setValue(newValue);
+                        }}
+                    >
+                        <BottomNavigationAction 
+                            onClick={handleHome} 
+                            label="Inicio" 
+                            icon={<HomeIcon />}
+                            style={{
+                                color: "#FCB924",
+                            }}
+                        />
+                        <BottomNavigationAction
+                            label="Metricas" 
+                            icon={<AssignmentIcon/>}
+                            onClick={handleButtonClick}
+                            style={{
+                                color: "#FCB924", 
+                            }}
+                        />
+                        <BottomNavigationAction 
+                            label="Historial" 
+                            onClick={handleGraficos} 
+                            icon={<QueryStatsIcon />}
+                            style={{ 
+                                color: "#FCB924",
+                            }}
+                        />
+                        <BottomNavigationAction 
+                            label="Reserva" 
+                            onClick={handleOpen} 
+                            icon={<RestoreIcon/>}
+                            style={{ 
+                                color: "#FCB924",
+                            }} 
+                        />
+                    </BottomNavigation>
+                </Box>
+                </AlumnoContainer>
             </>}
             {hasRole(roles.admin) && <>
                 <button className='btn' style={{ backgroundColor: '#C0D437', color: '#042945', marginRight: '10px', fontWeight: 'bold', marginBottom: '10px' }} onClick={handleOpen}>Gestionar bloques</button>
@@ -74,5 +148,6 @@ const BotonesPerfil = () => {
         </div>
     )
 }
+
 
 export default BotonesPerfil;

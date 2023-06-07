@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import BotonesPerfil from './BotonesPerfil';
 import baseURL from '../helpers/rutaBase';
 
 const CrearUsuario = () => {
@@ -129,7 +128,6 @@ const CrearUsuario = () => {
     
     <OuterContainer>
       <Container>
-      <BotonesPerfil/>
         <Login className='login'>
           <form className="form-horizontal" >
             <link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet"></link>

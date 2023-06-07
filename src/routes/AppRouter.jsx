@@ -9,6 +9,7 @@ import Notificacion from "../pages/notificacion";
 import LandingPageAlumno from "../pages/LadingPageAlumno";
 import Login from '../pages/Login';
 import MetricaAlumno from '../pages/MetricaAlumno';
+import GraficosAlumnos from '../pages/GraficosAlumnos';
 import ListarAlumno from "../components/ListarAlumno";
 import NotFoundPage from "../pages/NotFoundPage";
 import AgendaReserva from "../components/AgendaReserva";
@@ -83,6 +84,11 @@ export default function AppRouter() {
           <Route path="/metrica" element={
             <PrivateRoute >
               <MetricaAlumno />
+            </PrivateRoute>}
+          />
+          <Route path="/graficos" element={
+            <PrivateRoute >
+              <GraficosAlumnos/>
             </PrivateRoute>}
           />
           <Route path="/configuracion" element={

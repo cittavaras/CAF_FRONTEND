@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom';
 import ReservarSesion from '../components/ReservarSesion';
 import useAuth from '../auth/useAuth';
 import roles from "../helpers/roles";
-import BotonesPerfil from '../components/BotonesPerfil';
 
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet"></link>
 
@@ -18,9 +17,7 @@ const LandingPageAlumno = ({ location }) => {
     <>
       <Div>
         <div className='mt-5 container py-5  text-center'>
-          <H1>Hola  <br /> {alumno?.nombre ?? 'Sin informacion'}</H1>
-          <P className='opcion'>Elige una Opción</P>
-          <BotonesPerfil/>
+          <H1>Bienvenido  <br /> {alumno?.nombre ?? 'Sin informacion'}</H1>
         </div>                           
       </Div>
 
