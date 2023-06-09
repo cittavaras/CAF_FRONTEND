@@ -1,4 +1,4 @@
-import { Button, Typography, Grid, Select, IconButton ,MenuItem, InputLabel, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TextField, FormControl } from "@mui/material";
+import { Button, Typography, Grid, Select, IconButton, MenuItem, Autocomplete, InputLabel, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TextField, FormControl } from "@mui/material";
 import moment from 'moment';
 import PlusOneIcon from '@mui/icons-material/PlusOne';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -6,6 +6,7 @@ import { useState } from "react";
 import baseURL from '../helpers/rutaBase';
 import { Container, Box, bgcolor } from '@mui/system';
 import useAuth from '../auth/useAuth';
+import axios from 'axios';
 const RegistroRutinas = (props) => {
 
     //const filasTabla = Array.from(Array(8).keys());
@@ -13,33 +14,64 @@ const RegistroRutinas = (props) => {
 
     const [nomRutina, setNomRutina] = useState("");
     const [detalleRutina, setDetalleRutina] = useState("");
+    const [cardioInicial, setCardioInicial] = useState("");
+    const [cardioFinal, setCardioFinal] = useState("");
+    const [calentamiento, setCalentamiento] = useState("");
+    const [vueltaALaCancha, setVueltaALaCancha] = useState("");
     const [selectedExercises, setSelectedExercises] = useState([]);
     const [selectedRepeticion, setSelectedRepeticion] = useState([]);
     const [selectedSerie, setSelectedSerie] = useState([]);
     const [selectedKg, setSelectedKg] = useState([]);
     const [selectedDescanso, setSelectedDescanso] = useState([]);
     const fechaActual = moment().format('DD-MM-YYYY');
-
+    const { alumno } = useAuth();
+    const alumnoSeleccionado = props.alumnoSeleccionado; //TODO: cambiar por el alumno seleccionado
     let rutinas = {
         nomRutina,
         detalleRutina,
     };
     rutinas.rut = props?.alumnoSeleccionado?.rut;
-    
+
     const ejercicios = [
-        { id: 1, nombre: "Sentadillas" },
-        { id: 2, nombre: "Abdominales" },
-        { id: 3, nombre: "Flexiones" },
-        { id: 4, nombre: "Burpees" },
-        { id: 5, nombre: "Plancha" },
-        { id: 6, nombre: "Zancadas" },
-        { id: 7, nombre: "Saltos" },
-        { id: 8, nombre: "Tijeras" },
-        { id: 9, nombre: "Escalador" },
-        { id: 10, nombre: "nose" },
-        { id: 11, nombre: "nose1" },
-        { id: 12, nombre: "nose2" }
+        { id: 1, nombre: "Flexiones de brazo apoyo" },
+        { id: 2, nombre: "Rodillas" },
+        { id: 3, nombre: "Elevaciones de hombro" },
+        { id: 4, nombre: "Frontales con disco" },
+        { id: 5, nombre: "Dorsalera" },
+        { id: 6, nombre: "Remo polea" },
+        { id: 7, nombre: "Pall off press" },
+        { id: 8, nombre: "Prensa 45°" },
+        { id: 9, nombre: "Extensión de rodilla" },
+        { id: 10, nombre: "Máquina Cuadríceps" },
+        { id: 11, nombre: "Puente isquiotibiales" },
+        { id: 12, nombre: "Press banca" },
+        { id: 13, nombre: "Press de hombros" },
+        { id: 14, nombre: "Mancuernas" },
+        { id: 15, nombre: "Dorsalera polea" },
+        { id: 16, nombre: "Remo mancuernas" },
+        { id: 17, nombre: "Estocadas" },
+        { id: 18, nombre: "Peso muerto Rumano" },
+        { id: 19, nombre: "Búlgaras" },
+        { id: 20, nombre: "Hip Thrust" },
+        { id: 21, nombre: "Elevaciones de talones" },
+        { id: 22, nombre: "Smith" },
+        { id: 23, nombre: "Crunch Abdominal" },
+        { id: 24, nombre: "Puente isquiotibiales" }
     ];
+
+    const handleCardioInicialChange = (event) => {
+        setCardioInicial(event.target.value);
+    };
+    const handleCardioFinalChange = (event) => {
+        setCardioFinal(event.target.value);
+    };
+    const handleCalentamientoChange = (event) => {
+        setCalentamiento(event.target.value);
+    };
+    const handleVueltaALaCanchaChange = (event) => {
+        setVueltaALaCancha(event.target.value);
+    };
+
 
     const handleExerciseChange = (index, value) => {
         const updatedExercises = [...selectedExercises];
@@ -67,12 +99,40 @@ const RegistroRutinas = (props) => {
         setSelectedDescanso(updatedDescanso);
     };
 
-    const alumnoSeleccionado = props.alumnoSeleccionado;
-    const { alumno } = useAuth();
-    return (
-        <Container style={{ marginTop: '70px', width: "100%", background: "white"  }}>
+    const registrarRutina = async () => {
+        // const datosSesion = sessionStorage.getItem("alumno_sesion");
+        const res = await axios.post(baseURL + '/metricas/alumno',
+            {
+                instructorId: alumno.id,
+                alumnoId: alumnoSeleccionado.id,
+                cardioInicial: cardioInicial,
+                cardioFinal: cardioFinal,
+                calentamiento: calentamiento,
+                vueltaALaCancha: vueltaALaCancha,
+                ejercicios: getEjercicios(),
+            });
+        
+    }
 
-            <Box sx={{ minWidth: "800px"}}>
+    const getEjercicios = () => {
+        const ejerciciosFormateados = rutina.map((ejercicio) => {
+            return {
+            nombre: selectedExercises[ejercicio].nombre,
+            repeticiones: selectedRepeticion[ejercicio],
+            series: selectedSerie[ejercicio],
+            kg: selectedKg[ejercicio],
+            descanso: selectedDescanso[ejercicio],
+            }
+        }
+        )
+        return ejerciciosFormateados;
+      }
+
+
+    return (
+        <Container style={{ marginTop: '70px', width: "100%", background: "white" }}>
+
+            <Box sx={{ minWidth: "800px" }}>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <Typography variant="subtitle1" component="h3" sx={{ fontSize: '30px', textAlign: "center" }}>
@@ -81,8 +141,8 @@ const RegistroRutinas = (props) => {
                         <h1>{props.alumnoSeleccionado?.nombre} {props.alumnoSeleccionado?.apellido}</h1>
                     </Grid>
                     <Grid item xs={6}>
-                        <div className="form-group" style={{ textAlign: "center", marginTop: "20px" }}>
-                            <FormControl style={{ width: '50%' }}>
+                        <div className="form-group" style={{ marginTop: "20px" }}>
+                            <FormControl style={{ width: '75%' }}>
                                 <InputLabel >Seleccione una rutina</InputLabel>
                                 <Select
                                     name="rutina"
@@ -114,12 +174,61 @@ const RegistroRutinas = (props) => {
                             </Typography>
                         </div>
                     </Grid>
-                    <Grid item xs={12}>
-                        <Button variant="contained" color="success" startIcon={<PlusOneIcon />} onClick={() => setRutina([...rutina, rutina.length])}>Agregar Ejercicio
-                        </Button>
-                    </Grid>
                 </Grid>
-
+                <Grid container spacing={2}>
+                <Grid item xs={3}>
+                    <Typography variant="subtitle1" component="h3" sx={{ fontSize: '20px' }}>
+                        Cardio Inicial
+                    </Typography>
+                    <TextField
+                        id="outlined-multiline-static"
+                        label="ej: 10 minutos"
+                        value={cardioInicial}
+                        onChange={handleCardioInicialChange}
+                        style={{ width: '100%' }}
+                    />
+                </Grid>
+                <Grid item xs={3}>
+                    <Typography variant="subtitle1" component="h3" sx={{ fontSize: '20px' }}>
+                        Cardio Final
+                    </Typography>
+                    <TextField
+                        id="outlined-multiline-static"
+                        label="ej: 10 minutos"
+                        value={cardioFinal}
+                        onChange={handleCardioFinalChange}
+                        style={{ width: '100%' }}
+                    />
+                </Grid>
+                </Grid>
+                <Grid>
+                    <Typography variant="subtitle1" component="h3" sx={{ fontSize: '20px' }}>
+                        Calentamiento
+                    </Typography>
+                    <TextField
+                        id="outlined-multiline-static"
+                        label="descripcion del calentamiento"
+                        multiline
+                        rows={2}
+                        value={calentamiento}
+                        onChange={handleCalentamientoChange}
+                        style={{ width: '75%' }}
+                    />
+                </Grid>
+                <Grid>
+                    <Typography variant="subtitle1" component="h3" sx={{ fontSize: '20px' }}>
+                        Vuelta a la cancha
+                    </Typography>
+                    <TextField
+                        id="outlined-multiline-static"
+                        label="descripcion de la vuelta a la cancha"
+                        multiline
+                        rows={2}
+                        value={vueltaALaCancha}
+                        onChange={handleVueltaALaCanchaChange}
+                        style={{ width: '75%' }}
+                    />
+                </Grid>
                 <TableContainer>
                     <Table>
                         <TableHead>
@@ -133,6 +242,10 @@ const RegistroRutinas = (props) => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
+                        <Grid item xs={12}>
+                        <Button variant="contained" color="success" startIcon={<PlusOneIcon />} onClick={() => setRutina([...rutina, rutina.length])}>Agregar Ejercicio
+                        </Button>
+                    </Grid>
                             {rutina.map((ejercicio) => (
                                 <TableRow key={ejercicio}>
                                     <TableCell>
@@ -151,6 +264,17 @@ const RegistroRutinas = (props) => {
                                                     </MenuItem>
                                                 ))}
                                             </Select>
+                                            {/*
+                                            <Autocomplete
+
+                                                disablePortal
+                                                id="combo-box-demo"
+                                                options={ejercicios}
+                                                getOptionLabel={(option) => option.nombre}
+                                                sx={{ width: 300 }}
+                                                renderInput={(params) => <TextField {...params} label="Ejercicios" />}
+                                            />
+                                            */}
                                         </FormControl>
                                     </TableCell>
                                     <TableCell><TextField
@@ -190,8 +314,8 @@ const RegistroRutinas = (props) => {
                                         onChange={(e) => handleDescansoChange(ejercicio, e.target.value)}
                                     /></TableCell>
                                     <TableCell>
-                                        <IconButton  aria-label="delete" size="small" color="error"  onClick={() => setRutina(rutina.filter((e) => e !== ejercicio))}>
-                                        <DeleteIcon />
+                                        <IconButton aria-label="delete" size="small" color="error" onClick={() => setRutina(rutina.filter((e) => e !== ejercicio))}>
+                                            <DeleteIcon />
                                         </IconButton>
                                     </TableCell>
                                 </TableRow>
