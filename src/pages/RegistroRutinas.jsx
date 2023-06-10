@@ -1,13 +1,39 @@
-import { Button, Typography, Grid, Select, IconButton, MenuItem, Autocomplete, InputLabel, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TextField, FormControl } from "@mui/material";
+import {
+    Button, Typography, Grid,
+    Select, IconButton, MenuItem,
+    Autocomplete, InputLabel, TableContainer,
+    Table, TableHead, TableRow,
+    TableCell, TableBody, TextField, FormControl
+} from "@mui/material";
 import moment from 'moment';
 import PlusOneIcon from '@mui/icons-material/PlusOne';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useState } from "react";
+import React, { useEffect, useState } from 'react';
 import baseURL from '../helpers/rutaBase';
 import { Container, Box, bgcolor } from '@mui/system';
 import useAuth from '../auth/useAuth';
 import axios from 'axios';
+import { useLocation } from 'react-router-dom';
 const RegistroRutinas = (props) => {
+
+
+    const location = useLocation();
+    const [alumnoSeleccionado, setAlumnoSeleccionado] = useState(null);
+
+    useEffect(() => {
+        const searchParams = new URLSearchParams(location.search);
+        const rut = searchParams.get('rut');
+        const nombre = searchParams.get('nombre');
+
+        // Aquí puedes hacer las validaciones y asignaciones necesarias
+        const alumnoRutina = {
+            rut,
+            nombre,
+            // Resto de los datos del alumno
+        };
+
+        setAlumnoSeleccionado(alumnoRutina);
+    }, [location.search]);
 
     //const filasTabla = Array.from(Array(8).keys());
     const [rutina, setRutina] = useState([]);
@@ -25,7 +51,7 @@ const RegistroRutinas = (props) => {
     const [selectedDescanso, setSelectedDescanso] = useState([]);
     const fechaActual = moment().format('DD-MM-YYYY');
     const { alumno } = useAuth();
-    const alumnoSeleccionado = props.alumnoSeleccionado; //TODO: cambiar por el alumno seleccionado
+
     let rutinas = {
         nomRutina,
         detalleRutina,
@@ -104,29 +130,29 @@ const RegistroRutinas = (props) => {
         const res = await axios.post(baseURL + '/metricas/alumno',
             {
                 instructorId: alumno.id,
-                alumnoId: alumnoSeleccionado.id,
+                alumnoId: alumnoSeleccionado.rut,
                 cardioInicial: cardioInicial,
                 cardioFinal: cardioFinal,
                 calentamiento: calentamiento,
                 vueltaALaCancha: vueltaALaCancha,
                 ejercicios: getEjercicios(),
             });
-        
+
     }
 
     const getEjercicios = () => {
         const ejerciciosFormateados = rutina.map((ejercicio) => {
             return {
-            nombre: selectedExercises[ejercicio].nombre,
-            repeticiones: selectedRepeticion[ejercicio],
-            series: selectedSerie[ejercicio],
-            kg: selectedKg[ejercicio],
-            descanso: selectedDescanso[ejercicio],
+                nombre: selectedExercises[ejercicio].nombre,
+                repeticiones: selectedRepeticion[ejercicio],
+                series: selectedSerie[ejercicio],
+                kg: selectedKg[ejercicio],
+                descanso: selectedDescanso[ejercicio],
             }
         }
         )
         return ejerciciosFormateados;
-      }
+    }
 
 
     return (
@@ -138,7 +164,6 @@ const RegistroRutinas = (props) => {
                         <Typography variant="subtitle1" component="h3" sx={{ fontSize: '30px', textAlign: "center" }}>
                             Registro De Rutina
                         </Typography>
-                        <h1>{props.alumnoSeleccionado?.nombre} {props.alumnoSeleccionado?.apellido}</h1>
                     </Grid>
                     <Grid item xs={6}>
                         <div className="form-group" style={{ marginTop: "20px" }}>
@@ -164,7 +189,7 @@ const RegistroRutinas = (props) => {
                                 Nombre Rutina: {nomRutina}
                             </Typography>
                             <Typography variant="subtitle1" component="h3" sx={{ fontSize: '20px' }}>
-                                Alumno:
+                                Alumno: {alumnoSeleccionado && `${alumnoSeleccionado.nombre}`}
                             </Typography>
                             <Typography variant="subtitle1" component="h3" sx={{ fontSize: '20px' }}>
                                 Instructor: {alumno?.nombre ?? 'Sin información'}
@@ -176,30 +201,30 @@ const RegistroRutinas = (props) => {
                     </Grid>
                 </Grid>
                 <Grid container spacing={2}>
-                <Grid item xs={3}>
-                    <Typography variant="subtitle1" component="h3" sx={{ fontSize: '20px' }}>
-                        Cardio Inicial
-                    </Typography>
-                    <TextField
-                        id="outlined-multiline-static"
-                        label="ej: 10 minutos"
-                        value={cardioInicial}
-                        onChange={handleCardioInicialChange}
-                        style={{ width: '100%' }}
-                    />
-                </Grid>
-                <Grid item xs={3}>
-                    <Typography variant="subtitle1" component="h3" sx={{ fontSize: '20px' }}>
-                        Cardio Final
-                    </Typography>
-                    <TextField
-                        id="outlined-multiline-static"
-                        label="ej: 10 minutos"
-                        value={cardioFinal}
-                        onChange={handleCardioFinalChange}
-                        style={{ width: '100%' }}
-                    />
-                </Grid>
+                    <Grid item xs={3}>
+                        <Typography variant="subtitle1" component="h3" sx={{ fontSize: '20px' }}>
+                            Cardio Inicial
+                        </Typography>
+                        <TextField
+                            id="outlined-multiline-static"
+                            label="ej: 10 minutos"
+                            value={cardioInicial}
+                            onChange={handleCardioInicialChange}
+                            style={{ width: '100%' }}
+                        />
+                    </Grid>
+                    <Grid item xs={3}>
+                        <Typography variant="subtitle1" component="h3" sx={{ fontSize: '20px' }}>
+                            Cardio Final
+                        </Typography>
+                        <TextField
+                            id="outlined-multiline-static"
+                            label="ej: 10 minutos"
+                            value={cardioFinal}
+                            onChange={handleCardioFinalChange}
+                            style={{ width: '100%' }}
+                        />
+                    </Grid>
                 </Grid>
                 <Grid>
                     <Typography variant="subtitle1" component="h3" sx={{ fontSize: '20px' }}>
@@ -242,10 +267,10 @@ const RegistroRutinas = (props) => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                        <Grid item xs={12}>
-                        <Button variant="contained" color="success" startIcon={<PlusOneIcon />} onClick={() => setRutina([...rutina, rutina.length])}>Agregar Ejercicio
-                        </Button>
-                    </Grid>
+                            <Grid item xs={12}>
+                                <Button variant="contained" color="success" startIcon={<PlusOneIcon />} onClick={() => setRutina([...rutina, rutina.length])}>Agregar Ejercicio
+                                </Button>
+                            </Grid>
                             {rutina.map((ejercicio) => (
                                 <TableRow key={ejercicio}>
                                     <TableCell>
@@ -323,10 +348,12 @@ const RegistroRutinas = (props) => {
                         </TableBody>
                     </Table>
                 </TableContainer>
-
-                <Button autoFocus color="success" variant="contained">
-                    Confirmar registro de rutinas
-                </Button>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px'}}>                         
+                    <Button autoFocus color="success" variant="contained" >
+                        Confirmar registro de rutinas
+                    </Button>
+                </div>
+                <br />
             </Box>
 
 
