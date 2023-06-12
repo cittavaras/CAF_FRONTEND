@@ -6,7 +6,6 @@ import useAuth from '../auth/useAuth';
 import ReservarSesion from './ReservarSesion';
 import InformeAsistencia from './InformeAsistencia';
 import baseURL from '../helpers/rutaBase';
-import HomeIcon from '@mui/icons-material/Home';
 import Box from '@mui/material/Box';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
@@ -15,6 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import QueryStatsIcon from '@mui/icons-material/QueryStats';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import styled from "styled-components";
+import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 
 const AlumnoContainer = styled.div`
     bottom: 0;
@@ -25,17 +25,16 @@ const AlumnoContainer = styled.div`
     background-color: #1E1E1E;
 `;
 
-
 const BotonesPerfil = () => {
-    
+
     //const {alumno, hasRole} = useAuth();
-    const {alumno, hasRole} = useAuth();
+    const { alumno, hasRole } = useAuth();
 
     const [open, setOpen] = useState(false);
     const [asistenciaOpen, setAsistenciaOpen] = useState(false);
     const [reservasAlumno, setReservasAlumno] = useState([]);
 
-    const navigate = useNavigate();    
+    const navigate = useNavigate();
 
     const handleOpen = () => {
         setOpen(true)
@@ -47,10 +46,10 @@ const BotonesPerfil = () => {
     }
     const handleButtonClick = () => {
         navigate('/metrica');
-      };
-      const handleHome = () => {
+    };
+    const handleHome = () => {
         navigate('/landing');
-      };
+    };
     const handleGraficos = () => {
         navigate('/graficos');
     };
@@ -65,15 +64,15 @@ const BotonesPerfil = () => {
 
     const getReservasByAlumno = async (fecha = new Date()) => {
         try {
-          const res = await axios.post(baseURL + '/reservas/alumno', { rut: alumno.rut, fecha });
-          const nuevasReservas = res?.data ?? [];
-          setReservasAlumno(nuevasReservas);
-          //console.log("res?.data", nuevasReservas);
-          return nuevasReservas;
+            const res = await axios.post(baseURL + '/reservas/alumno', { rut: alumno.rut, fecha });
+            const nuevasReservas = res?.data ?? [];
+            setReservasAlumno(nuevasReservas);
+            //console.log("res?.data", nuevasReservas);
+            return nuevasReservas;
         } catch (error) {
-          //console.log(error);
+            //console.log(error);
         }
-      }
+    }
     const [value, setValue] = React.useState(0);
 
 
@@ -84,70 +83,84 @@ const BotonesPerfil = () => {
     }, [alumno]);
 
     return (
-        <div className='d-flex flex-column' style={{marginTop:'100px'}}>
+        <div>
             {hasRole(roles.alumno) && <>
                 <AlumnoContainer className='fixed-bottom container-xl '>
-                <Box>
-                    <BottomNavigation
-                        showLabels
-                        value={value}
-                        onChange={(event, newValue) => {
-                        setValue(newValue);
-                        }}
-                    >
-                        <BottomNavigationAction 
-                            onClick={handleHome} 
-                            label="Inicio" 
-                            icon={<HomeIcon />}
-                            style={{
-                                color: "#FCB924",
+                    <Box>
+                        <BottomNavigation
+                            showLabels
+                            value={value}
+                            onChange={(event, newValue) => {
+                                setValue(newValue);
                             }}
-                        />
-                        <BottomNavigationAction
-                            label="Metricas" 
-                            icon={<AssignmentIcon/>}
-                            onClick={handleButtonClick}
-                            style={{
-                                color: "#FCB924", 
-                            }}
-                        />
-                        <BottomNavigationAction 
-                            label="Historial" 
-                            onClick={handleGraficos} 
-                            icon={<QueryStatsIcon />}
-                            style={{ 
-                                color: "#FCB924",
-                            }}
-                        />
-                        <BottomNavigationAction 
-                            label="Reserva" 
-                            onClick={handleOpen} 
-                            icon={<RestoreIcon/>}
-                            style={{ 
-                                color: "#FCB924",
-                            }} 
-                        />
-                    </BottomNavigation>
-                </Box>
+                        >
+                            <BottomNavigationAction
+                                label="Metricas"
+                                icon={<AssignmentIcon />}
+                                onClick={handleButtonClick}
+                                style={{
+                                    color: "#FCB924",
+                                }}
+                            />
+                            <BottomNavigationAction
+                                label="Historial"
+                                onClick={handleGraficos}
+                                icon={<QueryStatsIcon />}
+                                style={{
+                                    color: "#FCB924",
+                                }}
+                            />
+                            <BottomNavigationAction
+                                label="Reserva"
+                                onClick={handleOpen}
+                                icon={<RestoreIcon />}
+                                style={{
+                                    color: "#FCB924",
+                                }}
+                            />
+                            <BottomNavigationAction
+                                onClick={handleHome}
+                                label="Rutina"
+                                icon={<FitnessCenterIcon />}
+                                style={{
+                                    color: "#FCB924",
+                                }}
+                            />
+                        </BottomNavigation>
+                    </Box>
                 </AlumnoContainer>
             </>}
-            {hasRole(roles.admin) && <>
-                <button className='btn' style={{ backgroundColor: '#C0D437', color: '#042945', marginRight: '10px', fontWeight: 'bold', marginBottom: '10px' }} onClick={handleOpen}>Gestionar bloques</button>
-                <Link className='btn' to="/crearUsuario" style={{ backgroundColor: '#E6E7E9', color: '#042945', marginRight: '10px', fontWeight: 'bold', marginBottom: '10px' }}>Crear Usuarios</Link>
-                <Link className='btn' to="/listar" style={{ backgroundColor: '#FCB32E', color: '#042945', marginRight: '10px', fontWeight: 'bold', marginBottom: '10px' }}>Solicitudes de cuentas de usuarios pendientes</Link>
-                <Link className='btn' to="/mantenedor" style={{ backgroundColor: '#042945', color: '#FCB32E', fontWeight: 'bold', marginBottom: '10px' }}>Mantenedor de usuarios</Link>
-                <button className='btn' style={{ backgroundColor: '#C0D437', color: '#042945', marginRight: '10px', fontWeight: 'bold', marginBottom: '10px' }} onClick={handleOpenInforme}>Informe de Asistencia </button>
-            </>}
-            {hasRole(roles.instructor) && <>
-                <button className='btn' style={{ backgroundColor: '#C0D437', color: '#042945', marginRight: '10px', fontWeight: 'bold', marginBottom: '10px' }} onClick={handleOpen}>Gestionar bloques</button>
-                <Link className='btn' to="/listarActivos" style={{ backgroundColor: '#FCB32E', color: '#042945', marginRight: '10px', fontWeight: 'bold', marginBottom: '10px' }}>Buscar Alumnos</Link>
-                <button className='btn' style={{ backgroundColor: '#C0D437', color: '#042945', marginRight: '10px', fontWeight: 'bold', marginBottom: '10px' }} onClick={handleOpenInforme}>Informe de Asistencia</button>
-            </>}
-            {open && <ReservarSesion open={open} setOpen={setOpen} handleClose={handleClose} reservasAlumno={reservasAlumno} getReservasByAlumno={getReservasByAlumno} />}
-            {asistenciaOpen && <InformeAsistencia open={asistenciaOpen} setOpen={setAsistenciaOpen} handleClose={handleCloseInforme}/>}
+            <div className="row">
+                {hasRole(roles.admin) && <>
+                    <div className="col-12 col-md-2">
+                        <button className='btn' style={{ backgroundColor: '#C0D437', color: '#042945', fontWeight: 'bold'}} onClick={handleOpen}>Gestionar bloques</button>
+                    </div>
+                    <div className="col-12 col-md-2">
+                        <Link className='btn' to="/crearUsuario" style={{ backgroundColor: '#E6E7E9', color: '#042945',fontWeight: 'bold'}}>Crear Usuarios</Link>
+                    </div>
+                    <div className="col-12 col-md-2">
+                        <Link className='btn' to="/listar" style={{ backgroundColor: '#FCB32E', color: '#042945', fontWeight: 'bold' }}>Solicitudes pendientes</Link>
+                    </div>
+                    <div className="col-12 col-md-2">
+                        <Link className='btn' to="/mantenedor" style={{ backgroundColor: '#042945', color: '#FCB32E', fontWeight: 'bold'}}>Mantenedor de usuarios</Link>
+                    </div>
+                    <div className="col-12 col-md-2">
+                        <button className='btn' style={{ backgroundColor: '#C0D437', color: '#042945', fontWeight: 'bold'}} onClick={handleOpenInforme}>Informe de Asistencia</button>
+                    </div>
+                    <div className="col-12 col-md-2">
+                        <Link className='btn' to="/informativo" style={{ backgroundColor: '#E6E7E9', color: '#042945', fontWeight: 'bold' }}>Informativo</Link>
+                    </div>
+                </>}
+                {hasRole(roles.instructor) && <>
+                    <button className='btn' style={{ backgroundColor: '#C0D437', color: '#042945', marginRight: '10px', fontWeight: 'bold', marginBottom: '10px', marginTop: '90px' }} onClick={handleOpen}>Gestionar bloques</button>
+                    <Link className='btn' to="/listarActivos" style={{ backgroundColor: '#FCB32E', color: '#042945', marginRight: '10px', fontWeight: 'bold', marginBottom: '10px' }}>Buscar Alumnos</Link>
+                    <button className='btn' style={{ backgroundColor: '#C0D437', color: '#042945', marginRight: '10px', fontWeight: 'bold', marginBottom: '10px' }} onClick={handleOpenInforme}>Informe de Asistencia</button>
+                </>}
+                {open && <ReservarSesion open={open} setOpen={setOpen} handleClose={handleClose} reservasAlumno={reservasAlumno} getReservasByAlumno={getReservasByAlumno} />}
+                {asistenciaOpen && <InformeAsistencia open={asistenciaOpen} setOpen={setAsistenciaOpen} handleClose={handleCloseInforme} />}
+            </div>
         </div>
     )
 }
-
 
 export default BotonesPerfil;

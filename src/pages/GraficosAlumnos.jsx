@@ -9,18 +9,7 @@ import moment from 'moment';
 import 'moment/locale/es';
 import { styled } from '@mui/system';
 import { useMediaQuery } from '@mui/material';
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  LineChart,
-  Line,
-} from 'recharts';
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Area, CartesianGrid, Tooltip, Legend, LineChart, Line} from "recharts";
 
 const Graficos = () => {
   const [metricas, setMetricas] = useState([]);
@@ -69,10 +58,10 @@ const Graficos = () => {
 
     return (
       <div className='container'>
-        <div style={{ marginLeft: '9%', color: 'white' }}>
+        <div class="mt-3 mb-3" style={{color: 'white'}}>
           Seleccione una metrica para visualizar
         </div>
-        <div style={{marginLeft: '9%'}}>
+        <div>
           <button
             className={`btn btn-dark ${isMobile ? 'col-12' : 'col-md-2'} me-2 my-1`}
             style={{ display: 'inline-flex', alignItems: 'center', marginTop: '100px' }}
@@ -108,43 +97,40 @@ const Graficos = () => {
             Grasa Visceral
           </button>
         </div>
-        <div>
-          <div >
-            <ResponsiveContainer width={isMobile ? '100%' : 500}>
-              <CustomBox>
-                <LineChart
-                  width={500}
-                  margin={{
-                    left: -5,
-                    top: 50,
-                    bottom: 100,
-                    right: 50
-                  }} height={500}
-                  data={personasSinUnidadDeMedida}>
-                  <Line dataKey={selectedMetric} stroke="#C0D437" />
-                  <CartesianGrid stroke="#C0D437" />
-                  <XAxis
-                    dataKey="name"
-                    label={{
-                      value: 'Fecha de registro',
-                      position: 'insideBottom',
-                    }}
-                  />
-                  <YAxis
-                    angle={90}
-                    label={{
-                      value: selectedMetric.charAt(0).toUpperCase() + selectedMetric.slice(1),
-                      angle: -90,
-                    }}
-                  />
-                  <Tooltip
-                    labelFormatter={(value) => `Fecha actual - ${moment(value.fecha).format('DD/MM/YYYY')}`}
-                    formatter={(value, name, entry) => [`${value} - ${moment(entry.payload.fecha).format('DD/MM/YYYY')}`, selectedMetric]}
-                  />
-                </LineChart>
-              </CustomBox>
-            </ResponsiveContainer>
-          </div>
+        <div style={{ width: '100%', height: 400 }}>
+          <ResponsiveContainer>
+          <LineChart
+                width={100} 
+                height={100}
+                margin={{
+                  left: -5,
+                  top: 50,
+                  bottom: 100,
+                  right: 50
+                }} 
+                data={personasSinUnidadDeMedida}>
+                <Line dataKey={selectedMetric} stroke="#C0D437" />
+                <CartesianGrid stroke="#C0D437" />
+                <XAxis
+                  dataKey="name"
+                  label={{
+                    value: 'Fecha de registro',
+                    position: 'insideBottom',
+                  }}
+                />
+                <YAxis
+                  angle={90}
+                  label={{
+                    value: selectedMetric.charAt(0).toUpperCase() + selectedMetric.slice(1),
+                    angle: -90,
+                  }}
+                />
+                <Tooltip
+                  labelFormatter={(value) => `Fecha actual - ${moment(value.fecha).format('DD/MM/YYYY')}`}
+                  formatter={(value, name, entry) => [`${value} - ${moment(entry.payload.fecha).format('DD/MM/YYYY')}`, selectedMetric]}
+                />
+            </LineChart>
+          </ResponsiveContainer>
         </div>
       </div>
     );
