@@ -43,7 +43,7 @@ const RegistroRutinas = (props) => {
     const [cardioInicial, setCardioInicial] = useState("");
     const [cardioFinal, setCardioFinal] = useState("");
     const [calentamiento, setCalentamiento] = useState("");
-    const [vueltaALaCancha, setVueltaALaCancha] = useState("");
+    const [vueltaALaCalma, setVueltaALaCalma] = useState("");
     const [selectedExercises, setSelectedExercises] = useState([]);
     const [selectedRepeticion, setSelectedRepeticion] = useState([]);
     const [selectedSerie, setSelectedSerie] = useState([]);
@@ -94,8 +94,8 @@ const RegistroRutinas = (props) => {
     const handleCalentamientoChange = (event) => {
         setCalentamiento(event.target.value);
     };
-    const handleVueltaALaCanchaChange = (event) => {
-        setVueltaALaCancha(event.target.value);
+    const handleVueltaALaCalmaChange = (event) => {
+        setVueltaALaCalma(event.target.value);
     };
 
 
@@ -134,7 +134,7 @@ const RegistroRutinas = (props) => {
                 cardioInicial: cardioInicial,
                 cardioFinal: cardioFinal,
                 calentamiento: calentamiento,
-                vueltaALaCancha: vueltaALaCancha,
+                vueltaALaCalma: vueltaALaCalma,
                 ejercicios: getEjercicios(),
             });
 
@@ -242,15 +242,15 @@ const RegistroRutinas = (props) => {
                 </Grid>
                 <Grid>
                     <Typography variant="subtitle1" component="h3" sx={{ fontSize: '20px' }}>
-                        Vuelta a la cancha
+                        Vuelta a la calma
                     </Typography>
                     <TextField
                         id="outlined-multiline-static"
-                        label="descripcion de la vuelta a la cancha"
+                        label="descripcion de la vuelta a la calma"
                         multiline
                         rows={2}
-                        value={vueltaALaCancha}
-                        onChange={handleVueltaALaCanchaChange}
+                        value={vueltaALaCalma}
+                        onChange={handleVueltaALaCalmaChange}
                         style={{ width: '75%' }}
                     />
                 </Grid>

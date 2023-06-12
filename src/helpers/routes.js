@@ -10,4 +10,5 @@ const routes = {
     admin: '/admin',
     listar: '/listar',
     registroRutinas: '/registroRutinas',
+    rutina: '/rutina',
 };
