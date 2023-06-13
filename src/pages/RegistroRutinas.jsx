@@ -35,9 +35,16 @@ const RegistroRutinas = (props) => {
         setAlumnoSeleccionado(alumnoRutina);
     }, [location.search]);
 
+    useEffect(() => {
+        if (alumnoSeleccionado) {
+            // Aquí puedes hacer las validaciones y asignaciones necesarias
+            getRutinas();
+            console.log('Alumno seleccionado', alumnoSeleccionado);
+        }
+    }, [alumnoSeleccionado]);
     //const filasTabla = Array.from(Array(8).keys());
-    const [rutina, setRutina] = useState([]);
-
+    const [selectedRutina, setSelectedRutina] = useState([]);
+    const [rutinas, setRutinas] = useState([]);
     const [nomRutina, setNomRutina] = useState("");
     const [detalleRutina, setDetalleRutina] = useState("");
     const [cardioInicial, setCardioInicial] = useState("");
@@ -52,11 +59,8 @@ const RegistroRutinas = (props) => {
     const fechaActual = moment().format('DD-MM-YYYY');
     const { alumno } = useAuth();
 
-    let rutinas = {
-        nomRutina,
-        detalleRutina,
-    };
-    rutinas.rut = props?.alumnoSeleccionado?.rut;
+
+    
 
     const ejercicios = [
         { id: 1, nombre: "Flexiones de brazo apoyo" },
@@ -125,11 +129,14 @@ const RegistroRutinas = (props) => {
         setSelectedDescanso(updatedDescanso);
     };
 
-    const registrarRutina = async () => {
+    const registrarRutina = async (e) => {
+        e.preventDefault();
+        console.log("alumno", alumno)
         // const datosSesion = sessionStorage.getItem("alumno_sesion");
-        const res = await axios.post(baseURL + '/metricas/alumno',
+        const res = await axios.post(baseURL + '/rutinas/alumno/',
             {
-                instructorId: alumno.id,
+                nombre: nomRutina,
+                instructorId: alumno.rut,
                 alumnoId: alumnoSeleccionado.rut,
                 cardioInicial: cardioInicial,
                 cardioFinal: cardioFinal,
@@ -139,11 +146,30 @@ const RegistroRutinas = (props) => {
             });
 
     }
+    const getRutinas = async () => {
+        
+        const res = await axios.get(baseURL + '/rutinas/alumno', { params: { rut: alumnoSeleccionado.rut } });
+        //  console.log(rut);
+        //   console.log(res);
+        //  // console.log("Todas las metricas",res.data)
+        const rutinaAlumno = res.data;
+        console.log("rutinaAlumno", rutinaAlumno)
+        setRutinas(rutinaAlumno);
+        if (rutinaAlumno.length > 0) {
+            const rutinaDefault = rutinaAlumno[0];
+            setCardioInicial(rutinaDefault.cardioInicial);
+            setCardioFinal(rutinaDefault.cardioFinal);
+            setCalentamiento(rutinaDefault.calentamiento);
+            setVueltaALaCalma(rutinaDefault.vueltaALaCalma);
+            setNomRutina(rutinaDefault.nombre);
+            setSelectedExercises(generarEjercicios(rutinaDefault.ejercicios))
+        }
 
+    }
     const getEjercicios = () => {
-        const ejerciciosFormateados = rutina.map((ejercicio) => {
+        const ejerciciosFormateados = selectedRutina.map((ejercicio) => {
             return {
-                nombre: selectedExercises[ejercicio].nombre,
+                nombre: selectedExercises[ejercicio],
                 repeticiones: selectedRepeticion[ejercicio],
                 series: selectedSerie[ejercicio],
                 kg: selectedKg[ejercicio],
@@ -153,6 +179,14 @@ const RegistroRutinas = (props) => {
         )
         return ejerciciosFormateados;
     }
+    const generarEjercicios = (ejercicios = []) => {
+        setSelectedExercises(ejercicios.map(ejercicio => ejercicio.nombre));
+        setSelectedRepeticion(ejercicios.map(ejercicio => ejercicio.repeticiones));
+        setSelectedSerie(ejercicios.map(ejercicio => ejercicio.series));
+        setSelectedKg(ejercicios.map(ejercicio => ejercicio.kg));
+        setSelectedDescanso(ejercicios.map(ejercicio => ejercicio.descanso));
+        //setSelectedRutina(ejercicios.map((ejercicio, index) => index));
+        }
 
 
     return (
@@ -268,10 +302,10 @@ const RegistroRutinas = (props) => {
                         </TableHead>
                         <TableBody>
                             <Grid item xs={12}>
-                                <Button variant="contained" color="success" startIcon={<PlusOneIcon />} onClick={() => setRutina([...rutina, rutina.length])}>Agregar Ejercicio
+                                <Button variant="contained" color="success" startIcon={<PlusOneIcon />} onClick={() => setSelectedRutina([...selectedRutina, selectedRutina.length])}>Agregar Ejercicio
                                 </Button>
                             </Grid>
-                            {rutina.map((ejercicio) => (
+                            {selectedRutina.map((ejercicio) => (
                                 <TableRow key={ejercicio}>
                                     <TableCell>
                                         <FormControl style={{ width: '100%', minWidth: "200px" }}>
@@ -339,7 +373,7 @@ const RegistroRutinas = (props) => {
                                         onChange={(e) => handleDescansoChange(ejercicio, e.target.value)}
                                     /></TableCell>
                                     <TableCell>
-                                        <IconButton aria-label="delete" size="small" color="error" onClick={() => setRutina(rutina.filter((e) => e !== ejercicio))}>
+                                        <IconButton aria-label="delete" size="small" color="error" onClick={() => setSelectedRutina(selectedRutina.filter((e) => e !== ejercicio))}>
                                             <DeleteIcon />
                                         </IconButton>
                                     </TableCell>
@@ -349,7 +383,7 @@ const RegistroRutinas = (props) => {
                     </Table>
                 </TableContainer>
                 <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px'}}>                         
-                    <Button autoFocus color="success" variant="contained" >
+                    <Button autoFocus color="success" variant="contained" onClick={registrarRutina}>
                         Confirmar registro de rutinas
                     </Button>
                 </div>
