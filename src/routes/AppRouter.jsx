@@ -35,17 +35,17 @@ export default function AppRouter() {
           {/* Rutas publicas */}
           <Route path="/registro" element={
             <PublicRoute>
-              <CrearAlumno />
+              <CrearAlumno/>
             </PublicRoute>}
           />
           <Route path="/qr" element={
             <PublicRoute>
-              <Inicio />
+              <Inicio/>
             </PublicRoute>}
           />
           <Route path="/bienvenida" element={
             <PublicRoute>
-              <Bienvenida />
+              <Bienvenida/>
             </PublicRoute>}
           />
           <Route path="/" element={
@@ -56,7 +56,7 @@ export default function AppRouter() {
           {/* Ruta que no existe */}
           <Route path="*" element={
             <PublicRoute>
-              <NotFoundPage />
+              <NotFoundPage/>
             </PublicRoute>}
           />
           <Route path="/notificacion" element={
@@ -66,34 +66,34 @@ export default function AppRouter() {
           />
           <Route path="/nosotros" element={
             <PublicRoute>
-              <SobreNosotros />
+              <SobreNosotros/>
             </PublicRoute>}
           />
 
           {/* Rutas privadas */}
           <Route path="/landing" element={
-            <PrivateRoute >
+            <PrivateRoute>
               <LandingPageAlumno />
             </PrivateRoute>}
           />
           <Route path="/reserva" element={
             <PrivateRoute>
-              <AgendaReserva />
+              <AgendaReserva/>
             </PrivateRoute>}
           />
           <Route path="/metrica" element={
-            <PrivateRoute >
-              <MetricaAlumno />
+            <PrivateRoute>
+              <MetricaAlumno/>
             </PrivateRoute>}
           />
           <Route path="/graficos" element={
-            <PrivateRoute >
+            <PrivateRoute>
               <GraficosAlumnos/>
             </PrivateRoute>}
           />
           <Route path="/configuracion" element={
-            <PrivateRoute >
-              <Configuracion />
+            <PrivateRoute>
+              <Configuracion/>
             </PrivateRoute>}
           />
           <Route path="/listar" element={
@@ -130,7 +130,7 @@ function PrivateRoute({ children, redirectTo = '/', hasRole: tipoUsuario }) {
   }
 
   if (!isLogged()) {
-    return <Navigate to={routes.login} />;
+    return <Navigate to={'/'} />;
   }
   return children;
 }

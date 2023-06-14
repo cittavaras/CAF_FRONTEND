@@ -14,27 +14,53 @@ import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import moment from 'moment';
 import 'moment/locale/es';
-
-
-<link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet"></link>
-
+import CircularProgress from '@mui/material/CircularProgress';
 
 const Metrica = () => {
   const { alumno } = useAuth();
   const [metricasRecientes, setMetricasRecientes] = useState([]);
+  const [isFetchDone, setIsFetchDone] = useState(true);
   const [metricas, setMetricas] = useState([]);
   const [fecha, setFecha] = useState([]);
 
   useEffect(() => {
-    MetricasRecientes();
+    MetricasRecientes()
   }, []);
+
+  useEffect(() => {
+    console.log(metricasRecientes);
+  }, [metricasRecientes])
+
+  function getNumericValue(valor) {
+    let contenidoNumerico;
+    let valorNumerico;
+    if (valor) {
+      contenidoNumerico = valor.match(/[\d.]+/); // Extraer los dígitos numéricos del valor utilizando una expresión regular
+      if (contenidoNumerico) {
+        valorNumerico = parseFloat(contenidoNumerico[0]); // Convertir el contenido numérico extraído en un valor numérico
+        //const valorNumerico = parseFloat(contenidoNumerico[0].replace(/,/g, '')); 
+        return valorNumerico;
+      }
+    } else {
+      return valor;
+    }
+  }
+
 
   const MetricasRecientes = async () => {
     const { rut } = JSON.parse(sessionStorage.getItem('alumno_sesion'));
     const res = await axios.post(baseURL + '/metricas/alumno', { rut });
     const metricaAlumno = res.data;
+    const valor = data[0]?.valor; // Suponiendo que data es un arreglo de objetos y quieres acceder al primer elemento
+
+    metricaAlumno.edad = getNumericValue(metricaAlumno.edad);
+    metricaAlumno.grasaVisceral = getNumericValue(metricaAlumno.grasaVisceral);
+    metricaAlumno.peso = getNumericValue(metricaAlumno.peso);
+    metricaAlumno.altura = getNumericValue(metricaAlumno.altura);
+
     setFecha(metricaAlumno.fecha);
-    setMetricasRecientes(metricaAlumno);
+    setMetricasRecientes(metricaAlumno);  
+    setIsFetchDone(false);
     await getMetricas();
   }
 
@@ -49,9 +75,9 @@ const Metrica = () => {
   const data = React.useMemo(() => {
     if (metricasRecientes) {
       return [
-        { metrica: 'Edad', valor: `${metricasRecientes?.edad ?? 'No registra métricas'}` },
-        { metrica: 'Altura', valor: `${metricasRecientes?.altura ?? 'No registra métricas'}` },
-        { metrica: 'Peso corporal', valor: `${metricasRecientes?.peso ?? 'No registra métricas'}` },
+        { metrica: 'EDAD', valor: `${metricasRecientes?.edad ?? 'No registra métricas'}` },
+        { metrica: 'ALTURA', valor: `${metricasRecientes?.altura ?? 'No registra métricas'}` },
+        { metrica: 'PESO', valor: `${metricasRecientes?.peso ?? 'No registra métricas'}` },
         { metrica: 'Porcentaje de grasa corporal', valor: `${metricasRecientes?.porcentajeGrasaCorporal ?? 'No registra métricas'}` },
         { metrica: 'Porcentaje de músculo', valor: `${metricasRecientes?.porcentajeGrasaMuscular ?? 'No registra métricas'}` },
         { metrica: 'Índice de masa corporal (IMC)', valor: `${metricasRecientes?.imc ?? 'No registra métricas'}` },
@@ -67,20 +93,26 @@ const Metrica = () => {
   const handleChange = async (event) => {
     const selectedFecha = event.target.value;
     setFecha(selectedFecha);
-  
+
     const metricasAlumno = metricas.find((metrica) => metrica.fecha === selectedFecha);
+
+    metricasAlumno.edad = getNumericValue(metricasAlumno.edad);
+    metricasAlumno.grasaVisceral = getNumericValue(metricasAlumno.grasaVisceral);
+    metricasAlumno.peso = getNumericValue(metricasAlumno.peso);
+    metricasAlumno.altura = getNumericValue(metricasAlumno.altura);
     setMetricasRecientes(metricasAlumno);
+
   };
 
   const ButtonDropdown = () => {
     return (
-      <Box sx={{ minWidth: 120, width: '100%', margin:'auto', padding: '19px'}}>
+      <Box sx={{ minWidth: 120, width: '100%', margin: 'auto', padding: '19px' }}>
         <FormControl fullWidth variant="filled" >
-          <InputLabel style={{color:'White'}} id="demo-simple-select-label">
+          <InputLabel style={{ color: 'White' }} id="demo-simple-select-label">
             Fecha
           </InputLabel>
           <Select
-            style={{color:'White'}}
+            style={{ color: 'White' }}
             labelId="demo-simple-select-label"
             id="demo-simple-select"
             value={fecha}
@@ -88,75 +120,67 @@ const Metrica = () => {
             onChange={handleChange}
           >
             {metricas.map((metrica, i) => (
-              <MenuItem value={metrica.fecha} key= {i}>
+              <MenuItem value={metrica.fecha} key={i}>
                 {moment(metrica.fecha).format('DD/MM/YYYY')}
               </MenuItem>
             ))}
-        </Select>
-      </FormControl>
-    </Box>
+          </Select>
+        </FormControl>
+      </Box>
     );
   };
 
-  const MetricCard = ({ metrica, valor, gridArea, colSize = 4 }) => (
+  const MetricCard = ({ metrica, valor, gridArea, colSize = 4 , medida}) => (
     <div
       className={`col-${colSize} my-2`}
       style={{
         gridArea,
-        padding: '5px',
         margin: '0',
       }}
     >
-      <div
+      <div class="caf_green_bg"
         style={{
           gridArea,
-          backgroundColor: 'rgba(192, 212, 55, 0.7)',
-          border: '1px solid white',
+          border: '2px solid #C0D437',
           borderRadius: '19px',
-          padding: '15px',
+          padding: '10px',
           margin: '0',
           height: '100%',
         }}
       >
-        <Typography style={{ color: 'white' }} variant="subtitle1" component="div">{metrica}</Typography>
-        <Typography style={{ color: 'white' }} variant="h6">{valor}</Typography>
+        <Typography style={{ color: 'white', textAlign: 'left', fontSize: '.8rem', fontWeight: '400' }} variant="subtitle1" component="div">{metrica}</Typography>
+        <Typography style={{ color: 'white', textAlign: 'left', fontSize: '1.8rem', fontWeight: '400' }} variant="h6">{valor} {' '}<span style={{ fontSize: '1.2rem', fontWeight:'300'}}>{medida}</span></Typography>
       </div>
     </div>
   );
 
   const card = (
-    <CardContent style={{padding: '0px!important'}}>
-      <div className='row'>
-        <MetricCard metrica={data[0]?.metrica} valor={data[0]?.valor} gridArea="edad" />
-        <MetricCard metrica="IMC" valor={data[5]?.valor} gridArea="IMC" />
-        <MetricCard metrica={data[6]?.metrica} valor={data[6]?.valor} gridArea="grasavisceral" />
-      </div>
-      <div className='row'>
-        <MetricCard metrica={data[1]?.metrica} valor={data[1]?.valor} gridArea="altura" />
-        <MetricCard colSize={8} metrica={data[3]?.metrica} valor={data[3]?.valor} gridArea="porcentajedecrasacorporal" />
-      </div>
-      <div className='row'>
-        <MetricCard metrica={data[2]?.metrica} valor={data[2]?.valor} gridArea="pesocorporal" />
-        <MetricCard colSize={8} metrica={data[4]?.metrica} valor={data[4]?.valor} gridArea="porcentajedemusculo" />
-      </div>
+    <CardContent style={{ padding: '0px!important' }} className="row card-metrics-content">
+      <MetricCard colSize={4} metrica={data[0]?.metrica} valor={data[0]?.valor} medida={'años'} gridArea="edad" />
+      <MetricCard colSize={4} metrica="IMC" valor={data[5]?.valor} gridArea="IMC" />
+      <MetricCard colSize={4} metrica={data[6]?.metrica} valor={data[6]?.valor} medida={'cm'} gridArea="grasavisceral" />
+      <MetricCard colSize={4} metrica={data[1]?.metrica} valor={data[1]?.valor} medida={'mts'} gridArea="altura" />
+      <MetricCard colSize={8} metrica={data[3]?.metrica} valor={data[3]?.valor} gridArea="porcentajedecrasacorporal" />
+      <MetricCard colSize={4} metrica={data[2]?.metrica} valor={data[2]?.valor} medida={'kg'} gridArea="pesocorporal" />
+      <MetricCard colSize={8} metrica={data[4]?.metrica} valor={data[4]?.valor} gridArea="porcentajedemusculo" />
     </CardContent>
   );
 
   const OutlineCard = () => {
     return (
       <Box sx={{ height: '500', width: '500' }}>
-        {card}
+        { isFetchDone ? <CircularProgress /> : card }
       </Box>
     );
   }
 
   return (
-<Container className="mt-4" style={{ background: 'rgba(0, 0, 0, 0.46)', borderRadius: '19px', width:'100%', marginBottom:'50px'}}>
+    <Container className="mt-4" style={{ background: 'rgba(0, 0, 0, 0.46)', borderRadius: '19px', width: '100%', marginBottom: '50px', padding: 'unset' }}>
       <Titulo>
         <Saludo>Hola {alumno?.nombre ?? 'Sin informacion'}</Saludo>
       </Titulo>
       <div className='w-100'>
-        <ButtonDropdown/>
+        <ButtonDropdown />
         <Contenedor >
           <OutlineCard />
         </Contenedor>
