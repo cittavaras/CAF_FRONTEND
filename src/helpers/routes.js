@@ -11,4 +11,5 @@ const routes = {
     listar: '/listar',
     registroRutinas: '/registroRutinas',
     rutina: '/rutina',
+    administrarRutinas: '/administrarRutinas',
 };
