@@ -14,6 +14,7 @@ import GimInforma from '../components/GimInforma';
 const LandingPageAlumno = ({ location }) => {
   const { alumno } = useAuth();
 
+  const [titulo, setTitulo] = useState("CAF IVARAS")
   const [imagen, setImagen] = useState("https://e1.pxfuel.com/desktop-wallpaper/554/24/desktop-wallpaper-best-4-fitness-on-hip-gym-boy.jpg")
   const [texto, setTexto] = useState("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
   
@@ -23,12 +24,11 @@ const LandingPageAlumno = ({ location }) => {
         <div className='mt-2 container py-4  text-center'>
           <H1>Bienvenido  <br style={{color:"black"}} /> {alumno?.nombre ?? 'Sin informacion'}</H1>
         </div>
-        <GimInforma imagen={imagen} texto={texto}/>                          
+        <GimInforma titulo={titulo} imagen={imagen} texto={texto}/>                          
       </div>
     </>
   )
 }
-
 const Div = styled.div`
   font-family: 'Lato', sans-serif;
   color: white;

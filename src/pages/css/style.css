@@ -8,9 +8,22 @@
  background-color: rgba(200, 223, 50, 0.5);;
 }
 
+.card-metrics-content {
+  padding: 0!important;
+}
 .card-metrics-content > * {
   padding: 5px;
 }
+
+.botonesperfil > *{
+  border-radius: 10px;
+  text-align: center;
+}
+
+.botonesperfil > div > * {
+  font-weight: bold;
+}
+
 body {
   margin: 0;
   padding: 0;

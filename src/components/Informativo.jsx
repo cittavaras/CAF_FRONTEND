@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import GimInforma from './GimInforma';
 import AdminControl from './AdminControl';
 
-const Padre = () => {
+const Informativo = () => {
   const [infoCargada, setInfoCargada] = useState(null);
 
   const handleInfoCargada = (info) => {
@@ -11,18 +11,23 @@ const Padre = () => {
   };
 
   return (
-    <div>
-      <h2>Página del Administrador</h2>
-      <AdminControl onInfoCargada={handleInfoCargada} />
-
-      <h2>Página del Alumno</h2>
-      {infoCargada ? (
-        <GimInforma imagen={infoCargada.imagen} texto={infoCargada.texto} />
-      ) : (
-        <p>No se ha cargado la información</p>
-      )}
+    <div className='container'>
+      <div className='d-flex justify-content-center mt-5'>
+        <div className='col-5'>
+          <h2 style={{color:'white'}}>Panel Administrador</h2>
+          <AdminControl onInfoCargada={handleInfoCargada} />
+        </div>
+        <div className='col-5'>
+          <h2 className='text-center' style={{color:'white'}}>Previsualizacion del Panel alumno</h2>
+          {infoCargada ? (
+            <GimInforma titulo={infoCargada.titulo} imagen={infoCargada.imagen} texto={infoCargada.texto} />
+          ) : (
+            <p>No se ha cargado la información</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
 
-export default Padre;
+export default Informativo;

@@ -15,6 +15,9 @@ import QueryStatsIcon from '@mui/icons-material/QueryStats';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import styled from "styled-components";
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 const AlumnoContainer = styled.div`
     bottom: 0;
@@ -130,35 +133,37 @@ const BotonesPerfil = () => {
                     </Box>
                 </AlumnoContainer>
             </>}
-            <div className="row">
-                {hasRole(roles.admin) && <>
-                    <div className="col-12 col-md-2">
-                        <button className='btn' style={{ backgroundColor: '#C0D437', color: '#042945', fontWeight: 'bold'}} onClick={handleOpen}>Gestionar bloques</button>
-                    </div>
-                    <div className="col-12 col-md-2">
-                        <Link className='btn' to="/crearUsuario" style={{ backgroundColor: '#E6E7E9', color: '#042945',fontWeight: 'bold'}}>Crear Usuarios</Link>
-                    </div>
-                    <div className="col-12 col-md-2">
-                        <Link className='btn' to="/listar" style={{ backgroundColor: '#FCB32E', color: '#042945', fontWeight: 'bold' }}>Solicitudes pendientes</Link>
-                    </div>
-                    <div className="col-12 col-md-2">
-                        <Link className='btn' to="/mantenedor" style={{ backgroundColor: '#042945', color: '#FCB32E', fontWeight: 'bold'}}>Mantenedor de usuarios</Link>
-                    </div>
-                    <div className="col-12 col-md-2">
-                        <button className='btn' style={{ backgroundColor: '#C0D437', color: '#042945', fontWeight: 'bold'}} onClick={handleOpenInforme}>Informe de Asistencia</button>
-                    </div>
-                    <div className="col-12 col-md-2">
-                        <Link className='btn' to="/informativo" style={{ backgroundColor: '#E6E7E9', color: '#042945', fontWeight: 'bold' }}>Informativo</Link>
-                    </div>
-                </>}
-                {hasRole(roles.instructor) && <>
-                    <button className='btn' style={{ backgroundColor: '#C0D437', color: '#042945', marginRight: '10px', fontWeight: 'bold', marginBottom: '10px', marginTop: '90px' }} onClick={handleOpen}>Gestionar bloques</button>
-                    <Link className='btn' to="/listarActivos" style={{ backgroundColor: '#FCB32E', color: '#042945', marginRight: '10px', fontWeight: 'bold', marginBottom: '10px' }}>Buscar Alumnos</Link>
-                    <button className='btn' style={{ backgroundColor: '#C0D437', color: '#042945', marginRight: '10px', fontWeight: 'bold', marginBottom: '10px' }} onClick={handleOpenInforme}>Informe de Asistencia</button>
-                </>}
-                {open && <ReservarSesion open={open} setOpen={setOpen} handleClose={handleClose} reservasAlumno={reservasAlumno} getReservasByAlumno={getReservasByAlumno} />}
-                {asistenciaOpen && <InformeAsistencia open={asistenciaOpen} setOpen={setAsistenciaOpen} handleClose={handleCloseInforme} />}
-            </div>
+            <Container className='container mt-4'>
+                <Row className="botonesperfil gap-2 m-2 justify-content-center">
+                    {hasRole(roles.admin) && <>
+                        <Col lg={'auto'} className="col-12 col-md-2 col-sm-3" style={{ backgroundColor: '#C0D437' }}>
+                            <button className='btn' style={{color: '#042945'}} onClick={handleOpen}>Gestionar bloques</button>
+                        </Col>
+                        <Col lg={'auto'} className="col-12 col-md-2 col-sm-3" style={{ backgroundColor: '#E6E7E9'}}>
+                            <Link className='btn' to="/crearUsuario" style={{color: '#042945'}}>Crear Usuarios</Link>
+                        </Col>
+                        <Col lg={'auto'} className="col-12 col-md-2 col-sm-3" style={{ backgroundColor: '#FCB32E'}}>
+                            <Link className='btn' to="/listar" style={{color: '#042945'}}>Solicitudes pendientes</Link>
+                        </Col>
+                        <Col lg={'auto'} className="col-12 col-md-2 col-sm-3" style={{ backgroundColor: '#042945'}}>
+                            <Link className='btn' to="/mantenedor" style={{color: '#FCB32E'}}>Mantenedor de usuarios</Link>
+                        </Col>
+                        <Col lg={'auto'} className="col-12 col-md-2 col-sm-3" style={{ backgroundColor: '#C0D437'}}>
+                            <button className='btn' style={{color: '#042945'}} onClick={handleOpenInforme}>Informe de Asistencia</button>
+                        </Col>
+                        <Col lg={'auto'} className="col-12 col-md-2 col-sm-3" style={{ backgroundColor: '#E6E7E9'}}>
+                            <Link className='btn' to="/control" style={{color: '#042945'}}>Informativo</Link>
+                        </Col>
+                    </>}
+                    {hasRole(roles.instructor) && <>
+                        <button className='btn' style={{ backgroundColor: '#C0D437', color: '#042945', marginRight: '10px', fontWeight: 'bold', marginBottom: '10px', marginTop: '90px' }} onClick={handleOpen}>Gestionar bloques</button>
+                        <Link className='btn' to="/listarActivos" style={{ backgroundColor: '#FCB32E', color: '#042945', marginRight: '10px', fontWeight: 'bold', marginBottom: '10px' }}>Buscar Alumnos</Link>
+                        <button className='btn' style={{ backgroundColor: '#C0D437', color: '#042945', marginRight: '10px', fontWeight: 'bold', marginBottom: '10px' }} onClick={handleOpenInforme}>Informe de Asistencia</button>
+                    </>}
+                    {open && <ReservarSesion open={open} setOpen={setOpen} handleClose={handleClose} reservasAlumno={reservasAlumno} getReservasByAlumno={getReservasByAlumno} />}
+                    {asistenciaOpen && <InformeAsistencia open={asistenciaOpen} setOpen={setAsistenciaOpen} handleClose={handleCloseInforme} />}
+                </Row>
+            </Container>
         </div>
     )
 }

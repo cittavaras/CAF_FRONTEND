@@ -22,6 +22,9 @@ import ListarActivos from "../components/ListarActivos";
 import Configuracion from "../components/Configuracion";
 import ModificarEliminarUsuario from "../components/ModificarEliminarUsuario";
 import SobreNosotros from "../pages/SobreNosotros";
+import AdminControl from "../components/AdminControl";
+import Informativo from "../components/Informativo";
+
 
 export default function AppRouter() {
   const { isLogged } = useAuth();
@@ -69,11 +72,15 @@ export default function AppRouter() {
               <SobreNosotros/>
             </PublicRoute>}
           />
-
           {/* Rutas privadas */}
           <Route path="/landing" element={
             <PrivateRoute>
               <LandingPageAlumno />
+            </PrivateRoute>}
+          />
+          <Route path="/control" element={
+            <PrivateRoute>
+              <Informativo/>
             </PrivateRoute>}
           />
           <Route path="/reserva" element={
@@ -103,7 +110,7 @@ export default function AppRouter() {
           />
           <Route path="/crearUsuario" element={
             <PrivateRoute hasRole={roles.admin} >
-              <CrearUsuario />
+              <CrearUsuario/>
             </PrivateRoute>}
           />
           <Route path="/listarActivos" element={

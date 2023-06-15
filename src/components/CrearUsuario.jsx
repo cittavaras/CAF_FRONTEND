@@ -205,8 +205,8 @@ const CrearUsuario = () => {
 const OuterContainer = styled.div`
   display: flex;
   margin-top: 70px;
+  justify-content: center;
 `;
-
 
 const Container = styled.div`
   display: flex;

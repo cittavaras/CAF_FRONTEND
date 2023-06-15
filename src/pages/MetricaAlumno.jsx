@@ -108,7 +108,7 @@ const Metrica = () => {
     return (
       <Box sx={{ minWidth: 120, width: '100%', margin: 'auto', padding: '19px' }}>
         <FormControl fullWidth variant="filled" >
-          <InputLabel style={{ color: 'White' }} id="demo-simple-select-label">
+          <InputLabel style={{ color: 'White', background:'' }} id="demo-simple-select-label">
             Fecha
           </InputLabel>
           <Select
@@ -155,7 +155,7 @@ const Metrica = () => {
   );
 
   const card = (
-    <CardContent style={{ padding: '0px!important' }} className="row card-metrics-content">
+    <CardContent className="row card-metrics-content">
       <MetricCard colSize={4} metrica={data[0]?.metrica} valor={data[0]?.valor} medida={'años'} gridArea="edad" />
       <MetricCard colSize={4} metrica="IMC" valor={data[5]?.valor} gridArea="IMC" />
       <MetricCard colSize={4} metrica={data[6]?.metrica} valor={data[6]?.valor} medida={'cm'} gridArea="grasavisceral" />
@@ -175,11 +175,12 @@ const Metrica = () => {
   }
 
   return (
-    <Container className="mt-4" style={{ background: 'rgba(0, 0, 0, 0.46)', borderRadius: '19px', width: '100%', marginBottom: '50px', padding: 'unset' }}>
+    <Container className="mt-4" style={{ background: 'rgba(0, 0, 0, 0.46)', borderRadius: '19px', width: '100%', marginBottom: '50px'}}>
       <Titulo>
         <Saludo>Hola {alumno?.nombre ?? 'Sin informacion'}</Saludo>
       </Titulo>
       <div className='w-100'>
+      <Typography sx={{justifyContent:'center', color:'white'}}>Seleccione una fecha</Typography>
         <ButtonDropdown />
         <Contenedor >
           <OutlineCard />

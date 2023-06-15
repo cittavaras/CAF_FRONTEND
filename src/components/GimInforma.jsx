@@ -8,15 +8,15 @@ import { styled } from '@mui/material/styles';
 import { red, green, blue } from '@mui/material/colors';
 
 
-const GimInforma = ({ imagen, texto }) => {
+const GimInforma = ({ titulo, imagen, texto }) => {
 
   const RootDiv = styled('div')(({ theme }) => ({
     [theme.breakpoints.down('md')]: {
-      height: 200,                                
+      height: 200,
     },
     [theme.breakpoints.up('md')]: {
       height: 200,
-    },                                                                      
+    },
     [theme.breakpoints.up('lg')]: {
       height: 300,
     },
@@ -24,7 +24,12 @@ const GimInforma = ({ imagen, texto }) => {
 
   return (
     <>
-      <Card className="m-auto" sx={{ maxWidth: 345, marginBottom: '5rem!important' }}>
+      <Card className="m-auto" sx={{
+        maxWidth: 345,
+        marginBottom: '5rem!important',
+        color: 'white',
+        bgcolor: 'rgba(0, 0, 0, 0.46)'
+      }}>
         <RootDiv>
           <CardMedia
             sx={{ height: "100%" }}
@@ -32,11 +37,20 @@ const GimInforma = ({ imagen, texto }) => {
             title="gym photo"
           />
         </RootDiv>
-          <CardContent>
+        <Typography variant='h2'>
+          {titulo}
+        </Typography>
+        <CardContent sx={{
+          color: "white",
+          boxShadow: 1,
+          borderRadius: 2,
+          p: 2,
+          minWidth: 300,
+        }}>
           {/* <Typography gutterBottom variant="h5" component="div">
             Lizard
           </Typography> */}
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" color="white">
             {texto}
           </Typography>
         </CardContent>
