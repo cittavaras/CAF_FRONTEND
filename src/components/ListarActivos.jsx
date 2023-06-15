@@ -20,6 +20,7 @@ const ListarActivos = () => {
 
 
   const [open, setOpen] = useState(false);
+  const [openRutinas, setOpenRutinas] = useState(false);
 
   const handleOpen = (e, al) => {
     e.preventDefault();
@@ -27,6 +28,9 @@ const ListarActivos = () => {
     setOpen(true)
 
   };
+
+
+
   const handleClose = () => {
     setAlumnoSeleccionado(null);
     setOpen(false);
@@ -78,6 +82,8 @@ const ListarActivos = () => {
       porcentajeGrasaMuscular,
       rut,
     } = metricas
+
+    
 
 
     if (!edad || !imc || !grasaVisceral || !altura || !porcentajeGrasaCorporal || !peso || !porcentajeGrasaMuscular) {
@@ -169,6 +175,9 @@ const ListarActivos = () => {
                         <button type='button' className="btn btn-secondary" onClick={(e) => { handleOpen(e, alumno) }}>
                           Registrar metricas alumno
                         </button>
+                        <button type='button' className="btn btn-secondary" onClick={(e) => { handleOpen(e, alumno) }}>
+                          Registrar rutinas alumno
+                      </button>
                       </div>
                       <div className="card-body">
                         <p>Rut: {alumno.rut}</p>
@@ -182,6 +191,10 @@ const ListarActivos = () => {
                     {open && <RegistroMetricas open={open} setOpen={setOpen} handleClose={handleClose} registrarMetricas={registrarMetricas} alumnoSeleccionado={alumnoSeleccionado}
                     />
                     }
+          
+          
+                    
+                    
                   </card>
                 ))
               }
