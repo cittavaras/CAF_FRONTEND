@@ -11,14 +11,14 @@ const Informativo = () => {
   };
 
   return (
-    <div className='container'>
-      <div className='d-flex justify-content-center mt-5'>
-        <div className='col-5'>
-          <h2 style={{color:'white'}}>Panel Administrador</h2>
+    <div className='container mt-4 rounded' style={{ backgroundColor: '#adb5bd42'}}>
+      <div className='d-md-flex justify-content-center'>
+        <div className='col-md-5 mt-5'>
+          <h2 className='text-center' style={{color:'white'}}>Panel Administrador</h2>
           <AdminControl onInfoCargada={handleInfoCargada} />
         </div>
-        <div className='col-5'>
-          <h2 className='text-center' style={{color:'white'}}>Previsualizacion del Panel alumno</h2>
+        <div className='col-md-5 mt-5'>
+          <h2 className='text-center' style={{color:'white'}}>Previsualizacion</h2>
           {infoCargada ? (
             <GimInforma titulo={infoCargada.titulo} imagen={infoCargada.imagen} texto={infoCargada.texto} />
           ) : (

@@ -135,7 +135,7 @@ const BotonesPerfil = () => {
             </>}
             <Container className='container mt-4'>
                 <Row className="botonesperfil gap-2 m-2 justify-content-center">
-                    {hasRole(roles.admin) && <>
+                    { hasRole(roles.admin) && <>
                         <Col lg={'auto'} className="col-12 col-md-2 col-sm-3" style={{ backgroundColor: '#C0D437' }}>
                             <button className='btn' style={{color: '#042945'}} onClick={handleOpen}>Gestionar bloques</button>
                         </Col>
@@ -154,11 +154,17 @@ const BotonesPerfil = () => {
                         <Col lg={'auto'} className="col-12 col-md-2 col-sm-3" style={{ backgroundColor: '#E6E7E9'}}>
                             <Link className='btn' to="/control" style={{color: '#042945'}}>Informativo</Link>
                         </Col>
-                    </>}
+                    </> }
                     {hasRole(roles.instructor) && <>
-                        <button className='btn' style={{ backgroundColor: '#C0D437', color: '#042945', marginRight: '10px', fontWeight: 'bold', marginBottom: '10px', marginTop: '90px' }} onClick={handleOpen}>Gestionar bloques</button>
-                        <Link className='btn' to="/listarActivos" style={{ backgroundColor: '#FCB32E', color: '#042945', marginRight: '10px', fontWeight: 'bold', marginBottom: '10px' }}>Buscar Alumnos</Link>
-                        <button className='btn' style={{ backgroundColor: '#C0D437', color: '#042945', marginRight: '10px', fontWeight: 'bold', marginBottom: '10px' }} onClick={handleOpenInforme}>Informe de Asistencia</button>
+                    <Col lg={'auto'} className="col-12 col-md-2 col-sm-3" style={{ backgroundColor: '#C0D437' }}>
+                        <button className='btn' style={{ color: '#042945'}} onClick={handleOpen}>Gestionar bloques</button>
+                    </Col>
+                    <Col lg={'auto'} className="col-12 col-md-2 col-sm-3" style={{ backgroundColor: '#FCB32E'}}>
+                        <Link className='btn' to="/listarActivos">Buscar Alumnos</Link>
+                    </Col>
+                    <Col lg={'auto'} className="col-12 col-md-2 col-sm-3" style={{ backgroundColor: '#C0D437'}}>
+                        <button className='btn' style={{ color: '#042945'}} onClick={handleOpenInforme}>Informe de Asistencia</button>
+                    </Col>
                     </>}
                     {open && <ReservarSesion open={open} setOpen={setOpen} handleClose={handleClose} reservasAlumno={reservasAlumno} getReservasByAlumno={getReservasByAlumno} />}
                     {asistenciaOpen && <InformeAsistencia open={asistenciaOpen} setOpen={setAsistenciaOpen} handleClose={handleCloseInforme} />}

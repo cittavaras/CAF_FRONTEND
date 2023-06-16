@@ -107,12 +107,36 @@ const Metrica = () => {
   const ButtonDropdown = () => {
     return (
       <Box sx={{ minWidth: 120, width: '100%', margin: 'auto', padding: '19px' }}>
-        <FormControl fullWidth variant="filled" >
-          <InputLabel style={{ color: 'White', background:'' }} id="demo-simple-select-label">
-            Fecha
+        <FormControl fullWidth variant="filled">
+          <InputLabel style={{ color: 'White', fontSize: '1rem' }} id="demo-simple-select-label">
+            Seleccione Fecha
           </InputLabel>
           <Select
-            style={{ color: 'White' }}
+            sx={[
+              {
+                '&:before': {
+                  borderBottom: 'none!important',
+                },
+                '&:after': {
+                  borderBottom: 'none!important',
+                },
+                '&': {
+                  fontSize: '1.3rem',
+                  color: 'white',
+                  backgroundColor: 'rgba(200, 223, 50, 0.5)',
+                  border: '2px solid #C0D437',
+                  borderRadius: '19px',
+                },
+                '&:hover': {
+                  backgroundColor: 'rgba(200, 223, 50, 0.8)',
+                  borderRadius: '19px',
+                },
+                '&.Mui-focused': {
+                  backgroundColor: 'rgba(200, 223, 50, 0.8)!important',
+                  borderRadius: '19px',
+                },
+              }
+            ]}
             labelId="demo-simple-select-label"
             id="demo-simple-select"
             value={fecha}
@@ -177,10 +201,9 @@ const Metrica = () => {
   return (
     <Container className="mt-4" style={{ background: 'rgba(0, 0, 0, 0.46)', borderRadius: '19px', width: '100%', marginBottom: '50px'}}>
       <Titulo>
-        <Saludo>Hola {alumno?.nombre ?? 'Sin informacion'}</Saludo>
+        <Saludo>Estos son tus datos {alumno?.nombre ?? 'Sin informacion'}</Saludo>
       </Titulo>
       <div className='w-100'>
-      <Typography sx={{justifyContent:'center', color:'white'}}>Seleccione una fecha</Typography>
         <ButtonDropdown />
         <Contenedor >
           <OutlineCard />
@@ -221,18 +244,6 @@ const Contenedor = styled.div`
   height: 100%;
   width: 100%;
   text-align: center;
-`;
-
-const Texto = styled.div`
-  font-size: 15px;
-  color: #ffffff;
-  text-align: center;
-`;
-const Texto2 = styled.div`
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.69);
-  text-align: center;
-  margin-bottom: 500px;
 `;
 
 export default Metrica;
