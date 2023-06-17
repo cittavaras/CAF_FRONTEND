@@ -133,26 +133,26 @@ const RegistroRutinas = (props) => {
     const registrarRutina = async (e) => {
         e.preventDefault();
         console.log("alumno", alumno);
-    
+
         try {
-          const res = await axios.post(baseURL + '/rutinas/alumno/', {
-            nombre: nomRutina,
-            instructorId: alumno.rut,
-            alumnoId: alumnoSeleccionado.rut,
-            cardioInicial: cardioInicial,
-            cardioFinal: cardioFinal,
-            calentamiento: calentamiento,
-            vueltaALaCalma: vueltaALaCalma,
-            ejercicios: getEjercicios(),
-          });
-    
-          // Mostrar el alert
-          alert('Rutina registrada');
-    
-          // Redirigir al usuario a la página anterior
-          navigate(-1);
+            const res = await axios.post(baseURL + '/rutinas/alumno/', {
+                nombre: nomRutina,
+                instructorId: alumno.rut,
+                alumnoId: alumnoSeleccionado.rut,
+                cardioInicial: cardioInicial,
+                cardioFinal: cardioFinal,
+                calentamiento: calentamiento,
+                vueltaALaCalma: vueltaALaCalma,
+                ejercicios: getEjercicios(),
+            });
+
+            // Mostrar el alert
+            alert('Rutina registrada');
+
+            // Redirigir al usuario a la página anterior
+            navigate(-1);
         } catch (error) {
-          console.error(error);
+            console.error(error);
         }
 
     }
@@ -202,77 +202,75 @@ const RegistroRutinas = (props) => {
 
 
     return (
-        <Container style={{ marginTop: '70px', width: "100%", background: "white" }}>
-           
-                <Box sx={{ minWidth: "800px" }}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            <Typography variant="subtitle1" component="h3" sx={{ fontSize: '30px', textAlign: "center" }}>
-                                Registro De Rutina
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <div className="form-group" style={{ marginTop: "20px" }}>
-                                <FormControl style={{ width: '75%' }}>
-                                    <InputLabel >Seleccione una rutina</InputLabel>
-                                    <Select
-                                        name="rutina"
-
-                                        value={nomRutina}
-                                        onChange={(e) => setNomRutina(e.target.value)}
-                                    >
-                                        <MenuItem value="Rutina 1">Rutina 1</MenuItem>
-                                        <MenuItem value="Rutina 2">Rutina 2</MenuItem>
-                                        <MenuItem value="Rutina 3">Rutina 3</MenuItem>
-                                    </Select>
-                                </FormControl>
-                            </div>
-                        </Grid>
-                        <Grid item xs={6}>
-
-                            <div >
-                                <Typography variant="subtitle1" component="h3" sx={{ fontSize: '20px' }}>
-                                    Nombre Rutina: {nomRutina}
-                                </Typography>
-                                <Typography variant="subtitle1" component="h3" sx={{ fontSize: '20px' }}>
-                                    Alumno: {alumnoSeleccionado && `${alumnoSeleccionado.nombre}`}
-                                </Typography>
-                                <Typography variant="subtitle1" component="h3" sx={{ fontSize: '20px' }}>
-                                    Instructor: {alumno?.nombre ?? 'Sin información'}
-                                </Typography>
-                                <Typography variant="subtitle1" component="h3" sx={{ fontSize: '20px' }}>
-                                    Fecha Rutina: {fechaActual}
-                                </Typography>
-                            </div>
-                        </Grid>
+        <Container style={{ marginTop: '70px', width: "100%", background: "white", overflowX: "auto", padding: "10px" }}>
+            <Box sx={{ minWidth: "100%", overflowX: "auto" }}>
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <Typography variant="subtitle1" component="h3" sx={{ fontSize: '30px', textAlign: "center" }}>
+                            Registro De Rutina
+                        </Typography>
                     </Grid>
-                    <Grid container spacing={2}>
-                        <Grid item xs={3}>
-                            <Typography variant="subtitle1" component="h3" sx={{ fontSize: '20px' }}>
-                                Cardio Inicial
-                            </Typography>
-                            <TextField
-                                id="outlined-multiline-static"
-                                label="ej: 10 minutos"
-                                value={cardioInicial}
-                                onChange={handleCardioInicialChange}
-                                style={{ width: '100%' }}
-                            />
-                        </Grid>
-                        <Grid item xs={3}>
-                            <Typography variant="subtitle1" component="h3" sx={{ fontSize: '20px' }}>
-                                Cardio Final
-                            </Typography>
-                            <TextField
-                                id="outlined-multiline-static"
-                                label="ej: 10 minutos"
-                                value={cardioFinal}
-                                onChange={handleCardioFinalChange}
-                                style={{ width: '100%' }}
-                            />
-                        </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <div className="form-group" style={{ marginTop: "20px" }}>
+                            <FormControl style={{ width: '100%' }}>
+                                <InputLabel>Seleccione una rutina</InputLabel>
+                                <Select
+                                    name="rutina"
+                                    value={nomRutina}
+                                    onChange={(e) => setNomRutina(e.target.value)}
+                                >
+                                    <MenuItem value="Rutina 1">Rutina 1</MenuItem>
+                                    <MenuItem value="Rutina 2">Rutina 2</MenuItem>
+                                    <MenuItem value="Rutina 3">Rutina 3</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </div>
                     </Grid>
-                    <Grid>
+                    <Grid item xs={12} sm={6}>
+                        <div>
+                            <Typography variant="subtitle1" component="h3" sx={{ fontSize: '20px' }}>
+                                Nombre Rutina: {nomRutina}
+                            </Typography>
+                            <Typography variant="subtitle1" component="h3" sx={{ fontSize: '20px' }}>
+                                Alumno: {alumnoSeleccionado && `${alumnoSeleccionado.nombre}`}
+                            </Typography>
+                            <Typography variant="subtitle1" component="h3" sx={{ fontSize: '20px' }}>
+                                Instructor: {alumno?.nombre ?? 'Sin información'}
+                            </Typography>
+                            <Typography variant="subtitle1" component="h3" sx={{ fontSize: '20px' }}>
+                                Fecha Rutina: {fechaActual}
+                            </Typography>
+                        </div>
+                    </Grid>
+                </Grid>
+                <Grid container spacing={2}>
+                    <Grid item xs={12} sm={6}>
+                        <Typography variant="subtitle1" component="h3" sx={{ fontSize: '20px' }}>
+                            Cardio Inicial
+                        </Typography>
+                        <TextField
+                            id="outlined-multiline-static"
+                            label="ej: 10 minutos"
+                            value={cardioInicial}
+                            onChange={handleCardioInicialChange}
+                            style={{ width: '100%' }}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <Typography variant="subtitle1" component="h3" sx={{ fontSize: '20px' }}>
+                            Cardio Final
+                        </Typography>
+                        <TextField
+                            id="outlined-multiline-static"
+                            label="ej: 10 minutos"
+                            value={cardioFinal}
+                            onChange={handleCardioFinalChange}
+                            style={{ width: '100%' }}
+                        />
+                    </Grid>
+                </Grid>
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
                         <Typography variant="subtitle1" component="h3" sx={{ fontSize: '20px' }}>
                             Calentamiento
                         </Typography>
@@ -283,10 +281,10 @@ const RegistroRutinas = (props) => {
                             rows={2}
                             value={calentamiento}
                             onChange={handleCalentamientoChange}
-                            style={{ width: '75%' }}
+                            style={{ width: '100%' }}
                         />
                     </Grid>
-                    <Grid>
+                    <Grid item xs={12}>
                         <Typography variant="subtitle1" component="h3" sx={{ fontSize: '20px' }}>
                             Vuelta a la calma
                         </Typography>
@@ -297,58 +295,48 @@ const RegistroRutinas = (props) => {
                             rows={2}
                             value={vueltaALaCalma}
                             onChange={handleVueltaALaCalmaChange}
-                            style={{ width: '75%' }}
+                            style={{ width: '100%' }}
                         />
                     </Grid>
-                    <TableContainer>
-                        <Table>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>Ejercicios</TableCell>
-                                    <TableCell>Repeticiones</TableCell>
-                                    <TableCell>Kg</TableCell>
-                                    <TableCell>Series</TableCell>
-                                    <TableCell>Descanso</TableCell>
-                                    <TableCell>Acciones</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                <Grid item xs={12}>
-                                    <Button variant="contained" color="success" startIcon={<PlusOneIcon />} onClick={() => setSelectedRutina([...selectedRutina, selectedRutina.length])}>Agregar Ejercicio
-                                    </Button>
-                                </Grid>
-                                {selectedRutina.map((ejercicio) => (
-                                    <TableRow key={ejercicio}>
-                                        <TableCell>
-                                            <FormControl style={{ width: '100%', minWidth: "200px" }}>
-                                                <InputLabel >Seleccione Ejercicio</InputLabel>
-                                                <Select
-                                                    name="rutina"
-                                                    type="text"
-                                                    value={selectedExercises[ejercicio]}
-                                                    onChange={(e) => handleExerciseChange(ejercicio, e.target.value)}
-                                                    style={{ width: '100%' }}
-                                                >
-                                                    {ejercicios.map((ejercicio) => (
-                                                        <MenuItem key={ejercicio.id} value={ejercicio.nombre}>
-                                                            {ejercicio.nombre}
-                                                        </MenuItem>
-                                                    ))}
-                                                </Select>
-                                                {/*
-                                            <Autocomplete
-
-                                                disablePortal
-                                                id="combo-box-demo"
-                                                options={ejercicios}
-                                                getOptionLabel={(option) => option.nombre}
-                                                sx={{ width: 300 }}
-                                                renderInput={(params) => <TextField {...params} label="Ejercicios" />}
-                                            />
-                                            */}
-                                            </FormControl>
-                                        </TableCell>
-                                        <TableCell><TextField
+                </Grid>
+                <TableContainer>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Ejercicios</TableCell>
+                                <TableCell>Repeticiones</TableCell>
+                                <TableCell>Kg</TableCell>
+                                <TableCell>Series</TableCell>
+                                <TableCell>Descanso</TableCell>
+                                <TableCell>Acciones</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            <Grid item xs={12}>
+                                <Button variant="contained" color="success" startIcon={<PlusOneIcon />} onClick={() => setSelectedRutina([...selectedRutina, selectedRutina.length])}>Agregar Ejercicio</Button>
+                            </Grid>
+                            {selectedRutina.map((ejercicio) => (
+                                <TableRow key={ejercicio}>
+                                    <TableCell>
+                                        <FormControl style={{ width: '100%', minWidth: "200px" }}>
+                                            <InputLabel>Seleccione Ejercicio</InputLabel>
+                                            <Select
+                                                name="rutina"
+                                                type="text"
+                                                value={selectedExercises[ejercicio]}
+                                                onChange={(e) => handleExerciseChange(ejercicio, e.target.value)}
+                                                style={{ width: '100%' }}
+                                            >
+                                                {ejercicios.map((ejercicio) => (
+                                                    <MenuItem key={ejercicio.id} value={ejercicio.nombre}>
+                                                        {ejercicio.nombre}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                    </TableCell>
+                                    <TableCell>
+                                        <TextField
                                             type="int"
                                             label="repeticiones"
                                             variant="outlined"
@@ -356,8 +344,10 @@ const RegistroRutinas = (props) => {
                                             placeholder="Ejemplo: 20"
                                             value={selectedRepeticion[ejercicio]}
                                             onChange={(e) => handleRepeticionChange(ejercicio, e.target.value)}
-                                        /></TableCell>
-                                        <TableCell><TextField
+                                        />
+                                    </TableCell>
+                                    <TableCell>
+                                        <TextField
                                             type="float"
                                             label="Kg"
                                             variant="outlined"
@@ -365,8 +355,10 @@ const RegistroRutinas = (props) => {
                                             placeholder="Ejemplo: 20"
                                             value={selectedKg[ejercicio]}
                                             onChange={(e) => handleKgChange(ejercicio, e.target.value)}
-                                        /></TableCell>
-                                        <TableCell><TextField
+                                        />
+                                    </TableCell>
+                                    <TableCell>
+                                        <TextField
                                             type="int"
                                             label="series"
                                             variant="outlined"
@@ -374,8 +366,10 @@ const RegistroRutinas = (props) => {
                                             placeholder="Ejemplo: 20"
                                             value={selectedSerie[ejercicio]}
                                             onChange={(e) => handleSerieChange(ejercicio, e.target.value)}
-                                        /></TableCell>
-                                        <TableCell><TextField
+                                        />
+                                    </TableCell>
+                                    <TableCell>
+                                        <TextField
                                             type="float"
                                             label="Descanso"
                                             variant="outlined"
@@ -383,26 +377,25 @@ const RegistroRutinas = (props) => {
                                             placeholder="Ejemplo: 20"
                                             value={selectedDescanso[ejercicio]}
                                             onChange={(e) => handleDescansoChange(ejercicio, e.target.value)}
-                                        /></TableCell>
-                                        <TableCell>
-                                            <IconButton aria-label="delete" size="small" color="error" onClick={() => setSelectedRutina(selectedRutina.filter((e) => e !== ejercicio))}>
-                                                <DeleteIcon />
-                                            </IconButton>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
-                        <Button autoFocus color="success" variant="contained" onClick={registrarRutina}>
-                            Confirmar registro de rutinas
-                        </Button>
-                    </div>
-                    <br />
-                </Box>
-           
-
+                                        />
+                                    </TableCell>
+                                    <TableCell>
+                                        <IconButton aria-label="delete" size="small" color="error" onClick={() => setSelectedRutina(selectedRutina.filter((e) => e !== ejercicio))}>
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
+                    <Button autoFocus color="success" variant="contained" onClick={registrarRutina}>
+                        Confirmar registro de rutinas
+                    </Button>
+                </div>
+                <br />
+            </Box>
         </Container>
     )
 }
