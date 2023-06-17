@@ -9,7 +9,8 @@ import Container from '@mui/material/Container';
 import RegistroMetricas from './RegistroMetricas';
 import BotonesPerfil from './BotonesPerfil';
 import baseURL from '../helpers/rutaBase';
-
+import { Link } from 'react-router-dom';
+import RegistroRutinas from '../pages/RegistroRutinas';
 const ListarActivos = () => {
   const [alumnos, setAlumnos] = useState([]);
   const [paginaNumero, setPaginaNumero] = useState(0);
@@ -112,7 +113,7 @@ const ListarActivos = () => {
   }
 
   const handleInputValue = (e) => {
-    
+
     formatearRut(e);
   }
 
@@ -145,13 +146,13 @@ const ListarActivos = () => {
     <>
       <Container maxWidth="md">
         <DivT>
-        <BotonesPerfil/>
+          <BotonesPerfil />
           <Div className="row">
             <div>
               <h2>
                 <Paper
                   component="form"
-                  sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400, marginLeft: 'auto', marginRight: 'auto'  }}
+                  sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400, marginLeft: 'auto', marginRight: 'auto' }}
                 >
                   <InputBase
                     sx={{ ml: 1, flex: 1 }}
@@ -175,9 +176,12 @@ const ListarActivos = () => {
                         <button type='button' className="btn btn-secondary" onClick={(e) => { handleOpen(e, alumno) }}>
                           Registrar metricas alumno
                         </button>
-                        <button type='button' className="btn btn-secondary" onClick={(e) => { handleOpen(e, alumno) }}>
-                          Registrar rutinas alumno
-                      </button>
+                        <Link
+                          className="btn btn-secondary"
+                          to={`/registroRutinas?rut=${alumno.rut}&nombre=${alumno.nombre}`}
+                        >
+                          Registro Rutinas
+                        </Link>
                       </div>
                       <div className="card-body">
                         <p>Rut: {alumno.rut}</p>

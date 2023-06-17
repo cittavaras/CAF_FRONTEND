@@ -22,7 +22,7 @@ import Configuracion from "../components/Configuracion";
 import ModificarEliminarUsuario from "../components/ModificarEliminarUsuario";
 import SobreNosotros from "../pages/SobreNosotros";
 import RegistroRutinas from "../pages/RegistroRutinas";
-
+import RutinaAlumno from "../pages/RutinaAlumno";
 export default function AppRouter() {
   const { isLogged } = useAuth();
   useEffect(() => {
@@ -114,6 +114,11 @@ export default function AppRouter() {
           <Route path="/registroRutinas" element={
             <PrivateRoute hasRole={roles.instructor} >
               <RegistroRutinas />
+            </PrivateRoute>}
+          />
+          <Route path="/rutina" element={
+            <PrivateRoute hasRole={roles.alumno} >
+              <RutinaAlumno />
             </PrivateRoute>}
           />
         </Routes>
