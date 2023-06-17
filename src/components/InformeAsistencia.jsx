@@ -113,7 +113,7 @@ const InformeAsistencia = (props) => {
   return (
     <Container maxWidth="lg"
       style={{ marginTop: '70px' }}
-      backgroundColor="red"
+      backgroundcolor="red"
     >
       {props.open && <Dialog open={props.open} onClose={props.handleClose} fullWidth maxWidth="md" scroll={'paper'} 
        /*fullScreen={isSmallScreen}*/>

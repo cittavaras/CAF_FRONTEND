@@ -6,7 +6,6 @@ import Paper from '@mui/material/Paper';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import Container from '@mui/material/Container';
-import BotonesPerfil from './BotonesPerfil';
 import baseURL from '../helpers/rutaBase';
 import ConfirmarEliminar from './ConfirmarEliminar';
 import ModificarUsuario from './ModificarUsuario';
@@ -145,7 +144,6 @@ const ModificarEliminarUsuario = () => {
     <>
       <Container maxWidth="md">
         <DivT>
-        <BotonesPerfil/>
           <Div className="row">
             <div>
               <h2>

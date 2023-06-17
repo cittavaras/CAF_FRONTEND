@@ -1,0 +1,6 @@
+.scrollable-container {
+    width: 300px; /* Ancho fijo del contenedor */
+    height: auto; /* Altura fija del contenedor */
+    overflow: auto; /* Añade una barra de desplazamiento si el contenido es más grande que el contenedor */
+  }
+  

@@ -1,107 +1,142 @@
 import React from 'react';
-import { useTable } from 'react-table';
 import { Container, Box } from '@mui/system';
 import styled from 'styled-components';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import BotonesPerfil from '../components/BotonesPerfil';
 import baseURL from '../helpers/rutaBase';
+import useAuth from '../auth/useAuth';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
+import '../pages/css/ScrollableContainer.css'; // Archivo CSS para los estilos personalizados
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import moment from 'moment';
 import 'moment/locale/es';
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  LineChart,
-  Line,
-} from 'recharts';
-
-
-<link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet"></link>
-
-
+import CircularProgress from '@mui/material/CircularProgress';
 
 const Metrica = () => {
+  const { alumno } = useAuth();
   const [metricasRecientes, setMetricasRecientes] = useState([]);
+  const [isFetchDone, setIsFetchDone] = useState(true);
   const [metricas, setMetricas] = useState([]);
   const [fecha, setFecha] = useState([]);
-  //console.log(metricas);
+
   useEffect(() => {
-    MetricasRecientes();
+    MetricasRecientes()
   }, []);
 
-  // useEffect(() => {
-  //   console.log(metricas);
-  // }, [metricas]);
+  useEffect(() => {
+    console.log(metricasRecientes);
+  }, [metricasRecientes])
+
+  function getNumericValue(valor) {
+    let contenidoNumerico;
+    let valorNumerico;
+    if (valor) {
+      contenidoNumerico = valor.match(/[\d.]+/); // Extraer los dígitos numéricos del valor utilizando una expresión regular
+      if (contenidoNumerico) {
+        valorNumerico = parseFloat(contenidoNumerico[0]); // Convertir el contenido numérico extraído en un valor numérico
+        //const valorNumerico = parseFloat(contenidoNumerico[0].replace(/,/g, '')); 
+        return valorNumerico;
+      }
+    } else {
+      return valor;
+    }
+  }
+
 
   const MetricasRecientes = async () => {
-    // const datosSesion = sessionStorage.getItem("alumno_sesion");
     const { rut } = JSON.parse(sessionStorage.getItem('alumno_sesion'));
     const res = await axios.post(baseURL + '/metricas/alumno', { rut });
     const metricaAlumno = res.data;
+    const valor = data[0]?.valor; // Suponiendo que data es un arreglo de objetos y quieres acceder al primer elemento
+
+    metricaAlumno.edad = getNumericValue(metricaAlumno.edad);
+    metricaAlumno.grasaVisceral = getNumericValue(metricaAlumno.grasaVisceral);
+    metricaAlumno.peso = getNumericValue(metricaAlumno.peso);
+    metricaAlumno.altura = getNumericValue(metricaAlumno.altura);
+
     setFecha(metricaAlumno.fecha);
-    setMetricasRecientes(metricaAlumno);
+    setMetricasRecientes(metricaAlumno);  
+    setIsFetchDone(false);
     await getMetricas();
   }
 
   const getMetricas = async () => {
-    const  { rut } = JSON.parse(sessionStorage.getItem('alumno_sesion'));
+    const { rut } = JSON.parse(sessionStorage.getItem('alumno_sesion'));
     const res = await axios.get(baseURL + '/metricas/', { params: { rut } });
-  //  console.log(rut);
- //   console.log(res);
- //  // console.log("Todas las metricas",res.data)
+
     const metricaAlumno = res.data;
     setMetricas(metricaAlumno);
-  }
-  //console.log(fecha);
+  };
 
-  // Datos de ejemplo
   const data = React.useMemo(() => {
-      if (metricasRecientes) {
-        return [
-          { metrica: 'Edad', valor: `${metricasRecientes?.edad ?? 'No registra métricas'}` },
-          { metrica: 'Altura', valor: `${metricasRecientes?.altura ?? 'No registra métricas'}` },
-          { metrica: 'Peso corporal', valor: `${metricasRecientes?.peso ?? 'No registra métricas'}` },
-          { metrica: 'Porcentaje de grasa corporal', valor: `${metricasRecientes?.porcentajeGrasaCorporal ?? 'No registra métricas'}` },
-          { metrica: 'Porcentaje de músculo', valor: `${metricasRecientes?.porcentajeGrasaMuscular ?? 'No registra métricas'}` },
-          { metrica: 'Índice de masa corporal (IMC)', valor: `${metricasRecientes?.imc ?? 'No registra métricas'}` },
-          { metrica: 'Grasa visceral', valor: `${metricasRecientes?.grasaVisceral ?? 'No registra métricas'}` }
-        ];
-      } else {
-        return [];
-      }
-    },
-    [metricasRecientes]
+    if (metricasRecientes) {
+      return [
+        { metrica: 'EDAD', valor: `${metricasRecientes?.edad ?? 'No registra métricas'}` },
+        { metrica: 'ALTURA', valor: `${metricasRecientes?.altura ?? 'No registra métricas'}` },
+        { metrica: 'PESO', valor: `${metricasRecientes?.peso ?? 'No registra métricas'}` },
+        { metrica: 'Porcentaje de grasa corporal', valor: `${metricasRecientes?.porcentajeGrasaCorporal ?? 'No registra métricas'}` },
+        { metrica: 'Porcentaje de músculo', valor: `${metricasRecientes?.porcentajeGrasaMuscular ?? 'No registra métricas'}` },
+        { metrica: 'Índice de masa corporal (IMC)', valor: `${metricasRecientes?.imc ?? 'No registra métricas'}` },
+        { metrica: 'Grasa visceral', valor: `${metricasRecientes?.grasaVisceral ?? 'No registra métricas'}` }
+      ];
+    } else {
+      return [];
+    }
+  },
+    [metricasRecientes],
   );
-
-
 
   const handleChange = async (event) => {
     const selectedFecha = event.target.value;
     setFecha(selectedFecha);
-  
+
     const metricasAlumno = metricas.find((metrica) => metrica.fecha === selectedFecha);
+
+    metricasAlumno.edad = getNumericValue(metricasAlumno.edad);
+    metricasAlumno.grasaVisceral = getNumericValue(metricasAlumno.grasaVisceral);
+    metricasAlumno.peso = getNumericValue(metricasAlumno.peso);
+    metricasAlumno.altura = getNumericValue(metricasAlumno.altura);
     setMetricasRecientes(metricasAlumno);
+
   };
 
   const ButtonDropdown = () => {
     return (
-      <Box sx={{ minWidth: 120 }}>
-        <FormControl fullWidth variant="filled" >
-          <InputLabel style={{color:'White'}} id="demo-simple-select-label">
-            Fecha
+      <Box sx={{ minWidth: 120, width: '100%', margin: 'auto', padding: '19px' }}>
+        <FormControl fullWidth variant="filled">
+          <InputLabel style={{ color: 'White', fontSize: '1rem' }} id="demo-simple-select-label">
+            Seleccione Fecha
           </InputLabel>
           <Select
-            style={{color:'White'}}
+            sx={[
+              {
+                '&:before': {
+                  borderBottom: 'none!important',
+                },
+                '&:after': {
+                  borderBottom: 'none!important',
+                },
+                '&': {
+                  fontSize: '1.3rem',
+                  color: 'white',
+                  backgroundColor: 'rgba(200, 223, 50, 0.5)',
+                  border: '2px solid #C0D437',
+                  borderRadius: '19px',
+                },
+                '&:hover': {
+                  backgroundColor: 'rgba(200, 223, 50, 0.8)',
+                  borderRadius: '19px',
+                },
+                '&.Mui-focused': {
+                  backgroundColor: 'rgba(200, 223, 50, 0.8)!important',
+                  borderRadius: '19px',
+                },
+              }
+            ]}
             labelId="demo-simple-select-label"
             id="demo-simple-select"
             value={fecha}
@@ -109,222 +144,106 @@ const Metrica = () => {
             onChange={handleChange}
           >
             {metricas.map((metrica, i) => (
-              <MenuItem value={metrica.fecha} key= {i}>
+              <MenuItem value={metrica.fecha} key={i}>
                 {moment(metrica.fecha).format('DD/MM/YYYY')}
               </MenuItem>
             ))}
-        </Select>
-      </FormControl>
-    </Box>
+          </Select>
+        </FormControl>
+      </Box>
     );
   };
-  
-  const columns = React.useMemo(
-    () => [
-      { Header: 'Métricas de seguimiento del alumno', accessor: 'metrica' },
-      { 
-        Header: () => (
-          //botton con dropdown
-          <ButtonDropdown />
-        ),
-        accessor: 'valor'
-      },
-    ],
-    [metricas, fecha]
-  );
-  const tableInstance = useTable({
-    columns,
-    data
-  });
-  // 
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = tableInstance;
 
-
-  const BarChartExample = () => {
-    const [selectedMetric, setSelectedMetric] = useState('peso');
-
-    const obtenerPropiedad = (arregloObjetos, nombrePropiedad) => {
-      let arregloPropiedades = [];
-
-      for (let i = 0; i < arregloObjetos.length; i++) {
-        arregloPropiedades.push(arregloObjetos[i][nombrePropiedad]);
-      }
-
-      return arregloPropiedades;
-    }
-
-    const personasSinUnidadDeMedida = metricas.map(metrica => {
-      const nuevaMetrica = { ...metrica };
-      nuevaMetrica.edad = parseInt(nuevaMetrica.edad);
-      nuevaMetrica.altura = parseFloat(nuevaMetrica.altura);
-      nuevaMetrica.peso = parseFloat(nuevaMetrica.peso);
-      nuevaMetrica.imc = parseFloat(nuevaMetrica.imc);
-      nuevaMetrica.porcentajeGrasaCorporal = parseInt(nuevaMetrica.porcentajeGrasaCorporal);
-      nuevaMetrica.grasaVisceral = parseFloat(nuevaMetrica.grasaVisceral);
-      nuevaMetrica.porcentajeGrasaMuscular = parseInt(nuevaMetrica.porcentajeGrasaMuscular);
-      return nuevaMetrica;
-    });
-
-
-
-    // const data = [
-    //   { name: 'edad', uv: metricas?.edad ?? 0 },
-    //   { name: 'edad', uv: metricas?.edad ?? 5 },
-    //   { name: 'altura', uv: metricas?.altura ?? 0 },
-    //   { name: 'peso corporal', uv: metricas?.peso ?? 0 },
-    //   { name: 'porcentaje de grasa corporal', uv: metricas?.porcentajeGrasaCorporal ?? 0 },
-    //   { name: 'porcentaje de músculo', uv: metricas?.porcentajeGrasaMuscular ?? 0 },
-    //   { name: 'imc', uv: metricas?.imc ?? 0 },
-    //   { name: 'grasa visceral', uv: metricas?.grasaVisceral ?? 0 },
-    // ];
-
-    const handleMetricChange = (metric) => {
-      setSelectedMetric(metric);
-      
-    }
-    
-    const filteredData = data.filter(item => item.name === selectedMetric);
-  //<h2 className='text-white'>{selectedMetric.charAt(0).toUpperCase() + selectedMetric.slice(1)}</h2>
-    return (
-      <div className='container-sm row'  >
-        <button className='btn btn-dark col-md-2 me-2 my-1' 
-          style={{ display: 'inline-flex', alignItems: 'center' }} 
-          onClick={() => handleMetricChange('peso')}>
-            Peso corporal
-        </button>
-        <button className='btn btn-dark col-md-2 me-2 my-1' 
-          style={{ display: 'inline-flex', alignItems: 'center' }} 
-          onClick={() => handleMetricChange('porcentajeGrasaCorporal')}>
-            % Grasa Corporal
-          </button>
-        <button className='btn btn-dark col-md-2 me-2 my-1'  
-          style={{ display: 'inline-flex', alignItems: 'center' }}
-          onClick={() => handleMetricChange('porcentajeGrasaMuscular')}>
-            % Grasa Muscular
-        </button>
-        <button className='btn btn-dark col-md-2 me-2 my-1' 
-          style={{ display: 'inline-flex', alignItems: 'center' }}
-          onClick={() => handleMetricChange('imc')}>
-            Índice de Masa Corporal (IMC)
-        </button>
-        <button className='btn btn-dark col-md-2 me-2 my-1' 
-          style={{ display: 'inline-flex', alignItems: 'center' }}
-          onClick={() => handleMetricChange('grasaVisceral')}>
-           Grasa Visceral
-        </button>
-        <ResponsiveContainer width="100%" height={650}>
-        <Box sx={{ bgcolor: 'rgba(255, 255, 255, 0.8)' }}>
-            <LineChart width={500} className='mx-auto my-auto' height={600} data={personasSinUnidadDeMedida}>
-              <Line type="monotone" dataKey={selectedMetric} stroke="#8884d8" />
-              <CartesianGrid stroke="#ccc" />
-              <XAxis
-                dataKey="name"
-                label={{
-                  value: 'Fecha de registro',
-                  position: 'insideBottom',
-                  offset: 0,
-                }}
-              />
-              <YAxis
-                angle={90}
-                label={{
-                  value: selectedMetric.charAt(0).toUpperCase() + selectedMetric.slice(1),
-                  angle: -90,
-                  position: 'insideLeft',
-                }}
-              />
-              <Tooltip
-                labelFormatter={(value) => moment(value.fecha).format('DD/MM/YYYY')}
-                formatter={(value, name, entry) => [`${value} - ${moment(entry.payload.fecha).format('DD/MM/YYYY')}`, selectedMetric]}
-              />
-        </LineChart>
-          </Box>
-        </ResponsiveContainer>
+  const MetricCard = ({ metrica, valor, gridArea, colSize = 4 , medida}) => (
+    <div
+      className={`col-${colSize} my-2`}
+      style={{
+        gridArea,
+        margin: '0',
+      }}
+    >
+      <div class="caf_green_bg"
+        style={{
+          gridArea,
+          border: '2px solid #C0D437',
+          borderRadius: '19px',
+          padding: '10px',
+          margin: '0',
+          height: '100%',
+        }}
+      >
+        <Typography style={{ color: 'white', textAlign: 'left', fontSize: '.8rem', fontWeight: '400' }} variant="subtitle1" component="div">{metrica}</Typography>
+        <Typography style={{ color: 'white', textAlign: 'left', fontSize: '1.8rem', fontWeight: '400' }} variant="h6">{valor} {' '}<span style={{ fontSize: '1.2rem', fontWeight:'300'}}>{medida}</span></Typography>
       </div>
+    </div>
+  );
+
+  const card = (
+    <CardContent className="row card-metrics-content">
+      <MetricCard colSize={4} metrica={data[0]?.metrica} valor={data[0]?.valor} medida={'años'} gridArea="edad" />
+      <MetricCard colSize={4} metrica="IMC" valor={data[5]?.valor} gridArea="IMC" />
+      <MetricCard colSize={4} metrica={data[6]?.metrica} valor={data[6]?.valor} medida={'cm'} gridArea="grasavisceral" />
+      <MetricCard colSize={4} metrica={data[1]?.metrica} valor={data[1]?.valor} medida={'mts'} gridArea="altura" />
+      <MetricCard colSize={8} metrica={data[3]?.metrica} valor={data[3]?.valor} gridArea="porcentajedecrasacorporal" />
+      <MetricCard colSize={4} metrica={data[2]?.metrica} valor={data[2]?.valor} medida={'kg'} gridArea="pesocorporal" />
+      <MetricCard colSize={8} metrica={data[4]?.metrica} valor={data[4]?.valor} gridArea="porcentajedemusculo" />
+    </CardContent>
+  );
+
+  const OutlineCard = () => {
+    return (
+      <Box sx={{ height: '500', width: '500' }}>
+        { isFetchDone ? <CircularProgress /> : card }
+      </Box>
     );
-  };
-
-
+  }
 
   return (
-    <Container maxWidth="sm">
-      <MetricaContainer>
-        <BotonesPerfil />
-        <MetricaTitle>Métricas de seguimiento del alumno {moment(fecha).format('DD/MM/YYYY')}</MetricaTitle>
-        <MetricaTable className='container-sm' {...getTableProps()}>
-          <thead>
-            {headerGroups.map(headerGroup => (
-              <MetricaRow {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map(column => (
-                  <MetricaHeader {...column.getHeaderProps()}>
-                    {column.render('Header')}
-                  </MetricaHeader>
-                ))}
-              </MetricaRow>
-            ))}
-          </thead>
-          <tbody {...getTableBodyProps()}>
-            {rows.map(row => {
-              prepareRow(row);
-              return (
-                <MetricaRow {...row.getRowProps()}>
-                  {row.cells.map(cell => {
-                    return (
-                      <MetricaCell {...cell.getCellProps()}>
-                        {cell.render('Cell')}
-                      </MetricaCell>
-                    );
-                  })}
-                </MetricaRow>
-              );
-            })}
-          </tbody>
-        </MetricaTable>
-      </MetricaContainer>
-      {BarChartExample()}
+    <Container className="mt-4" style={{ background: 'rgba(0, 0, 0, 0.46)', borderRadius: '19px', width: '100%', marginBottom: '50px'}}>
+      <Titulo>
+        <Saludo>Estos son tus datos {alumno?.nombre ?? 'Sin informacion'}</Saludo>
+      </Titulo>
+      <div className='w-100'>
+        <ButtonDropdown />
+        <Contenedor >
+          <OutlineCard />
+        </Contenedor>
+      </div>
+      {/*
+      <ScrollableContainer/>
+      <Texto>
+      Tienes entrenamiento esta semana
+      </Texto>
+      <Texto2>
+      presiona para saber el contenido
+  </Texto2>*/}
     </Container>
   );
 };
 
-const MetricaContainer = styled.div`
-  margin-top: 70px; 
-  font-family: 'lato, sans-serif';
-  color: white;
-  top: 100px;
-  justify-content: center;
-  align-items: center;
-`;
-
-const MetricaTitle = styled.h2`
-  font-size: 24px;
-  font-weight: bold;
+const Titulo = styled.div`
+  font-size: 35px;
+  color: #ffffff;
+  text-align: center;
+  margin-top: 20px;
   margin-bottom: 20px;
+  minHeight: '100vh';
 `;
 
-const MetricaTable = styled.table`
-  width: 100%;
-  border-collapse: collapse;
+const Saludo = styled.div`
+  font-size: 30px;
+  color: rgba(255, 255, 255, 1);
+  font-weight: bold;
+  text-align: center;
+`;
+
+const Contenedor = styled.div`
+  borderRadius: 19px;
+  display: flex;
   justify-content: center;
-  align-items: center;
-  background-position: center;
-`;
-
-const MetricaRow = styled.tr`
-  &:nth-child(even) {
-    background-color: #333333;
-  }
-`;
-
-const MetricaHeader = styled.th`
-  text-align: left;
-  padding: 8px;
-  border: 1px solid #fff;
-`;
-
-const MetricaCell = styled.td`
-  text-align: left;
-  padding: 8px;
-  border: 1px solid #fff;
+  height: 100%;
+  width: 100%;
+  text-align: center;
 `;
 
 export default Metrica;

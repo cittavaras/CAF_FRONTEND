@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import axios from 'axios';
 import ReactPaginate from 'react-paginate';
 import MotivoRechazo from './MotivoRechazo';
-import BotonesPerfil from './BotonesPerfil';
 import baseURL from '../helpers/rutaBase';
 
 const ListarAlumno = () => {
@@ -99,7 +98,6 @@ const ListarAlumno = () => {
   return (
     <>
       <DivT>
-      <BotonesPerfil/>
         <Div className="row" >
           <div>
             {

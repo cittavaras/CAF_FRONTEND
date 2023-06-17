@@ -7,7 +7,6 @@ import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import Container from '@mui/material/Container';
 import RegistroMetricas from './RegistroMetricas';
-import BotonesPerfil from './BotonesPerfil';
 import baseURL from '../helpers/rutaBase';
 import { Link } from 'react-router-dom';
 import RegistroRutinas from '../pages/RegistroRutinas';
