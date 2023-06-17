@@ -206,7 +206,7 @@ const ReservarSesion = (props) => {
     const colorSesion = sesionPasada ? (asistio ? colorsCalendar.asistio : colorsCalendar.falta) : colorsCalendar.reserva;
     const isSelected = selectedEvents.map((e) => e.id).includes(event.id);
     const style = {
-      backgroundColor: isSelected ? colorSesion : colorsCalendar.disponible,
+      backgrounColor: isSelected ? colorSesion : colorsCalendar.disponible,
       borderRadius: "0",
       opacity: 1,
       display: "block",

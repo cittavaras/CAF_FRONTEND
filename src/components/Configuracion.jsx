@@ -5,7 +5,6 @@ import '../pages/css/style.css';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../auth/useAuth';
 import baseURL from '../helpers/rutaBase';
-import BotonesPerfil from './BotonesPerfil';
 
 const Configuracion = () => {
 
@@ -91,7 +90,6 @@ const Configuracion = () => {
       <Container>
       
         <div className='login' style={{marginTop: '70px'}}>
-        <BotonesPerfil/>
           <form className="form-horizontal" >
             <link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet"></link>
             <H1>Actualizar Datos de</H1>

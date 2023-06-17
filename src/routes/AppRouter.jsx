@@ -9,6 +9,7 @@ import Notificacion from "../pages/notificacion";
 import LandingPageAlumno from "../pages/LadingPageAlumno";
 import Login from '../pages/Login';
 import MetricaAlumno from '../pages/MetricaAlumno';
+import GraficosAlumnos from '../pages/GraficosAlumnos';
 import ListarAlumno from "../components/ListarAlumno";
 import NotFoundPage from "../pages/NotFoundPage";
 import AgendaReserva from "../components/AgendaReserva";
@@ -21,6 +22,10 @@ import ListarActivos from "../components/ListarActivos";
 import Configuracion from "../components/Configuracion";
 import ModificarEliminarUsuario from "../components/ModificarEliminarUsuario";
 import SobreNosotros from "../pages/SobreNosotros";
+import AdminControl from "../components/AdminControl";
+import Informativo from "../components/Informativo";
+import RegistroRutinas from "../pages/RegistroRutinas";
+import RutinaAlumno from "../pages/RutinaAlumno";
 
 export default function AppRouter() {
   const { isLogged } = useAuth();
@@ -34,17 +39,17 @@ export default function AppRouter() {
           {/* Rutas publicas */}
           <Route path="/registro" element={
             <PublicRoute>
-              <CrearAlumno />
+              <CrearAlumno/>
             </PublicRoute>}
           />
           <Route path="/qr" element={
             <PublicRoute>
-              <Inicio />
+              <Inicio/>
             </PublicRoute>}
           />
           <Route path="/bienvenida" element={
             <PublicRoute>
-              <Bienvenida />
+              <Bienvenida/>
             </PublicRoute>}
           />
           <Route path="/" element={
@@ -55,7 +60,7 @@ export default function AppRouter() {
           {/* Ruta que no existe */}
           <Route path="*" element={
             <PublicRoute>
-              <NotFoundPage />
+              <NotFoundPage/>
             </PublicRoute>}
           />
           <Route path="/notificacion" element={
@@ -65,29 +70,38 @@ export default function AppRouter() {
           />
           <Route path="/nosotros" element={
             <PublicRoute>
-              <SobreNosotros />
+              <SobreNosotros/>
             </PublicRoute>}
           />
-
           {/* Rutas privadas */}
           <Route path="/landing" element={
-            <PrivateRoute >
+            <PrivateRoute>
               <LandingPageAlumno />
+            </PrivateRoute>}
+          />
+          <Route path="/control" element={
+            <PrivateRoute>
+              <Informativo/>
             </PrivateRoute>}
           />
           <Route path="/reserva" element={
             <PrivateRoute>
-              <AgendaReserva />
+              <AgendaReserva/>
             </PrivateRoute>}
           />
           <Route path="/metrica" element={
-            <PrivateRoute >
-              <MetricaAlumno />
+            <PrivateRoute>
+              <MetricaAlumno/>
+            </PrivateRoute>}
+          />
+          <Route path="/graficos" element={
+            <PrivateRoute>
+              <GraficosAlumnos/>
             </PrivateRoute>}
           />
           <Route path="/configuracion" element={
-            <PrivateRoute >
-              <Configuracion />
+            <PrivateRoute>
+              <Configuracion/>
             </PrivateRoute>}
           />
           <Route path="/listar" element={
@@ -97,7 +111,7 @@ export default function AppRouter() {
           />
           <Route path="/crearUsuario" element={
             <PrivateRoute hasRole={roles.admin} >
-              <CrearUsuario />
+              <CrearUsuario/>
             </PrivateRoute>}
           />
           <Route path="/listarActivos" element={
@@ -108,6 +122,16 @@ export default function AppRouter() {
           <Route path="/mantenedor" element={
             <PrivateRoute hasRole={roles.admin} >
               <ModificarEliminarUsuario />
+            </PrivateRoute>}
+          />
+          <Route path="/registroRutinas" element={
+            <PrivateRoute hasRole={roles.instructor} >
+              <RegistroRutinas />
+            </PrivateRoute>}
+          />
+          <Route path="/rutina" element={
+            <PrivateRoute hasRole={roles.alumno} >
+              <RutinaAlumno />
             </PrivateRoute>}
           />
         </Routes>
@@ -124,7 +148,7 @@ function PrivateRoute({ children, redirectTo = '/', hasRole: tipoUsuario }) {
   }
 
   if (!isLogged()) {
-    return <Navigate to={routes.login} />;
+    return <Navigate to={'/'} />;
   }
   return children;
 }

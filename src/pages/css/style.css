@@ -1,3 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+
+* {
+  font-family: 'Lato', sans-serif!important;
+}
+
+.caf_green_bg {
+ background-color: rgba(200, 223, 50, 0.5);;
+}
+
+.card-metrics-content {
+  padding: 0!important;
+}
+.card-metrics-content > * {
+  padding: 5px;
+}
+
+.botonesperfil > *{
+  border-radius: 10px;
+  text-align: center;
+  padding: 0;
+}
+
+.botonesperfil > div > * {
+  font-weight: bold;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -9,7 +36,6 @@ body {
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
-  display: flex;
   justify-content: center;
   align-items: center;
   font-family: 'Lato', sans-serif;

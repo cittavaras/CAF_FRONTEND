@@ -3,31 +3,33 @@ import React, { useState, useEffect } from 'react';
 import './css/landing.css';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import ReservarSesion from '../components/ReservarSesion';
+import Informativo from '../components/Informativo';
 import useAuth from '../auth/useAuth';
 import roles from "../helpers/roles";
-import BotonesPerfil from '../components/BotonesPerfil';
+import GimInforma from '../components/GimInforma';
 
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet"></link>
 
 
 const LandingPageAlumno = ({ location }) => {
   const { alumno } = useAuth();
+
+  const [titulo, setTitulo] = useState("CAF IVARAS")
+  const [imagen, setImagen] = useState("https://e1.pxfuel.com/desktop-wallpaper/554/24/desktop-wallpaper-best-4-fitness-on-hip-gym-boy.jpg")
+  const [texto, setTexto] = useState("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
+  
   return (
-
     <>
-      <Div>
-        <div className='mt-5 container py-5  text-center'>
-          <H1>Hola  <br /> {alumno?.nombre ?? 'Sin informacion'}</H1>
-          <P className='opcion'>Elige una Opción</P>
-          <BotonesPerfil/>
-        </div>                           
-      </Div>
-
+      <div>
+        <div className='mt-2 container py-4  text-center'>
+          <H1 style={{ fontSize: '2.5rem' }}>Bienvenido</H1>
+          <p style={{ fontSize: '1.3rem', color: 'white' }}>{alumno?.nombre ?? 'Sin informacion'}</p>
+        </div>
+        <GimInforma titulo={titulo} imagen={imagen} texto={texto}/>                          
+      </div>
     </>
   )
 }
-
 const Div = styled.div`
   font-family: 'Lato', sans-serif;
   color: white;
