@@ -3,6 +3,7 @@ import axios from 'axios';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import BotonesPerfil from './BotonesPerfil';
+import baseURL from '../helpers/rutaBase';
 
 const CrearUsuario = () => {
 
@@ -19,7 +20,7 @@ const CrearUsuario = () => {
 
   useEffect(() => {
     const getAlumnos = async () => {
-      const res = await axios.get('https://caf.ivaras.cl/api/alumnos');
+      const res = await axios.get(baseURL + '/alumnos');
       setAlumnos(res.data);
     };
 
@@ -74,7 +75,7 @@ const CrearUsuario = () => {
         tipoUsuario,
       };
 
-      await axios.post('https://caf.ivaras.cl/api/alumnos', newAlumno);
+      await axios.post(baseURL + '/alumnos', newAlumno);
       alert('Usuario creado');
       navigate('/landing');
     }
@@ -86,14 +87,43 @@ const CrearUsuario = () => {
     return expresionRegular.test(correo);
   };
 
+  const calcularDigitoVerificador = (rutSinDigito) => {
+    let suma = 0;
+    let multiplicador = 2;
+  
+    // Itera de derecha a izquierda multiplicando y sumando los dígitos
+    for (let i = rutSinDigito.length - 1; i >= 0; i--) {
+      suma += parseInt(rutSinDigito[i]) * multiplicador;
+      multiplicador = multiplicador === 7 ? 2 : multiplicador + 1;
+    }
+  
+    // Calcula el dígito verificador como el complemento de la suma módulo 11
+    const digito = 11 - (suma % 11);
+  
+    // Devuelve el dígito verificador, considerando casos especiales
+    if (digito === 11) {
+      return "0";
+    } else if (digito === 10) {
+      return "K";
+    } else {
+      return digito.toString();
+    }
+  };
+  
   const formatearRut = () => {
-    console.log(rut)
-    const rutSinFormatear = rut.replace(/\./g, "").replace("-", "");
-    const dv = rutSinFormatear.slice(-1);
+    const rutSinFormatear = rut.replace(/\./g, "").replace("-", "").trim();
     const rutNum = rutSinFormatear.slice(0, -1);
-    const rutFormateado = rutNum.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "-" + dv;
-    setRut(rutFormateado);
-  }
+    const dvIngresado = rutSinFormatear.slice(-1);
+    const dvCalculado = calcularDigitoVerificador(rutNum);
+  
+    if (dvIngresado.toUpperCase() === dvCalculado) {
+      const rutFormateado = rutNum.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "-" + dvIngresado;
+      setRut(rutFormateado);
+    } else {
+      alert("El RUT ingresado no es válido");
+      setRut("")
+    }
+  }; 
 
   return ( 
     
@@ -177,20 +207,8 @@ const CrearUsuario = () => {
 const OuterContainer = styled.div`
   display: flex;
   margin-top: 70px;
-/*   justify-content: center; */
-/*   align-items: center; */
-/*   height: 100vh; */
-/*   border-style: solid;
-  border-width: 2px; */
 `;
 
-/* const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: bottom;
-  align-items: center;
-  align-items: left;
-`; */
 
 const Container = styled.div`
   display: flex;
@@ -200,7 +218,6 @@ const Container = styled.div`
   padding: 20px;
   border-radius: 5px;
   opacity: 0.9;
-  /* padding-right: 100px; */
 `;
 
 const Login = styled.div`

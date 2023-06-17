@@ -11,6 +11,8 @@
 # production
 /build
 
+#ignorar ruta base
+/src/helpers/rutaBase 
 # misc
 .DS_Store
 .env.local

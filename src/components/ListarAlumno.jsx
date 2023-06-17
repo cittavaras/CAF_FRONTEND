@@ -4,11 +4,12 @@ import axios from 'axios';
 import ReactPaginate from 'react-paginate';
 import MotivoRechazo from './MotivoRechazo';
 import BotonesPerfil from './BotonesPerfil';
+import baseURL from '../helpers/rutaBase';
 
 const ListarAlumno = () => {
   const [alumnos, setAlumnos] = useState([]);
   const [paginaNumero, setPaginaNumero] = useState(0);
-  const [porPagina, setPorPagina] = useState(6);
+  const [porPagina, setPorPagina] = useState(5);
   const [totalCount, setTotalCount] = useState(0);
   const [alumnoEliminado, setAlumnoEliminado] = useState(null);
 
@@ -19,12 +20,14 @@ const ListarAlumno = () => {
     e.preventDefault();
     setAlumnoEliminado(al)
     setOpen(true)
+
   };
   const handleClose = () => {
     setAlumnoEliminado(null);
     setOpen(false);
     // setSelectedEvents([]);
   }
+
 
   useEffect(() => {
     getAlumnos();
@@ -33,36 +36,34 @@ const ListarAlumno = () => {
   // Función para obtener la lista de alumnos
   const getAlumnos = async () => {
     try {
-      const res = await axios.get('https://caf.ivaras.cl/api/alumnos');
-      // Filtrar los alumnos que son del tipo 'Alumno' y que no estén activos
+      const res = await axios.get(baseURL + '/alumnos');
       const alumnos = res.data.alumnos.filter(alumno => alumno.tipoUsuario === 'Alumno' && alumno.active === false);
       const startIndex = paginaNumero * porPagina;
-      // Seleccionar los alumnos de la página actual según el índice de inicio y la cantidad de elementos por página
       const alumnosSeleccionados = alumnos.slice(startIndex, startIndex + porPagina);
-      // Actualizar el estado con los alumnos seleccionados y el total de alumnos obtenidos
       setAlumnos(alumnosSeleccionados);
       setTotalCount(alumnos.length);
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   }
+
   // Función para eliminar un alumno
   const eliminarAlumno = async (e, message) => {
     e.preventDefault();
-    const res = await axios.delete(`https://caf.ivaras.cl/api/alumnos/${alumnoEliminado._id}`);
+    const res = await axios.delete(`${baseURL}/alumnos/${alumnoEliminado._id}`);
 
     await axios
-      .post('https://caf.ivaras.cl/api/send-email', {
+      .post(baseURL + '/send-email', {
         to: alumnoEliminado?.correo,
         subject: 'Solicitud declinada CAF IVARAS',
         text: `${alumnoEliminado?.nombre}, ${message} `,
         html: `<strong>${alumnoEliminado?.nombre}</strong>, ${message}`,
       })
       .then((response) => {
-        console.log('Email sent successfully:', response.data);
+        //console.log('Email sent successfully:', response.data);
       })
       .catch((error) => {
-        console.error('Error sending email:', error);
+        //console.error('Error sending email:', error);
       });
 
     handleClose();
@@ -72,42 +73,38 @@ const ListarAlumno = () => {
 
   // Función para aceptar un alumno
   const aceptarAlumno = async (alumno) => {
-    const res = await axios.put(`https://caf.ivaras.cl/api/alumnos/${alumno._id}`, { active: true });
+    const res = await axios.put(`${baseURL}/alumnos/aceptar/${alumno._id}`, { active: true });
     await axios
-      .post('https://caf.ivaras.cl/api/send-email', {
+      .post(baseURL + '/send-email', {
         to: alumno.correo,
         subject: 'Solicitud Aceptada CAF IVARAS',
         text: `${alumno.nombre}, Le informamos que su cuenta ha sido activada exitosamente, recuerde que para ingresar necesita su correo y el rut como contraseña sin puntos, sin guion y sin digito verificador guiense por el siguiente link https://caf.ivaras.cl`,
         html: `<strong>${alumno.nombre}</strong>, Le informamos que su cuenta ha sido activada exitosamente, recuerde que para ingresar necesita su correo y el rut como contraseña sin puntos, sin guion y sin digito verificador guiense por el siguiente link https://caf.ivaras.cl`,
       })
       .then((response) => {
-        console.log('Email sent successfully:', response.data);
+       // console.log('Email sent successfully:', response.data);
       })
       .catch((error) => {
-        console.error('Error sending email:', error);
+        //console.error('Error sending email:', error);
       });
-
-    console.log(res);
-    console.log(res?.data);
 
     getAlumnos();
   }
 
-
-  // Función para manejar el cambio de página
   const handlePageClick = (e) => {
-    const paginaSeleccionada = e.selected; // Página seleccionada
+    const paginaSeleccionada = e.selected;
     setPaginaNumero(paginaSeleccionada);
-  }; // fin de handlePageClick
+  };
+  
   return (
     <>
       <DivT>
       <BotonesPerfil/>
         <Div className="row" >
-          <TarjetaContainer>
+          <div>
             {
               alumnos.map(alumno => (
-                <Card className="col-md-4 p-2" key={alumno._id}>
+                <card className="col-md-4 p-2" key={alumno._id}>
                   <div className="card">
                     <div className="card-header d-flex justify-content-between">
                       <h3>{alumno.nombre}</h3>
@@ -127,10 +124,10 @@ const ListarAlumno = () => {
                     </div>
                   </div>
                   {open && <MotivoRechazo open={open} setOpen={setOpen} handleClose={handleClose} alumnoEliminado={alumnoEliminado} eliminarAlumno={eliminarAlumno} />}
-                </Card>
+                </card>
               ))
             }
-          </TarjetaContainer>
+          </div>
         </Div>
 
         <ReactPaginate
@@ -154,41 +151,12 @@ const ListarAlumno = () => {
 };
 
 const DivT = styled.div`
-  font-family: 'Kodchasan';
   margin-top: 100px;
   top: 100px;
 `;
 
 const Div = styled.div`
-  font-family: 'Kodchasan';
   top: 10px;
 `;
-
-const Card = styled.div`
-  width: 500px; // Tamaño fijo de la tarjeta
-  height: 300px;
-  background-color: white;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-  padding: 20px;
-  margin: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  @media (max-width: 768px) { // Media query para pantallas más pequeñas
-    width: 100%; // La tarjeta ocupa el ancho completo de la pantalla
-    height: auto; // La altura se ajusta automáticamente al contenido
-    margin: 10px 0; // Se quita el margen horizontal y se agrega un margen vertical
-  }
-`;
-
-const TarjetaContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-`;
-
 
 export default ListarAlumno;

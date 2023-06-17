@@ -7,7 +7,6 @@ const MotivoRechazo = (props) => {
 
   const handleSubmit = (event) => {
     event.preventDefault(); // prevenir el comportamiento por defecto del formulario
-    console.log("Mensaje enviado:", message); // Simplemente imprimir el mensaje en la consola
     props.onClose(); // Llamada a la función onClose para cerrar el modal
   };
 

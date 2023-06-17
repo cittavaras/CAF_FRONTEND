@@ -3,11 +3,37 @@ import axios from 'axios';
 import styled from 'styled-components';
 import '../pages/css/style.css';
 import { useNavigate } from 'react-router-dom';
+import baseURL from '../helpers/rutaBase';
+import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@mui/material';
+import useMediaQuery from '@mui/material/useMediaQuery';
+
+
+
 
 const CrearAlumno = () => {
 
+  const [open, setOpen] = useState(false);
+  
+  const handleClickOpen = (e) => {
+    e.preventDefault();
+    if (!nombre || !rut || !correo || !carrera || !jornada) {
+      alert('Todos los campos son obligatorios');
+      return;
+    } else if (!validarCorreoElectronico(correo)) {
+      alert('El correo debe ser de duoc');
+      return;
+    }
+    else{
+      setOpen(true);
+    };
+    
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+  
   const navigate = useNavigate();
-
+  
   const [alumnos, setAlumnos] = useState([]);
   const [nombre, setNombre] = useState('');
   const [rut, setRut] = useState('');
@@ -19,7 +45,7 @@ const CrearAlumno = () => {
 
   useEffect(() => {
     const getAlumnos = async () => {
-      const res = await axios.get('https://caf.ivaras.cl/api/alumnos');
+      const res = await axios.get(baseURL + '/alumnos');
       setAlumnos(res.data);
     };
 
@@ -50,25 +76,47 @@ const CrearAlumno = () => {
     }
   };
 
+  const calcularDigitoVerificador = (rutSinDigito) => {
+    let suma = 0;
+    let multiplicador = 2;
+  
+    // Itera de derecha a izquierda multiplicando y sumando los dígitos
+    for (let i = rutSinDigito.length - 1; i >= 0; i--) {
+      suma += parseInt(rutSinDigito[i]) * multiplicador;
+      multiplicador = multiplicador === 7 ? 2 : multiplicador + 1;
+    }
+  
+    // Calcula el dígito verificador como el complemento de la suma módulo 11
+    const digito = 11 - (suma % 11);
+  
+    // Devuelve el dígito verificador, considerando casos especiales
+    if (digito === 11) {
+      return "0";
+    } else if (digito === 10) {
+      return "K";
+    } else {
+      return digito.toString();
+    }
+  };
+  
   const formatearRut = () => {
-    console.log(rut)
-    const rutSinFormatear = rut.replace(/\./g, "").replace("-", "");
-    const dv = rutSinFormatear.slice(-1);
+    const rutSinFormatear = rut.replace(/\./g, "").replace("-", "").trim();
     const rutNum = rutSinFormatear.slice(0, -1);
-    const rutFormateado = rutNum.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "-" + dv;
-    setRut(rutFormateado);
-  }
+    const dvIngresado = rutSinFormatear.slice(-1);
+    const dvCalculado = calcularDigitoVerificador(rutNum);
+  
+    if (dvIngresado.toUpperCase() === dvCalculado) {
+      const rutFormateado = rutNum.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "-" + dvIngresado;
+      setRut(rutFormateado);
+    } else {
+      alert("El RUT ingresado no es válido");
+      setRut("")
+    }
+  };  
 
   const onSubmit = async (e) => {
     e.preventDefault();
-
-    if (!nombre || !rut || !correo || !carrera || !jornada) {
-      alert('Todos los campos son obligatorios');
-      return;
-    } else if (!validarCorreoElectronico(correo)) {
-      alert('El correo debe ser de duoc');
-      return;
-    } else {
+      console.log({nombre, rut, correo, carrera, jornada, active, tipoUsuario})
       correo.toLowerCase();
       const newAlumno = {
         nombre,
@@ -79,25 +127,26 @@ const CrearAlumno = () => {
         active,
         tipoUsuario,
       };
-
-      await axios.post('https://caf.ivaras.cl/api/alumnos', newAlumno);
+      console.log(newAlumno)
+      const res = await axios.post(baseURL + '/alumnos', newAlumno);
+      //console.log(res);
 
       await axios
-        .post('https://caf.ivaras.cl/api/send-email', {
+        .post(baseURL + '/send-email', {
           to: correo,
           subject: 'Registro CAF Ivaras',
           text: `${nombre}: nos es grato saber que estas interesado(a) en nuestros servicios de CAF Ivaras. En los proximos días activaremos tu cuenta y te enviaremos un correo notificandote como acceder a la plataforma y a sus servicios. Atentamente, el equipo de CAF Ivaras`,
           html: `<strong>${nombre}</strong>: nos es grato saber que estas interesado(a) en nuestros servicios de CAF Ivaras. En los proximos días activaremos tu cuenta y te enviaremos un correo notificandote como acceder a la plataforma y a sus servicios. Atentamente, el equipo de CAF Ivaras`,
         })
         .then((response) => {
-          console.log('Email sent successfully:', response.data);
+          //console.log('Email sent successfully:', response.data);
         })
         .catch((error) => {
-          console.error('Error sending email:', error);
+         // console.error('Error sending email:', error);
         });
 
       navigate('/notificacion');
-    }
+    
   };
   
 
@@ -162,9 +211,34 @@ const CrearAlumno = () => {
                 <option value="vespertino">Vespertino</option>
               </SelectJ>
             </div>
-            <Button className="button" onClick={onSubmit}>
+            <Button className="button" onClick={(e) => {handleClickOpen(e)}}>
               ENVIAR SOLICITUD
             </Button>
+            <Dialog
+              open={open}
+              onClose={handleClose}
+            >
+              <DialogTitle aria-label="confirmacion">
+                {"¿Están correctos estos datos?"}
+              </DialogTitle>
+              <DialogContent>
+                <DialogContentText>
+                  IMPORTANTE: Una vez enviada la solicitud, no se podrá modificar. Asegurate de que los datos sean correctos. <br /><br />
+                  Correo: {correo} <br />
+                  Rut: {rut} <br />
+                  Nombre: {nombre} <br />
+                  Carrera: {carrera} <br />
+                  Jornada: {jornada}
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleClose}>Cancelar</Button>
+                <Button onClick={(e) => {onSubmit(e)}} >
+                  Aceptar
+                </Button>
+              </DialogActions>
+            </Dialog>
+
           </form>
         </Login>
       </Container>
@@ -176,20 +250,9 @@ const CrearAlumno = () => {
 
 const OuterContainer = styled.div`
   display: flex;
-/*   justify-content: center; */
-/*   align-items: center; */
-/*   height: 100vh; */
-/*   border-style: solid;
-  border-width: 2px; */
 `;
 
-/* const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: bottom;
-  align-items: center;
-  align-items: left;
-`; */
+
 
 const Container = styled.div`
   display: flex;
@@ -199,7 +262,6 @@ const Container = styled.div`
   padding: 20px;
   border-radius: 5px;
   opacity: 0.9;
-  /* padding-right: 100px; */
 `;
 
 const Login = styled.div`

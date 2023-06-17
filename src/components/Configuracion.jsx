@@ -4,12 +4,14 @@ import styled from 'styled-components';
 import '../pages/css/style.css';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../auth/useAuth';
+import baseURL from '../helpers/rutaBase';
+import BotonesPerfil from './BotonesPerfil';
 
 const Configuracion = () => {
 
   const navigate = useNavigate();
 
-  const { alumno } = useAuth();
+  const { alumno, logout } = useAuth();
 
   const [nombre, setNombre] = useState('');
   const [contraseña, setContraseña] = useState('');
@@ -65,17 +67,31 @@ const Configuracion = () => {
         return;
       }
 
-      await axios.put(`https://caf.ivaras.cl/api/alumnos/rut/${alumno.rut}`, newAlumno);
+      await axios.put(`${baseURL}/alumnos/rut/${alumno.rut}`, newAlumno);
       alert('Alumno actualizado')
-      navigate('/landing')
+      logout();
+      navigate('/');
     }
   };
 
+  useEffect(() => {
+    if (alumno) {
+        setNombre(alumno.nombre)
+        setRut(alumno.rut)
+        setCorreo(alumno.correo)
+        setCarrera(alumno.carrera)
+        setJornada(alumno.jornada)
+        setTipoUsuario(alumno.tipoUsuario)
+    }
+  }, [alumno]);
+
   return (
     <OuterContainer>
-
+      
       <Container>
-        <Login className='login'>
+      
+        <div className='login' style={{marginTop: '70px'}}>
+        <BotonesPerfil/>
           <form className="form-horizontal" >
             <link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet"></link>
             <H1>Actualizar Datos de</H1>
@@ -84,16 +100,16 @@ const Configuracion = () => {
               <H2>Correo: {alumno?.correo ?? 'Sin informacion'}</H2>
             </div>
             <div className="form-group">
-              <InputN type="text" placeholder="Actualizar Nombre:" name="nombre" onChange={onChangeAlumno} />
+              <InputN type="text" placeholder="Actualizar Nombre:" name="nombre" onChange={onChangeAlumno} value={nombre}/>
             </div>
             <div className="form-group">
-              <InputN type="password" placeholder="Actualizar Contraseña:" name="contraseña" onChange={onChangeAlumno} />
+              <InputN type="password" placeholder="Actualizar Contraseña:" name="contraseña" onChange={onChangeAlumno}/>
             </div>
             <div className="form-group">
               <InputN type="password" placeholder="Confirmar Contraseña:" name="confirmarContraseña" onChange={onChangeAlumno} />
             </div>
             <div className="form-group">
-              <Select className="form-control" name="carrera" onChange={onChangeAlumno}>
+              <Select className="form-control" name="carrera" onChange={onChangeAlumno} value={carrera}>
                 <option selected disabled={true}> ---Seleccione Su carrera---</option>
                 <option value="Auditoría">Auditoría</option>
                 <option value="Ecoturismo">Ecoturismo</option>
@@ -126,7 +142,7 @@ const Configuracion = () => {
               </Select>
             </div>
             <div className="form-group">
-              <SelectJ className="form-control" name="jornada" onChange={onChangeAlumno}>
+              <SelectJ className="form-control" name="jornada" onChange={onChangeAlumno} value={jornada}>
                 <option selected disabled={true}>JORNADA</option>
                 <option value="diurno">Diurno</option>
                 <option value="vespertino">Vespertino</option>
@@ -136,7 +152,7 @@ const Configuracion = () => {
               ACTUALIZAR DATOS
             </Button>
           </form>
-        </Login>
+        </div>
       </Container>
       <div className="vector1right" />
     </OuterContainer>
@@ -172,17 +188,8 @@ const Container = styled.div`
   /* padding-right: 100px; */
 `;
 
-const Login = styled.div`
-margin-top: 100px;
-display: flex;
-justify-content: center;
-align-items: center;
-`;
-
 const H1 = styled.h1`
-font-family: 'lato', sans-serif;
 font-size: bold;
-font-family: 'lato', sans-serif;
 font-size: 40px;
 color: #FFFFFF;
 @media only screen and (max-width: 768px) {
@@ -191,9 +198,7 @@ color: #FFFFFF;
 `;
 
 const H2 = styled.h2`
-font-family: 'lato', sans-serif;
 font-size: bold;
-font-family: 'lato', sans-serif;
 font-size: 30px;
 color: #FFFFFF;
 @media only screen and (max-width: 768px) {
@@ -208,7 +213,7 @@ const InputN = styled.input`
   opacity: 1;
   margin-bottom: 20px;
   border-radius: 10px;
-  font-family: 'lato', sans-serif;
+
   color: #000000;
   
   &:focus {
@@ -230,7 +235,7 @@ const InputR = styled.input`
   background: rgba(255, 255, 255, 0.7);
   margin-bottom: 20px;
   border-radius: 10px;
-  font-family: 'Lato', sans-serif;
+
   font-size: 16px;
   width: 100%;
   margin-right: 0;
@@ -256,7 +261,7 @@ const InputCorreo = styled.input`
   margin-left: 4%;
   margin-bottom: 20px;
   border-radius: 10px;
-  font-family: 'Lato', sans-serif;
+
   font-size: 16px;
   width: 100%;
   margin-left: 0;
@@ -281,7 +286,6 @@ padding: 10px;
 background: rgba(255, 255, 255, 0.7);
 margin-bottom: 20px;
 border-radius: 10px;
-font-family: 'Lato', sans-serif;
 font-size: 16px;
 
 font-size: 14px;
@@ -294,7 +298,6 @@ padding: 10px;
 background: rgba(255, 255, 255, 0.7);
 margin-bottom: 20px;
 border-radius: 10px;
-font-family: 'Lato', sans-serif;
 font-size: 16px;
  
 font-size: 14px;
@@ -309,7 +312,7 @@ const Button = styled.button`
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
-  font-family: 'Lato', sans-serif;  
+  
 
   &:hover {
     background-color: #2980b9;

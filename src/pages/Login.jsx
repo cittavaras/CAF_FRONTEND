@@ -3,6 +3,15 @@ import axios from 'axios';
 import styled from "styled-components";
 import { useNavigate, Link } from 'react-router-dom';
 import useAuth from '../auth/useAuth';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import Chip from '@mui/material/Chip';
+import baseURL from '../helpers/rutaBase';
+import { height } from '@mui/system';
+import Card from '@mui/material/Card';
+import CardMedia from '@mui/material/CardMedia';
+import { CardActionArea } from '@mui/material';
+import ButtonBase from '@mui/material/ButtonBase';
+import ivaras from './img/ivaras.png';
 
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet"></link>
 
@@ -17,7 +26,7 @@ const Login = () => {
 
   const onChangeCorreo = (e) => {
     setAlumno(e.target.value.toLowerCase());
-    console.log(alumno);
+    //console.log(alumno);
   }
 
   const onChangeConstraseña = (e) => {
@@ -41,15 +50,15 @@ const Login = () => {
       return;
     }
     else {
-      const res = await axios.post(`https://caf.ivaras.cl/api/alumnos/login`, { correo: alumno, password: contraseña });
-      console.log(res);
+      const res = await axios.post(`${baseURL}/alumnos/login`, { correo: alumno, password: contraseña });
+      //console.log(res);
       try {
         const usuario = res?.data?.respAlumno
 
-        
+
         if (!!usuario && res.data.success) {
-          
-          console.log('usuario', usuario);
+
+          //console.log('usuario', usuario);
           login(usuario);
           if (usuario.tipoUsuario === 'Admin') {
             alert('Bienvenido administrador');
@@ -64,12 +73,12 @@ const Login = () => {
             navigate('/landing');
           }
         }
-        else  {
+        else {
           alert('El usuario o contraseña es incorrecto')
         }
-      }      
+      }
       catch (error) {
-        console.log(error);
+        //console.log(error);
         alert('Ocurrió un error al iniciar sesión')
       }
       ;
@@ -88,13 +97,18 @@ const Login = () => {
           <Login0 className='login0'>
             <Form className='form-horizontal  d-flex  flex-column '>
               <Title>INICIAR SESIÓN</Title>
-              {/* <Input type="text" placeholder="CORREO DUOC:" value={alumno} onChange={onChangeCorreo} /> */}
               <InputCorreo type="mail" placeholder="CORREO DUOC:" name="correo" value={alumno} onChange={onChangeCorreo} />
-              {/* <Input type="password" placeholder="CONTRASEÑA:" value={contraseña} onChange={onChangeConstraseña} /> */}
               <InputPass type="password" placeholder="CONTRASEÑA" name="contraseña" value={contraseña} onChange={onChangeConstraseña} />
               <Button onClick={validacion}>INICIAR SESIÓN</Button>
               <div style={{ textAlign: 'center', marginTop: '20px' }}>
                 <Link to="/registro" style={{ borderBottom: '1px solid #FFF', color: '#FFF', textDecoration: 'none' }}>¿No tienes cuenta? Puedes crearte una aquí</Link></div>
+              <div style={{ color: '#FFF', textDecoration: 'none' }}>Sitio Desarrollado por : </div>
+  
+              <Link to="/nosotros">
+               <img src={ivaras} alt="Sobre Nosotros"  style={{height:"100px", width:"100%"}}/>   
+              </Link>
+          
+              
             </Form>
           </Login0>
         </Wrapper>
