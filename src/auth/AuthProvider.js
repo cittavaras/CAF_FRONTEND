@@ -28,7 +28,7 @@ export default function AuthProvider({ children }) {
                 rut: userCredentials?.rut,
                 carrera: userCredentials?.carrera,
                 jornada: userCredentials?.jornada,
-                password: userCredentials?.password
+                id: userCredentials?.id//TODO: revisar login
             }
             setAlumno(newAlumno)
             sessionStorage.setItem("alumno_sesion", JSON.stringify(newAlumno));

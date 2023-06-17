@@ -9,4 +9,7 @@ const routes = {
     metrica: '/metrica',
     admin: '/admin',
     listar: '/listar',
+    registroRutinas: '/registroRutinas',
+    rutina: '/rutina',
+    administrarRutinas: '/administrarRutinas',
 };
