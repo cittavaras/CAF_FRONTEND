@@ -22,7 +22,8 @@ const LandingPageAlumno = ({ location }) => {
     <>
       <div>
         <div className='mt-2 container py-4  text-center'>
-          <H1>Bienvenido  <br style={{color:"black"}} /> {alumno?.nombre ?? 'Sin informacion'}</H1>
+          <H1 style={{ fontSize: '2.5rem' }}>Bienvenido</H1>
+          <p style={{ fontSize: '1.3rem', color: 'white' }}>{alumno?.nombre ?? 'Sin informacion'}</p>
         </div>
         <GimInforma titulo={titulo} imagen={imagen} texto={texto}/>                          
       </div>

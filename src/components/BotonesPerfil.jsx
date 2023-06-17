@@ -132,7 +132,7 @@ const BotonesPerfil = () => {
                         </BottomNavigation>
                     </Box>
                 </AlumnoContainer>
-                <button className='btn' style={{ backgroundColor: '#C0D437', color: '#042945', marginRight: '10px', fontWeight: 'bold', marginBottom: '10px' }} onClick={handleOpen}>Reservar Sesión</button>
+                {/* <button className='btn' style={{ backgroundColor: '#C0D437', color: '#042945', marginRight: '10px', fontWeight: 'bold', marginBottom: '10px' }} onClick={handleOpen}>Reservar Sesión</button>
                 <Link className='btn' to="/metrica" style={{ backgroundColor: '#042945', color: '#E6E7E9', marginRight: '10px', fontWeight: 'bold', marginBottom: '10px' }}>Historial Avance</Link>
                 <Link className='btn' to="/rutina" style={{ backgroundColor: '#042945', color: '#FCB32E', fontWeight: 'bold', marginBottom: '10px' }}>Rutina de trabajo</Link>
             </>}
@@ -168,7 +168,7 @@ const BotonesPerfil = () => {
                             <button className='btn' style={{color: '#042945'}} onClick={handleOpenInforme}>Informe de Asistencia</button>
                         </Col>
                         <Col lg={'auto'} className="col-12 col-md-2 col-sm-3" style={{ backgroundColor: '#E6E7E9'}}>
-                            <Link className='btn' to="/control" style={{color: '#042945'}}>Informativo</Link>
+                            <Link className='btn' to="/control" style={{color: '#042945'}}>Control administrativo</Link>
                         </Col>
                     </> }
                     {hasRole(roles.instructor) && <>

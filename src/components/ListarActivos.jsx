@@ -145,7 +145,6 @@ const ListarActivos = () => {
     <>
       <Container maxWidth="md">
         <DivT>
-          <BotonesPerfil />
           <Div className="row">
             <div>
               <h2>

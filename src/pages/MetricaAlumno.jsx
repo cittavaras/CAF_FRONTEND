@@ -201,7 +201,8 @@ const Metrica = () => {
   return (
     <Container className="mt-4" style={{ background: 'rgba(0, 0, 0, 0.46)', borderRadius: '19px', width: '100%', marginBottom: '50px'}}>
       <Titulo>
-        <Saludo>Estos son tus datos {alumno?.nombre ?? 'Sin informacion'}</Saludo>
+        <Saludo>Estos son tus datos</Saludo>
+        <p style={{ fontSize: '1.3rem' }}>{alumno?.nombre ?? 'Sin informacion'}</p>
       </Titulo>
       <div className='w-100'>
         <ButtonDropdown />
