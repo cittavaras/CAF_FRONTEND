@@ -51,7 +51,7 @@ const BotonesPerfil = () => {
         navigate('/metrica');
     };
     const handleHome = () => {
-        navigate('/landing');
+        navigate('/rutina');
     };
     const handleGraficos = () => {
         navigate('/graficos');
@@ -121,14 +121,14 @@ const BotonesPerfil = () => {
                                     color: "#FCB924",
                                 }}
                             />
-                            <BottomNavigationAction
+                            {/*<BottomNavigationAction
                                 onClick={handleHome}
                                 label="Rutina"
                                 icon={<FitnessCenterIcon />}
                                 style={{
                                     color: "#FCB924",
                                 }}
-                            />
+                            />*/}
                         </BottomNavigation>
                     </Box>
                 </AlumnoContainer>
