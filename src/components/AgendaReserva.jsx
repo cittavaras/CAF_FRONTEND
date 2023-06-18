@@ -17,7 +17,7 @@ const AgendaReserva = () => {
        <div className="vector-3" />
         <div className="vector-1" />
       <Container>
-        <Title>AGENDA TU RESERVA</Title>
+        <Title>AGENDA TUS RESERVAS</Title>
         <LimitationsContainer>
           <Subtitle>LIMITACIONES</Subtitle>
         </LimitationsContainer>
