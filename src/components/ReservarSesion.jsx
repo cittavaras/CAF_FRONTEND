@@ -82,7 +82,7 @@ const ReservarSesion = (props) => {
   const [activeStep, setActiveStep] = useState(0);
   const [selectedSesion, setSelectedSesion] = useState(null);
   const [alumnosSesion, setAlumnosSesion] = useState([]);
-  const [view, setView] = useState(isMobile? "day": "month");
+  const [view, setView] = useState(isMobile? "day": "week");
   const handleNavigate = (date, view) => {
     setFechaActual(date);
     setSelectedEvents([]);
