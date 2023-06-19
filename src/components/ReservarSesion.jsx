@@ -71,7 +71,7 @@ const ReservarSesion = (props) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   //const [views, setViews] = useState([isMobile? ["day"]: ["week", "day"]]);
-  const [views, setViews] = useState(['week', 'day']);
+  const [views, setViews] = useState('day');
 
   const { alumno, hasRole } = useAuth();
   const [selectedEvents, setSelectedEvents] = useState([]);
@@ -82,7 +82,7 @@ const ReservarSesion = (props) => {
   const [activeStep, setActiveStep] = useState(0);
   const [selectedSesion, setSelectedSesion] = useState(null);
   const [alumnosSesion, setAlumnosSesion] = useState([]);
-  const [view, setView] = useState(isMobile? "day": "month");
+  const [view, setView] = useState("day");
   const handleNavigate = (date, view) => {
     setFechaActual(date);
     setSelectedEvents([]);
@@ -185,7 +185,7 @@ const ReservarSesion = (props) => {
   }, [selectedSesion]);
 
   useEffect(() => {
-    setViews(['week', 'day']);
+    setViews('day');
   }, []);
 
   
@@ -206,7 +206,7 @@ const ReservarSesion = (props) => {
     const colorSesion = sesionPasada ? (asistio ? colorsCalendar.asistio : colorsCalendar.falta) : colorsCalendar.reserva;
     const isSelected = selectedEvents.map((e) => e.id).includes(event.id);
     const style = {
-      backgrounColor: isSelected ? colorSesion : colorsCalendar.disponible,
+      backgroundColor: isSelected ? colorSesion : colorsCalendar.disponible,
       borderRadius: "0",
       opacity: 1,
       display: "block",
@@ -425,7 +425,7 @@ const ReservarSesion = (props) => {
                 events={eventos}
                 startAccessor="start"
                 endAccessor="end"
-                defaultView={isMobile ? "day" : "week"}
+                defaultView={"day"}
                 views={views}
                 selectable={false}
                 onSelectEvent={handleEventClick}

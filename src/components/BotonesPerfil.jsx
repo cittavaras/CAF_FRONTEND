@@ -50,6 +50,7 @@ const BotonesPerfil = () => {
     const handleButtonClick = () => {
         navigate('/metrica');
     };
+
     const handleRutina = () => {
         navigate('/rutina');
     };
