@@ -43,7 +43,7 @@ const RegistroRutinas = (props) => {
         if (alumnoSeleccionado) {
             // Aquí puedes hacer las validaciones y asignaciones necesarias
             getRutinas();
-            console.log('Alumno seleccionado', alumnoSeleccionado);
+            
         }
     }, [alumnoSeleccionado]);
     //const filasTabla = Array.from(Array(8).keys());
@@ -144,7 +144,7 @@ const RegistroRutinas = (props) => {
 
     const registrarRutina = async (e) => {
         e.preventDefault();
-        console.log("alumno", alumno);
+        
 
         try {
             const res = await axios.post(baseURL + '/rutinas/alumno/', {
@@ -175,7 +175,7 @@ const RegistroRutinas = (props) => {
         //   console.log(res);
         //  // console.log("Todas las metricas",res.data)
         const rutinasAlumno = res.data;
-        console.log("rutinasAlumno", rutinasAlumno)
+        
         setRutinas(rutinasAlumno);
         /*
         if (rutinasAlumno.length > 0) {
