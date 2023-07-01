@@ -134,9 +134,9 @@ const CrearAlumno = () => {
       await axios
         .post(baseURL + '/send-email', {
           to: correo,
-          subject: 'Registro CAF Ivaras',
-          text: `${nombre}: nos es grato saber que estas interesado(a) en nuestros servicios de CAF Ivaras. En los proximos días activaremos tu cuenta y te enviaremos un correo notificandote como acceder a la plataforma y a sus servicios. Atentamente, el equipo de CAF Ivaras`,
-          html: `<strong>${nombre}</strong>: nos es grato saber que estas interesado(a) en nuestros servicios de CAF Ivaras. En los proximos días activaremos tu cuenta y te enviaremos un correo notificandote como acceder a la plataforma y a sus servicios. Atentamente, el equipo de CAF Ivaras`,
+          subject: 'Registro CAF',
+          text: `${nombre}: nos es grato saber que estas interesado(a) en nuestros servicios de CAF. En los proximos días activaremos tu cuenta y te enviaremos un correo notificandote como acceder a la plataforma y a sus servicios. Atentamente, el equipo de CAF`,
+          html: `<strong>${nombre}</strong>: nos es grato saber que estas interesado(a) en nuestros servicios de CAF. En los proximos días activaremos tu cuenta y te enviaremos un correo notificandote como acceder a la plataforma y a sus servicios. Atentamente, el equipo de CAF`,
         })
         .then((response) => {
           //console.log('Email sent successfully:', response.data);

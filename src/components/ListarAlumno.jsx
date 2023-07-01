@@ -54,7 +54,7 @@ const ListarAlumno = () => {
     await axios
       .post(baseURL + '/send-email', {
         to: alumnoEliminado?.correo,
-        subject: 'Solicitud declinada CAF IVARAS',
+        subject: 'Solicitud declinada CAF',
         text: `${alumnoEliminado?.nombre}, ${message} `,
         html: `<strong>${alumnoEliminado?.nombre}</strong>, ${message}`,
       })
@@ -76,7 +76,7 @@ const ListarAlumno = () => {
     await axios
       .post(baseURL + '/send-email', {
         to: alumno.correo,
-        subject: 'Solicitud Aceptada CAF IVARAS',
+        subject: 'Solicitud Aceptada CAF',
         text: `${alumno.nombre}, Le informamos que su cuenta ha sido activada exitosamente, recuerde que para ingresar necesita su correo y el rut como contraseña sin puntos, sin guion y sin digito verificador guiense por el siguiente link https://caf.ivaras.cl`,
         html: `<strong>${alumno.nombre}</strong>, Le informamos que su cuenta ha sido activada exitosamente, recuerde que para ingresar necesita su correo y el rut como contraseña sin puntos, sin guion y sin digito verificador guiense por el siguiente link https://caf.ivaras.cl`,
       })

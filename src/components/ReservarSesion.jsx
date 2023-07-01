@@ -71,20 +71,46 @@ const ReservarSesion = (props) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   //const [views, setViews] = useState([isMobile? ["day"]: ["week", "day"]]);
-  const [views, setViews] = useState('day');
+  const [views, setViews] = useState(['week','day']);
 
   const { alumno, hasRole } = useAuth();
   const [selectedEvents, setSelectedEvents] = useState([]);
   const [sesiones, setSesiones] = useState([]);
   const [eventos, setEventos] = useState([]);
-  const [fechaActual, setFechaActual] = useState(moment().toDate());
+  const [fechaActual, setFechaActual] = useState(null);
+  const [fechaVista, setFechaVista] = useState(null);
   const [loading, setLoading] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [selectedSesion, setSelectedSesion] = useState(null);
   const [alumnosSesion, setAlumnosSesion] = useState([]);
-  const [view, setView] = useState("day");
+  const [view, setView] = useState(['week','day']);
+  useEffect(() => {
+    fetchServerDate().then((serverDate) => {
+      setFechaActual(serverDate);
+      setFechaVista(serverDate)
+    });
+  }, []);
+  const fetchServerDate = async () => {
+    try {
+      const response = await fetch('/api/date'); // Replace with your server endpoint
+      const data = await response.json();
+      const serverDate = moment(data.serverDate).toDate();
+      var serverAdjust = serverDate;
+      if(moment(serverAdjust).isoWeekday() === 7)
+        serverAdjust = moment(serverAdjust).add(1, 'day').startOf('day');
+      return serverAdjust;
+    } catch (error) {
+      console.error('Error fetching server date:', error);
+      // Handle the error case appropriately
+      return error;// Fallback to using the user's local date
+    }
+  };
   const handleNavigate = (date, view) => {
-    setFechaActual(date);
+    if(moment(date).isoWeekday() === 7){
+      setFechaVista(moment(date).add(1, 'day').startOf('day'));
+    }else{
+      setFechaVista(date);
+    }
     setSelectedEvents([]);
   };
 
@@ -94,7 +120,7 @@ const ReservarSesion = (props) => {
     try {
       const res = await axios.get(baseURL + '/sesiones', {
         params: {
-          fecha: fechaActual
+          fecha: fechaVista
         }
       });
       setSesiones(res?.data ?? []);
@@ -110,12 +136,12 @@ const ReservarSesion = (props) => {
       const body = {
         rut: alumno.rut,
         sesiones: selectedEvents,
-        fecha: fechaActual
+        fecha: fechaVista
       }
       const res = await axios.post(baseURL + '/reservas', body);
       alert('Sesiones Reservadas');
 
-      const reservas = await props.getReservasByAlumno(fechaActual);
+      const reservas = await props.getReservasByAlumno(fechaVista);
 
       await enviarCorreoReservasCreadas(alumno, reservas);
 
@@ -128,16 +154,33 @@ const ReservarSesion = (props) => {
   const enviarCorreoReservasCreadas = async (alumno, reservas) => {
     try {
       let sesionesReservadasText = '';
+      const options = {
+        weekday: 'long', 
+        month: 'long',             // Full day name (e.g., "Monday")
+        day: 'numeric',               // Day of the month (e.g., 1, 2, 3)
+        hour: 'numeric',              // Hour in 12-hour format (e.g., 1, 2, 3)
+        minute: 'numeric',            // Minute (e.g., 0, 1, 2)
+        hour12: false,                 // Whether to use 12-hour format or not
+        timeZone: 'America/Santiago',        // Exclude time zone name
+      };
+      var n= 0;
       for (const reserva of reservas) {
-        const textoSesion = `Número de Sesión: ${reserva.numeroSesion}, Día de Reserva: ${reserva.diaReserva}\n`;
+        const fecha=new Date(reserva.diaReserva);
+        const formatter = new Intl.DateTimeFormat('es-ES', options);
+        const [weekday, day,month, hour, minute] = formatter.formatToParts(fecha).filter(part => part.type !== 'literal')
+        const fechaFormato = `${weekday.value.charAt(0).toUpperCase()}${weekday.value.slice(1)} ${day.value} de ${month.value}, ${hour.value}:${minute.value}hrs.`;
+        const textoSesion = `-${fechaFormato}\n`;
         sesionesReservadasText += textoSesion;
+        n++;
       }
-      await axios.post(baseURL + '/send-email', {
+      if (n>0){await axios.post(baseURL + '/send-email', {
         to: alumno.correo,
-        subject: 'Reserva de Sesiones CAF IVARAS',
-        text: `Estimado ${alumno.nombre}, Le informamos que ha realizado una reserva para las siguientes sesiones:\n${sesionesReservadasText}.`,
-        html: `<p>Estimado <strong>${alumno.nombre}</strong>,</p><p>Le informamos que ha realizado una reserva para las siguientes sesiones:</p><p>${sesionesReservadasText}</p>`,
-      });
+        subject: 'Reserva de Sesiones CAF',
+        text: `Estimado ${alumno.nombre}, Le informamos que en la semana seleccionada cuenta con las siguientes reservas:\n${sesionesReservadasText}.`,
+        html: `<p>Estimado <strong>${alumno.nombre}</strong>,</p><p>Le informamos que en la semana seleccionada cuenta con las siguientes reservas:</p><p>${sesionesReservadasText}</p>`,
+      });}
+      
+      
 
       //console.log(`Correo de reserva enviado a ${alumno.nombre}`);
     } catch (error) {
@@ -148,9 +191,9 @@ const ReservarSesion = (props) => {
   useEffect(() => {
     getSesiones();
     if (hasRole(roles.alumno)) {
-      props.getReservasByAlumno(fechaActual)
+      props.getReservasByAlumno(fechaVista)
     };
-  }, [fechaActual]);
+  }, [fechaVista]);
 
   useEffect(() => {
     if (props.reservasAlumno && hasRole(roles.alumno)) {
@@ -160,17 +203,17 @@ const ReservarSesion = (props) => {
         }
       }
       )
-      setSelectedEvents(generateTrainingEvents(sesionesAlumno, fechaActual))
+      setSelectedEvents(generateTrainingEvents(sesionesAlumno, fechaVista))
     }
   }, [props.reservasAlumno]);
 
   useEffect(() => {
     if (sesiones.length > 0) {
-      const generatedEvents = generateTrainingEvents(sesiones, fechaActual)
+      const generatedEvents = generateTrainingEvents(sesiones, fechaVista)
 
       setEventos(generatedEvents);
     }
-  }, [sesiones, fechaActual]);
+  }, [sesiones, fechaVista]);
 
   useEffect(() => {
     if (props.open === false) {
@@ -185,7 +228,7 @@ const ReservarSesion = (props) => {
   }, [selectedSesion]);
 
   useEffect(() => {
-    setViews('day');
+    setViews(['week','day']);
   }, []);
 
   
@@ -200,7 +243,6 @@ const ReservarSesion = (props) => {
 
   const eventStyleGetter = (event) => {
     const fontSize = isMobile ? "0.7em" : "1em";
-    const fechaActual = moment();
     const sesionPasada = moment(event.start).isBefore(fechaActual);
     const asistio = props.reservasAlumno.some((reserva) => reserva.numeroSesion === event.id && reserva.asistencia);
     const colorSesion = sesionPasada ? (asistio ? colorsCalendar.asistio : colorsCalendar.falta) : colorsCalendar.reserva;
@@ -240,7 +282,6 @@ const ReservarSesion = (props) => {
   const handleEventClick = (event) => {
     if (hasRole(roles.alumno)) {
       const isSelected = selectedEvents.map((e) => e.id).includes(event.id);
-      const fechaActual = moment();
       if (!isSelected && !event.isValid) {
         alert("La sesion esta completa");
         return;
@@ -297,7 +338,7 @@ const ReservarSesion = (props) => {
     try {
       const res = await axios.get(`${baseURL}/sesiones/${selectedSesion.id}/alumnos`, {
         params: {
-          fecha: fechaActual
+          fecha: fechaVista
         }
       });
       setAlumnosSesion(res?.data ?? []);
@@ -317,7 +358,7 @@ const ReservarSesion = (props) => {
   const desactivarSesion = async () => {
     try {
       setLoading(true);
-      await axios.put(`${baseURL}/sesiones/${selectedSesion.id}/desactivar`, { fecha: fechaActual, activar: selectedSesion.desactivada });
+      await axios.put(`${baseURL}/sesiones/${selectedSesion.id}/desactivar`, { fecha: fechaVista, activar: selectedSesion.desactivada });
       setSelectedSesion({ ...selectedSesion, desactivada: !selectedSesion.desactivada });
       setLoading(false);
       getSesiones();
@@ -349,7 +390,7 @@ const ReservarSesion = (props) => {
     try {
       await axios.post(baseURL + '/send-email', {
         to: alumno.correo,
-        subject: 'Sesión Desactivada CAF IVARAS',
+        subject: 'Sesión Desactivada CAF',
         text: `Estimado ${alumno.nombre}, Lamentamos informarle que una de las sesiones que reservo ha sido desactivada. Recomendamos reservar otra sesion en el sitio. https://caf.ivaras.cl/`,
         html: `<p>Estimado <strong>${alumno.nombre}</strong>,</p><p>Lamentamos informarle que una de las sesiones que reservo ha sido desactivada. Recomendamos reservar otra sesion en el sitio. https://caf.ivaras.cl/</p>`,
       });
@@ -425,14 +466,14 @@ const ReservarSesion = (props) => {
                 events={eventos}
                 startAccessor="start"
                 endAccessor="end"
-                defaultView={"day"}
+                defaultView={["week"]}
                 views={views}
                 selectable={false}
                 onSelectEvent={handleEventClick}
                 eventPropGetter={eventStyleGetter}
                 min={new Date(0, 0, 0, 8, 31)}
                 max={new Date(0, 0, 0, 21, 10)}
-                date={fechaActual}
+                date={fechaVista}
                 onNavigate={handleNavigate}
                 disabled={loading}
                 messages={messages}
@@ -459,7 +500,7 @@ const ReservarSesion = (props) => {
         <DialogActions>
           {activeStep === 0 && hasRole(roles.alumno) &&
             <Button autoFocus color="success" variant="contained" onClick={crearReservas}>
-              Confirmar reserva
+              Actualizar Reservas
             </Button>
           }
         </DialogActions>
@@ -468,12 +509,12 @@ const ReservarSesion = (props) => {
   );
 };
 
-const generateTrainingEvents = (sesiones = [], fechaActual) => {
+const generateTrainingEvents = (sesiones = [], fecha) => {
   const newSesiones = sesiones.map(sesion => {
     let [hours, minutes] = sesion.horaIni.split(":");
-    const start = moment(fechaActual).day(sesion.dia).set({ hours, minutes }).toDate();
+    const start = moment(fecha).day(sesion.dia).set({ hours, minutes }).toDate();
     [hours, minutes] = sesion.horaFin.split(":");
-    const end = moment(fechaActual).day(sesion.dia).set({ hours, minutes }).toDate();
+    const end = moment(fecha).day(sesion.dia).set({ hours, minutes }).toDate();
     const newSesion = {
       id: sesion.numeroSesion,
       title: `Entrenamiento \n${sesion.numeroSesion} \n${sesion?.count}/${sesion?.cantidadUsuarios}`,
