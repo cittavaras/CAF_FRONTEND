@@ -14,7 +14,7 @@ import GimInforma from '../components/GimInforma';
 const LandingPageAlumno = ({ location }) => {
   const { alumno } = useAuth();
 
-  const [titulo, setTitulo] = useState("CAF IVARAS")
+  const [titulo, setTitulo] = useState("CAF")
   const [imagen, setImagen] = useState("https://e1.pxfuel.com/desktop-wallpaper/554/24/desktop-wallpaper-best-4-fitness-on-hip-gym-boy.jpg")
   const [texto, setTexto] = useState("Bienvenido a CAF, tu destino para un estilo de vida saludable y enérgico! En nuestro centro, encontrarás un ambiente dinámico y motivador diseñado para ayudarte a alcanzar tus objetivos de fitness. Contamos con instalaciones de última generación y una amplia variedad de clases y programas que te permitirán fortalecer tu cuerpo y mente. En CAF, nos comprometemos a brindarte un ambiente acogedor y amigable, donde te sentirás cómodo mientras trabajas en tu salud y bienestar. Nuestro enfoque está en proporcionarte el apoyo necesario para que logres tus metas. Estaremos disponibles para responder a tus preguntas y brindarte asistencia durante tu experiencia en nuestro centro. Únete a nuestra comunidad activa y descubre la verdadera pasión por el bienestar en CAF. ¡Es hora de poner en marcha tu mejor versión!")
   

@@ -73,7 +73,7 @@ function ResponsiveAppBar() {
                 textDecoration: "none"
                 }}
             >
-                <Link to="/landing" className="navbar-brand"> CAF IVARAS </Link>
+                <Link to="/landing" className="navbar-brand"> CAF </Link>
             </Typography>
             { isLogged() && (
             <Box sx={{ flexGrow: 0 }}>
@@ -137,7 +137,7 @@ function ResponsiveAppBar() {
 //             <div className='nav-container' style={{ position: 'unset', height: '100%' }}>
 //                 <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
 //                     <div className="container-fluid">
-//                         <Link to='/landing' className="navbar-brand">CAF Ivaras</Link>
+//                         <Link to='/landing' className="navbar-brand">CAF</Link>
 //                         <button className="navbar-toggler" type="button" onClick={toggleMenu}>
 //                             <span className="navbar-toggler-icon"></span>
 //                         </button>
