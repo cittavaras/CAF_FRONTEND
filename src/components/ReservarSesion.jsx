@@ -332,6 +332,7 @@ const ReservarSesion = (props) => {
     setActiveStep(0);
     setSelectedSesion(null);
     setAlumnosSesion([]);
+    alert('Se guardo correctamente la asistencia');
   };
 
   const getAlumnosByNumeroSesion = async () => {
