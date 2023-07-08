@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-
 import baseURL from '../helpers/rutaBase';
 import axios from 'axios';
 import {
@@ -9,16 +8,31 @@ import {
     Table, TableHead, TableRow,
     TableCell, TableBody, TextField, FormControl
 } from "@mui/material";
+import { Link } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate } from 'react-router-dom';
-import { Container, Box, bgcolor } from '@mui/system';
+import { Container, Box, bgcolor, height } from '@mui/system';
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
+import { Modal } from '@mui/material';
+import RegistroRutinas from './RegistroRutinas';
+import useAuth from '../auth/useAuth';
+import moment from 'moment';
+import PlusOneIcon from '@mui/icons-material/PlusOne';
+import DeleteIcon from '@mui/icons-material/Delete';
+import CrearRutinaAlumno from '../components/CrearRutinaAlumno';
 const RutinasAlumno = () => {
     const [rutinas, setRutinas] = useState([]);
+    const [nomRutina, setNomRutina] = useState("");
     const [selectedRutina, setSelectedRutina] = useState(null);
+    const [openModal, setOpenModal] = useState(false);
+    const [alumnos, setAlumnos] = useState([]);
+    const fechaActual = moment().format('DD-MM-YYYY');
+    const { alumno } = useAuth();
     const navigate = useNavigate();
     const theme = useTheme();
+   
+
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
     useEffect(() => {
         getRutinas();
@@ -35,9 +49,28 @@ const RutinasAlumno = () => {
         }
       };
 
+      useEffect(() => {
+        getAlumnos();
+      })
+    
+      // Función para obtener la lista de alumnos
+      const getAlumnos = async () => {
+        try {
+          const res = await axios.get(baseURL + '/alumnos');
+          const alumnos = res.data.alumnos.filter(alumno => alumno.tipoUsuario === 'Alumno' && alumno.active === true);
+          return alumnos
+        } catch (error) {
+          //console.log(error);
+        }
+      }
+
     const handleRutinaClick = (rutina) => {
         setSelectedRutina(rutina);
     };
+    const handleCloseModal = () => {
+        setOpenModal(false);
+      };
+    
 
     const handleBackClick = () => {
         setSelectedRutina(null);
@@ -52,16 +85,40 @@ const RutinasAlumno = () => {
 
     };
 
+    const handleNuevaRutinaClick = () => {
+      setOpenModal(true);
+    };
+
+   
+    
+// }
+    
+  
+      
 
     return (
+        
+
         <Container style={{ marginTop: '70px', width: "100%", background: "white" }}>
+            
+            <Button variant="contained" onClick={handleNuevaRutinaClick }>
+                Nueva rutina
+            </Button>
             {selectedRutina ? (
+                
                 <Box sx={{ marginTop: '70px', width: '300px', background: 'white' }}>
+                    
                     <Grid container spacing={3}>
+                    
                         <Grid item xs={12}>
+                        
                             <IconButton autoFocus variant="contained" fontSize="large" color="disabled" onClick={handleBackClick}>
                                 <ArrowBackIcon />
+                                
                             </IconButton>
+
+                            
+                           
                         </Grid>
                         <Grid item xs={12}>
                             <Typography variant="h4" align="center" gutterBottom>
@@ -145,6 +202,7 @@ const RutinasAlumno = () => {
                                 <IconButton autoFocus variant="contained" fontSize="large" color="disabled" onClick={volverALanding}>
                                     <ArrowBackIcon />
                                 </IconButton>
+                                
                             </TableRow>
                             <TableRow>
                                 <TableCell>Rutinas</TableCell>
@@ -172,8 +230,30 @@ const RutinasAlumno = () => {
                     </Table>
                 </TableContainer>
             )}
+        <Modal open={openModal} disablePortal>
+        <Box
+            sx={{
+            width: '50%',
+            maxHeight: '80vh',
+            overflow: 'auto',
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            bgcolor: 'background.paper',
+            }}
+        >
+            <CrearRutinaAlumno getRutinas={getRutinas}/>
+        </Box>
+        </Modal>
+            
         </Container>
+
+                
+        
     );
+
+    
 };
 
 export default RutinasAlumno;
