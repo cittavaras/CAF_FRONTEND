@@ -20,6 +20,9 @@
   text-align: center;
   padding: 0;
 }
+.card-rutine-content {
+  color: #fff;
+}
 
 .botonesperfil > div > * {
   font-weight: bold;
