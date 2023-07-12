@@ -31,7 +31,7 @@ const RutinasAlumno = () => {
     const { alumno } = useAuth();
     const navigate = useNavigate();
     const theme = useTheme();
-   
+
 
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
     useEffect(() => {
@@ -40,37 +40,37 @@ const RutinasAlumno = () => {
 
     const getRutinas = async (rut) => {
         try {
-          const { rut } = JSON.parse(sessionStorage.getItem('alumno_sesion'));
-          const res = await axios.get(baseURL + '/rutinas/alumno/', { params: { rutAlumno: rut } });
-          const rutinaAlumno = res.data;
-          setRutinas(rutinaAlumno);
+            const { rut } = JSON.parse(sessionStorage.getItem('alumno_sesion'));
+            const res = await axios.get(baseURL + '/rutinas/alumno/', { params: { rutAlumno: rut } });
+            const rutinaAlumno = res.data;
+            setRutinas(rutinaAlumno);
         } catch (error) {
-          console.error(error);
+            console.error(error);
         }
-      };
+    };
 
-      useEffect(() => {
+    useEffect(() => {
         getAlumnos();
-      })
-    
-      // Función para obtener la lista de alumnos
-      const getAlumnos = async () => {
+    })
+
+    // Función para obtener la lista de alumnos
+    const getAlumnos = async () => {
         try {
-          const res = await axios.get(baseURL + '/alumnos');
-          const alumnos = res.data.alumnos.filter(alumno => alumno.tipoUsuario === 'Alumno' && alumno.active === true);
-          return alumnos
+            const res = await axios.get(baseURL + '/alumnos');
+            const alumnos = res.data.alumnos.filter(alumno => alumno.tipoUsuario === 'Alumno' && alumno.active === true);
+            return alumnos
         } catch (error) {
-          //console.log(error);
+            //console.log(error);
         }
-      }
+    }
 
     const handleRutinaClick = (rutina) => {
         setSelectedRutina(rutina);
     };
     const handleCloseModal = () => {
         setOpenModal(false);
-      };
-    
+    };
+
 
     const handleBackClick = () => {
         setSelectedRutina(null);
@@ -78,47 +78,44 @@ const RutinasAlumno = () => {
     const volverALanding = (e) => {
         e.preventDefault();
         try {
-        navigate('/landing');
+            navigate('/landing');
         } catch (error) {
-        console.error(error);
+            console.error(error);
         }
 
     };
 
     const handleNuevaRutinaClick = () => {
-      setOpenModal(true);
+        setOpenModal(true);
     };
 
-   
-    
-// }
-    
-  
-      
+
+
+    // }
+
+
+
 
     return (
-        
 
-        <Container style={{ marginTop: '70px', width: "100%", background: "white" }}>
-            
-            <Button variant="contained" onClick={handleNuevaRutinaClick }>
-                Nueva rutina
-            </Button>
+
+        <Container style={{ marginTop: '70px', width: "100%", background: "white", justifyContent: "center", alignItems: "center", }}>
+
             {selectedRutina ? (
-                
+
                 <Box sx={{ marginTop: '70px', width: '300px', background: 'white' }}>
-                    
+
                     <Grid container spacing={3}>
-                    
+
                         <Grid item xs={12}>
-                        
+
                             <IconButton autoFocus variant="contained" fontSize="large" color="disabled" onClick={handleBackClick}>
                                 <ArrowBackIcon />
-                                
+
                             </IconButton>
 
-                            
-                           
+
+
                         </Grid>
                         <Grid item xs={12}>
                             <Typography variant="h4" align="center" gutterBottom>
@@ -136,24 +133,24 @@ const RutinasAlumno = () => {
                                 Cardio Final: {selectedRutina.cardioFinal}
                             </Typography>
                         </Grid>
-                        
-                            <Grid item xs={12}>
-                                <Typography variant="h6" align="center">
-                                    Calentamiento:
-                                </Typography>
-                                <Typography variant="h6" align="center">
-                                    {selectedRutina.calentamiento}
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Typography variant="h6" align="center">
-                                    Vuelta a la calma:
-                                </Typography>
-                                <Typography variant="h6" align="center">
-                                    {selectedRutina.vueltaALaCalma}
-                                </Typography>
-                            </Grid>
-                        
+
+                        <Grid item xs={12}>
+                            <Typography variant="h6" align="center">
+                                Calentamiento:
+                            </Typography>
+                            <Typography variant="h6" align="center">
+                                {selectedRutina.calentamiento}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Typography variant="h6" align="center">
+                                Vuelta a la calma:
+                            </Typography>
+                            <Typography variant="h6" align="center">
+                                {selectedRutina.vueltaALaCalma}
+                            </Typography>
+                        </Grid>
+
                     </Grid>
 
                     <Grid container sx={{ marginTop: '20px' }}>
@@ -163,47 +160,61 @@ const RutinasAlumno = () => {
                             </Typography>
                         </Grid>
                         <Grid item xs={12}>
-                        <Box sx={{ maxWidth: '300px', margin: '0 auto' }}>
-                            <TableContainer>
-                                <Table dense>
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell size="small">Nombre</TableCell>
-                                            <TableCell size="small">Repeticiones</TableCell>
-                                            <TableCell size="small">Series</TableCell>
-                                            <TableCell size="small">Kg</TableCell>
-                                            <TableCell size="small">Descanso</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {selectedRutina.ejercicios.map((ejercicio) => (
-                                            <TableRow key={ejercicio._id}>
-                                                <TableCell>{ejercicio.nombre}</TableCell>
-                                                <TableCell>{ejercicio.repeticiones}</TableCell>
-                                                <TableCell>{ejercicio.series}</TableCell>
-                                                <TableCell>{ejercicio.kg}</TableCell>
-                                                <TableCell>{ejercicio.descanso}</TableCell>
+                            <Box sx={{ maxWidth: '300px', margin: '0 auto' }}>
+                                <TableContainer>
+                                    <Table dense>
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell size="small">Nombre</TableCell>
+                                                <TableCell size="small">Repeticiones</TableCell>
+                                                <TableCell size="small">Series</TableCell>
+                                                <TableCell size="small">Kg</TableCell>
+                                                <TableCell size="small">Descanso</TableCell>
                                             </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                        </Box>
+                                        </TableHead>
+                                        <TableBody>
+                                            {selectedRutina.ejercicios.map((ejercicio) => (
+                                                <TableRow key={ejercicio._id}>
+                                                    <TableCell>{ejercicio.nombre}</TableCell>
+                                                    <TableCell>{ejercicio.repeticiones}</TableCell>
+                                                    <TableCell>{ejercicio.series}</TableCell>
+                                                    <TableCell>{ejercicio.kg}</TableCell>
+                                                    <TableCell>{ejercicio.descanso}</TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </Box>
                         </Grid>
                     </Grid>
                 </Box>
 
 
             ) : (
-                <TableContainer sx={{  width: '100%' }}>
+                <TableContainer sx={{ width: '100%' }}>
                     <Table>
                         <TableHead>
                             <TableRow item xs={12}>
                                 <IconButton autoFocus variant="contained" fontSize="large" color="disabled" onClick={volverALanding}>
                                     <ArrowBackIcon />
                                 </IconButton>
-                                
                             </TableRow>
+                            {/*
+                                <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "30px" }}>
+                                    <Button variant="contained" onClick={handleNuevaRutinaClick} style={{ justifyContent: "center", alignItems: "center" }}>
+                                        Nueva rutina
+                                    </Button>
+                                </div>
+                                */}
+                                <div style={{ display: "flex", justifyContent: "center", alignItems: "center"}}>
+                                    <Link
+                                        className="btn btn-secondary"
+                                        to={`/registroRutinas?rut=${alumno.rut}&nombre=${alumno.nombre}`}
+                                    >
+                                        Registro Rutinas
+                                    </Link>
+                                </div>
                             <TableRow>
                                 <TableCell>Rutinas</TableCell>
                                 <TableCell>Acciones</TableCell>
@@ -230,30 +241,30 @@ const RutinasAlumno = () => {
                     </Table>
                 </TableContainer>
             )}
-        <Modal open={openModal} disablePortal>
-        <Box
-            sx={{
-            width: '50%',
-            maxHeight: '80vh',
-            overflow: 'auto',
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            bgcolor: 'background.paper',
-            }}
-        >
-            <CrearRutinaAlumno getRutinas={getRutinas}/>
-        </Box>
-        </Modal>
-            
+            <Modal open={openModal} disablePortal>
+                <Box
+                    sx={{
+                        width: '50%',
+                        maxHeight: '80vh',
+                        overflow: 'auto',
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        bgcolor: 'background.paper',
+                    }}
+                >
+                    <CrearRutinaAlumno getRutinas={getRutinas} />
+                </Box>
+            </Modal>
+
         </Container>
 
-                
-        
+
+
     );
 
-    
+
 };
 
 export default RutinasAlumno;

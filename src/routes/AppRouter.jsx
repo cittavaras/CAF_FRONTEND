@@ -112,7 +112,7 @@ export default function AppRouter() {
             </PrivateRoute>}
           />
           <Route path="/registroRutinas" element={
-            <PrivateRoute hasRole={roles.instructor} >
+            <PrivateRoute>
               <RegistroRutinas />
             </PrivateRoute>}
           />
