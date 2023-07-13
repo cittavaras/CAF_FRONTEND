@@ -16,7 +16,6 @@ import AgendaReserva from "../components/AgendaReserva";
 import Layout from "../layouts/Layout";
 import useAuth from '../auth/useAuth';
 import roles from '../helpers/roles';
-import routes from '../helpers/routes';
 import CrearUsuario from "../components/CrearUsuario";
 import ListarActivos from "../components/ListarActivos";
 import Configuracion from "../components/Configuracion";
@@ -74,6 +73,7 @@ export default function AppRouter() {
             </PublicRoute>}
           />
           {/* Rutas privadas */}
+          
           <Route path="/landing" element={
             <PrivateRoute>
               <LandingPageAlumno />
@@ -125,7 +125,7 @@ export default function AppRouter() {
             </PrivateRoute>}
           />
           <Route path="/registroRutinas" element={
-            <PrivateRoute hasRole={roles.instructor} >
+            <PrivateRoute>
               <RegistroRutinas />
             </PrivateRoute>}
           />

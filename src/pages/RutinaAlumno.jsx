@@ -4,25 +4,25 @@ import axios from 'axios';
 import {
     Typography, Grid
 } from "@mui/material";
-import { useNavigate } from 'react-router-dom';
-import { Container, Box } from '@mui/system';
+import { Box } from '@mui/system';
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
-import styled from 'styled-components';
-import useAuth from '../auth/useAuth';
-import CardContent from '@mui/material/CardContent';
 import '../pages/css/ScrollableContainer.css'; // Archivo CSS para los estilos personalizados
-import moment from 'moment';
 import 'moment/locale/es';
-import CircularProgress from '@mui/material/CircularProgress';
 import EjercicioBox from '../components/EjercicioBox'
+import { useNavigate } from 'react-router-dom';
+import useAuth from '../auth/useAuth';
+import { Link } from 'react-router-dom';
+
 const RutinasAlumno = () => {
     const [rutinas, setRutinas] = useState([]);
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+    const { alumno } = useAuth();
     useEffect(() => {
         getRutinas();
     }, []);
+
 
     const getRutinas = async () => {
         try {
@@ -34,6 +34,9 @@ const RutinasAlumno = () => {
             console.error(error);
         }
     };
+
+    const navigate = useNavigate();
+
 
 
 
@@ -54,7 +57,23 @@ const RutinasAlumno = () => {
                 </Typography>
                 <hr style={{ height: '10px', background: '#C0D437', borderColor: '#C0D437', borderRadius: '23px', opacity: '1' }} />
             </div>
+            <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '100%',
+                height: '100%',
+            }}>
+                <Link
+                    className="btn btn-secondary"
+                    to={`/registroRutinas?rut=${alumno.rut}&nombre=${alumno.nombre}`}
+                >
+                    Registro Rutinas
+                </Link>
+            </div>
+
             <div >
+
                 <div style={{ height: 'auto', width: "auto" }}>
                     {rutinas.map((rutina, i, row) => (
                         <Box key={rutina._id}
@@ -82,62 +101,6 @@ const RutinasAlumno = () => {
                                 {rutina.nombre}
                             </Typography>
                             <div container spacing={2} rowSpacing={2}>
-                                {/* <Grid container spacing={2}>
-                                    <Grid item xs={8}>
-                                        <div style={{ color: 'white', background: 'white' }}>xs=8</div>
-                                    </Grid>
-                                    <Grid item xs={4}>
-                                        <div style={{ color: 'white', background: 'white' }}>xs=4</div>
-                                    </Grid>
-                                    <Grid item xs={4}>
-                                        <div style={{ color: 'white', background: 'white' }}>xs=4</div>
-                                    </Grid>
-                                    <Grid item xs={8}>
-                                        <div style={{ color: 'white', background: 'white' }}>xs=8</div>
-                                    </Grid>
-                                </Grid> */}
-                                {/* <Grid container spacing={2} sx={[
-                                    {
-                                        '& > div': {
-                                            color: 'white',
-                                            backgroundColor: 'rgba(200, 223, 50, 0.5)',
-                                            borderRadius: '19px',
-                                            marginTop: '.8rem',
-                                        },
-                                        'width': '100%',
-                                        'margin': 'auto',
-                                        'padding': '10px',
-                                    }]}>
-                                    <Grid item xs={4} className='text-center'>
-
-                                        <Typography>CARDIO</Typography>
-                                        <br />
-                                        <Typography>
-                                            Inicial: {rutina.cardioInicial}
-                                        </Typography>
-                                        <Typography>
-                                            Final: {rutina.cardioFinal}
-                                        </Typography>
-                                    </Grid>
-                                    <Grid item xs={7} sx={{ width: 'auto', marginLeft: '.8rem', marginRight: '0px' }}>
-                                        <Grid item xs={12} sm={6}>
-                                            <Typography variant="subtittle2" align="left">
-                                                Calentamiento:
-                                            </Typography>
-                                            <Typography variant="h6" align="center">
-                                                {rutina.calentamiento}
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item xs={12} sm={6}>
-                                            <Typography variant="subtittle2" align="left">
-                                                Vuelta a la calma:
-                                            </Typography>
-                                            <Typography id variant="h6" align="center">
-                                                {rutina.vueltaALaCalma}
-                                            </Typography>
-                                        </Grid>
-                                    </Grid>
-                                </Grid> */}
                                 <Grid container spacing={2} sx={[
                                     {
                                         '& > div': {
@@ -182,26 +145,30 @@ const RutinasAlumno = () => {
                                             </div>
                                         </Grid>
                                         <Grid item>
-                                            <div style={{ 
-                                                backgroundColor: 'rgba(200, 223, 50, 0.5)', 
-                                                borderRadius: '19px', 
-                                                height: 'auto', 
-                                                display: 'flex', 
-                                                justifyContent: 'center', 
-                                                alignItems: 'center'}}>
+                                            <div style={{
+                                                backgroundColor: 'rgba(200, 223, 50, 0.5)',
+                                                borderRadius: '19px',
+                                                height: 'auto',
+                                                display: 'flex',
+                                                justifyContent: 'center',
+                                                alignItems: 'center'
+                                            }}>
                                                 Vuelta a la calma <br /> {rutina.vueltaALaCalma}
                                             </div>
                                         </Grid>
                                     </Grid>
                                 </Grid>
                             </div>
+
                             <div>
                                 {rutina.ejercicios.map((ejercicio) => {
-                                    console.log(ejercicio)
-                                    return (<EjercicioBox props={{ ejercicio }} />)
+                                    return (<EjercicioBox
+                                        props={{ ejercicio }}
+                                    />)
                                 })}
                             </div>
                         </Box>
+
                     ))}
                 </div>
             </div>
