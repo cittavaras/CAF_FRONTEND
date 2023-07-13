@@ -1,178 +1,178 @@
 import React, { useState, useEffect } from 'react';
-
 import baseURL from '../helpers/rutaBase';
 import axios from 'axios';
 import {
-    Button, Typography, Grid,
-    Select, IconButton, MenuItem,
-    Autocomplete, InputLabel, TableContainer,
-    Table, TableHead, TableRow,
-    TableCell, TableBody, TextField, FormControl
+    Typography, Grid
 } from "@mui/material";
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { useNavigate } from 'react-router-dom';
-import { Container, Box, bgcolor } from '@mui/system';
+import { Box } from '@mui/system';
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
+import '../pages/css/ScrollableContainer.css'; // Archivo CSS para los estilos personalizados
+import 'moment/locale/es';
+import EjercicioBox from '../components/EjercicioBox'
+import { useNavigate } from 'react-router-dom';
+import useAuth from '../auth/useAuth';
+import { Link } from 'react-router-dom';
+
 const RutinasAlumno = () => {
     const [rutinas, setRutinas] = useState([]);
-    const [selectedRutina, setSelectedRutina] = useState(null);
-    const navigate = useNavigate();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+    const { alumno } = useAuth();
     useEffect(() => {
         getRutinas();
     }, []);
 
-    const getRutinas = async (rut) => {
+
+    const getRutinas = async () => {
         try {
-          const { rut } = JSON.parse(sessionStorage.getItem('alumno_sesion'));
-          const res = await axios.get(baseURL + '/rutinas/alumno/', { params: { rutAlumno: rut } });
-          const rutinaAlumno = res.data;
-          setRutinas(rutinaAlumno);
+            const { rut } = JSON.parse(sessionStorage.getItem('alumno_sesion'));
+            const res = await axios.get(baseURL + '/rutinas/alumno/', { params: { rutAlumno: rut } });
+            const rutinaAlumno = res.data;
+            setRutinas(rutinaAlumno);
         } catch (error) {
-          console.error(error);
+            console.error(error);
         }
-      };
-
-    const handleRutinaClick = (rutina) => {
-        setSelectedRutina(rutina);
     };
 
-    const handleBackClick = () => {
-        setSelectedRutina(null);
-    };
-    const volverALanding = (e) => {
-        e.preventDefault();
-        try {
-        navigate('/landing');
-        } catch (error) {
-        console.error(error);
-        }
+    const navigate = useNavigate();
 
-    };
+
 
 
     return (
-        <Container style={{ marginTop: '70px', width: "100%", background: "white" }}>
-            {selectedRutina ? (
-                <Box sx={{ marginTop: '70px', width: '300px', background: 'white' }}>
-                    <Grid container spacing={3}>
-                        <Grid item xs={12}>
-                            <IconButton autoFocus variant="contained" fontSize="large" color="disabled" onClick={handleBackClick}>
-                                <ArrowBackIcon />
-                            </IconButton>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Typography variant="h4" align="center" gutterBottom>
-                                Rutina: {selectedRutina.nombre}
-                            </Typography>
-                        </Grid>
-                    </Grid>
+        <>
+            <div style={{ margin: '20px' }}>
+                <Typography style={{
+                    color: '#FCB924',
+                    textAlign: 'right',
+                    fontSize: '2.5rem',
+                    fontStyle: 'normal',
+                    fontWeight: '700',
+                    lineHeight: '50px',
+                    width: 'auto',
+                    height: 'auto',
+                }}>
+                    TU <br />ENTRENAMIENTO
+                </Typography>
+                <hr style={{ height: '10px', background: '#C0D437', borderColor: '#C0D437', borderRadius: '23px', opacity: '1' }} />
+            </div>
+            <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '100%',
+                height: '100%',
+            }}>
+                <Link
+                    className="btn btn-secondary"
+                    to={`/registroRutinas?rut=${alumno.rut}&nombre=${alumno.nombre}`}
+                >
+                    Registro Rutinas
+                </Link>
+            </div>
 
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} sx={{ textAlign: 'center' }}>
-                            <Typography variant="h6" gutterBottom>
-                                Cardio Inicial: {selectedRutina.cardioInicial}
-                            </Typography>
-                            <Typography variant="h6" gutterBottom>
-                                Cardio Final: {selectedRutina.cardioFinal}
-                            </Typography>
-                        </Grid>
-                        
-                            <Grid item xs={12}>
-                                <Typography variant="h6" align="center">
-                                    Calentamiento:
-                                </Typography>
-                                <Typography variant="h6" align="center">
-                                    {selectedRutina.calentamiento}
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Typography variant="h6" align="center">
-                                    Vuelta a la calma:
-                                </Typography>
-                                <Typography variant="h6" align="center">
-                                    {selectedRutina.vueltaALaCalma}
-                                </Typography>
-                            </Grid>
-                        
-                    </Grid>
+            <div >
 
-                    <Grid container sx={{ marginTop: '20px' }}>
-                        <Grid item xs={12}>
-                            <Typography variant="h6" align="left" gutterBottom>
-                                Ejercicios
+                <div style={{ height: 'auto', width: "auto" }}>
+                    {rutinas.map((rutina, i, row) => (
+                        <Box key={rutina._id}
+                            sx={{
+                                borderRadius: '10px',
+                                backgroundColor: 'rgba(0,0,0,0.68)',
+                                margin: '20px', paddingBottom: '10px'
+                            }}
+                            style={(i + 1) === row.length ? { marginBottom: '75px' } : null}>
+                            <Typography
+                                sx={{
+                                    color: 'white',
+                                    textAlign: 'center',
+                                    fontSize: '2.5rem',
+                                    fontStyle: 'normal',
+                                    fontWeight: '700',
+                                    lineHeight: '68px',
+                                    width: 'auto',
+                                    height: 'auto',
+                                    flexDirection: 'column',
+                                    justifyContent: 'right',
+                                }}
+                                variant="h5"
+                            >
+                                {rutina.nombre}
                             </Typography>
-                        </Grid>
-                        <Grid item xs={12}>
-                        <Box sx={{ maxWidth: '300px', margin: '0 auto' }}>
-                            <TableContainer>
-                                <Table dense>
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell size="small">Nombre</TableCell>
-                                            <TableCell size="small">Repeticiones</TableCell>
-                                            <TableCell size="small">Series</TableCell>
-                                            <TableCell size="small">Kg</TableCell>
-                                            <TableCell size="small">Descanso</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {selectedRutina.ejercicios.map((ejercicio) => (
-                                            <TableRow key={ejercicio._id}>
-                                                <TableCell>{ejercicio.nombre}</TableCell>
-                                                <TableCell>{ejercicio.repeticiones}</TableCell>
-                                                <TableCell>{ejercicio.series}</TableCell>
-                                                <TableCell>{ejercicio.kg}</TableCell>
-                                                <TableCell>{ejercicio.descanso}</TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
+                            <div container spacing={2} rowSpacing={2}>
+                                <Grid container spacing={2} sx={[
+                                    {
+                                        '& > div': {
+                                            color: 'white',
+                                        },
+                                        'width': '100%',
+                                        'margin': 'auto',
+                                    }]}>
+                                    <Grid item xs={4} sx={{
+                                        padding: '.5rem',
+                                        backgroundColor: 'rgba(200, 223, 50, 0.5)',
+                                        margin: '.8rem',
+                                        borderRadius: '19px'
+                                    }}>
+                                        <div style={{
+                                            width: 'auto',
+                                            height: 'auto',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                        }}>
+                                            <Typography>CARDIO</Typography>
+                                            <Typography variant="subtittle2">
+                                                Inicial: {rutina.cardioInicial}
+                                            </Typography> <br />
+                                            <Typography variant="subtittle2">
+                                                Final: {rutina.cardioFinal}
+                                            </Typography>
+                                        </div>
+                                    </Grid>
+                                    <Grid item xs={7} md={4} container direction="column">
+                                        <Grid item>
+                                            <div style={{
+                                                marginBottom: '.8rem',
+                                                backgroundColor: 'rgba(200, 223, 50, 0.5)',
+                                                borderRadius: '19px',
+                                                height: 'auto',
+                                                display: 'flex',
+                                                justifyContent: 'center',
+                                                alignItems: 'center'
+                                            }}>
+                                                Calentamiento <br /> {rutina.calentamiento}
+                                            </div>
+                                        </Grid>
+                                        <Grid item>
+                                            <div style={{
+                                                backgroundColor: 'rgba(200, 223, 50, 0.5)',
+                                                borderRadius: '19px',
+                                                height: 'auto',
+                                                display: 'flex',
+                                                justifyContent: 'center',
+                                                alignItems: 'center'
+                                            }}>
+                                                Vuelta a la calma <br /> {rutina.vueltaALaCalma}
+                                            </div>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </div>
+
+                            <div>
+                                {rutina.ejercicios.map((ejercicio) => {
+                                    return (<EjercicioBox
+                                        props={{ ejercicio }}
+                                    />)
+                                })}
+                            </div>
                         </Box>
-                        </Grid>
-                    </Grid>
-                </Box>
 
-
-            ) : (
-                <TableContainer sx={{  width: '100%' }}>
-                    <Table>
-                        <TableHead>
-                            <TableRow item xs={12}>
-                                <IconButton autoFocus variant="contained" fontSize="large" color="disabled" onClick={volverALanding}>
-                                    <ArrowBackIcon />
-                                </IconButton>
-                            </TableRow>
-                            <TableRow>
-                                <TableCell>Rutinas</TableCell>
-                                <TableCell>Acciones</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {rutinas.length > 0 ? (
-                                rutinas.map((rutina) => (
-                                    <TableRow key={rutina._id}>
-                                        <TableCell>{rutina.nombre}</TableCell>
-                                        <TableCell>
-                                            <Button autoFocus color="success" variant="contained" onClick={() => handleRutinaClick(rutina)}>
-                                                Ver rutina
-                                            </Button>
-                                        </TableCell>
-                                    </TableRow>
-                                ))
-                            ) : (
-                                <TableRow>
-                                    <TableCell colSpan={2}>No hay rutinas recientes</TableCell>
-                                </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            )}
-        </Container>
+                    ))}
+                </div>
+            </div>
+        </>
     );
 };
 
