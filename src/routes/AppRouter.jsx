@@ -134,6 +134,12 @@ export default function AppRouter() {
               <RutinaAlumno />
             </PrivateRoute>}
           />
+          <Route path="/adminControl" element={
+            <PrivateRoute hasRole={roles.admin} >
+              <AdminControl />
+            </PrivateRoute>}
+          />
+          
         </Routes>
       </Layout>
     </Router>
