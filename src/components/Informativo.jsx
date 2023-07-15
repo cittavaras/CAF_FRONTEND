@@ -31,13 +31,10 @@ const Informativo = () => {
     setInfoCargada(resp.data);
   };
 
-  useEffect(async () => {
+  useEffect( () => {
     getlandingPage();
-  },[])
+  },[]);
   
-  useEffect(() => {
-    console.log(infoCargada);
-  },[infoCargada]);
 
   return (
     <div className='container mt-4 rounded' style={{ backgroundColor: '#adb5bd42'}}>

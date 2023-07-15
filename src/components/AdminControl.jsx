@@ -15,7 +15,7 @@ const AdminControl = ({ onInfoCargada, infoCargada}) => {
   useEffect(() => {
     onInfoCargada({ titulo: titulo, imagenBase64: imagen, descripcion: texto })
     // set states onInfoCargada
-  }, [imagen, texto, titulo])
+  }, [titulo ,imagen, texto ])
   
   useEffect(() => {
     //console.log('IMAGEN', imagen);

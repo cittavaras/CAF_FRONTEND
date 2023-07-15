@@ -15,13 +15,14 @@ const LandingPageAlumno = ({ location }) => {
   const { alumno } = useAuth();
 
   const [infoCargada, setInfoCargada] = useState({titulo:"test",imagenBase64:"hola",descripcion:"test"});
-  
+ 
+  const getlandingPage = async () => {
+    const resp = await axios.get(baseURL + '/landing-page/landing-page');
+    setInfoCargada(resp.data);
+    console.log(infoCargada)
+  };
+
   useEffect(() => { 
-    const getlandingPage = async () => {
-      const resp = await axios.get(baseURL + '/landing-page/landing-page');
-      setInfoCargada(resp.data);
-      console.log(infoCargada)
-    };
     getlandingPage();
   },[]);
   
