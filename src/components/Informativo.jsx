@@ -14,8 +14,9 @@ const Informativo = () => {
     setInfoCargada(info);
   };
   
-  const handleSubmitInfo = async () => {
+  const handleSubmitInfo = async (e) => {
     //control de errores if error exist alert error else alert success
+    e.preventDefault();
     try {
       const resp = await axios.put(baseURL + '/landing-page/landing-page', infoCargada);
       alert('Cambios guardados con éxito');

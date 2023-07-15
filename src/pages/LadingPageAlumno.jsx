@@ -7,20 +7,25 @@ import Informativo from '../components/Informativo';
 import useAuth from '../auth/useAuth';
 import roles from "../helpers/roles";
 import GimInforma from '../components/GimInforma';
-
+import baseURL from '../helpers/rutaBase';
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet"></link>
 
 
 const LandingPageAlumno = ({ location }) => {
   const { alumno } = useAuth();
 
-  const [infoCargada, setInfoCargada] = useState();
-
-  const getlandingPage = async () => {
-    const resp = await axios.get('http://localhost:4000/api/landing-page/landing-page');
-    setInfoCargada(resp.data);
-  };
-
+  const [infoCargada, setInfoCargada] = useState({titulo:"test",imagenBase64:"hola",descripcion:"test"});
+  
+  useEffect(() => { 
+    const getlandingPage = async () => {
+      const resp = await axios.get(baseURL + '/landing-page/landing-page');
+      setInfoCargada(resp.data);
+      console.log(infoCargada)
+    };
+    getlandingPage();
+  },[]);
+  
+  useEffect(() => {     console.log(infoCargada);   },[infoCargada]);
   return (
     <>
       <div>
@@ -28,7 +33,10 @@ const LandingPageAlumno = ({ location }) => {
           <H1 style={{ fontSize: '2.5rem' }}>Bienvenido</H1>
           <p style={{ fontSize: '1.3rem', color: 'white' }}>{alumno?.nombre ?? 'Sin informacion'}</p>
         </div>
-        <GimInforma titulo={infoCargada.titulo} imagen={infoCargada.imagen} texto={infoCargada.texto}/>                          
+        {
+          infoCargada ? (<GimInforma titulo={infoCargada.titulo} imagen={infoCargada.imagenBase64} texto={infoCargada.descripcion}/>) : (<GimInforma titulo="No existe información" imagen="" texto=""/>)
+        }
+                                  
       </div>
     </>
   )
