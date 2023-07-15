@@ -6,27 +6,20 @@ import { FormControl, FormLabel, Input, InputLabel, FormHelperText } from '@mui/
 import Container from 'react-bootstrap/Container';
 import { Row } from 'react-bootstrap';
 
-const AdminControl = ({ onInfoCargada }) => {
+const AdminControl = ({ onInfoCargada, infoCargada}) => {
 
-  const [titulo, setTitulo] = useState("CAF")
-  const [imagen, setImagen] = useState("https://e1.pxfuel.com/desktop-wallpaper/554/24/desktop-wallpaper-best-4-fitness-on-hip-gym-boy.jpg")
-  const [texto, setTexto] = useState("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
-  const [file, setFile] = useState();
-
-  useEffect(() => {
-    onInfoCargada({ titulo: titulo, imagen: imagen, texto: texto })
-  }, [texto, titulo, imagen])
+  const [titulo, setTitulo] = useState(infoCargada.titulo)
+  const [imagen, setImagen] = useState()
+  const [texto, setTexto] = useState(infoCargada.descripcion)
 
   useEffect(() => {
-    if(file) {
-      setImagen(URL.createObjectURL(file))
-    }
-  }, [file])
+    onInfoCargada({ titulo: titulo, imagenBase64: imagen, descripcion: texto })
+    // set states onInfoCargada
+  }, [imagen, texto, titulo])
   
-  const handleCargarImagen = (event) => {
-    const imagenCargada = event.target.files[0];
-    setImagen(URL.createObjectURL(imagenCargada));
-  };
+  useEffect(() => {
+    //console.log('IMAGEN', imagen);
+  }, [imagen])
 
   const handleModificarTexto = (e) => {
     if (e.target.id === 'titulo') {
@@ -43,10 +36,27 @@ const AdminControl = ({ onInfoCargada }) => {
       // img aquí
     }
   };
+
+  const convertToBase64 = (blob) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  };
   
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     if (e.target.files) {
-      setFile(e.target.files[0]);
+
+      let imagenCargada = e.target.files[0];
+
+      if(imagenCargada){
+        const blob = new Blob([imagenCargada], { type: "image/webp"});
+        imagenCargada = await convertToBase64(blob);
+        setImagen(imagenCargada);
+      }
+
     }
   };
   
@@ -63,7 +73,7 @@ const AdminControl = ({ onInfoCargada }) => {
   // };
   const handleGuardarInfo = () => {
     // Aquí puedes realizar cualquier lógica adicional antes de enviar la información al componente padre
-    onInfoCargada({ imagen, texto });
+    // onInfoCargada({ imagen, texto });
   };
   return (
     <div className="m-auto" style={{ maxWidth: '345px'}}>
@@ -186,6 +196,7 @@ const AdminControl = ({ onInfoCargada }) => {
             }}
           />
         </FormControl>
+        
         {/* <form>
           <textarea value={texto} onChange={handleModificarTexto} />k
           <input type="file" accept="image/*" onChange={handleCargarImagen} />
