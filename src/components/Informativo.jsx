@@ -4,6 +4,7 @@ import GimInforma from './GimInforma';
 import AdminControl from './AdminControl';
 import axios from 'axios';
 import { useEffect } from 'react';
+import baseURL from '../helpers/rutaBase';
 
 const Informativo = () => {
   const [infoCargada, setInfoCargada] = useState();
@@ -16,7 +17,7 @@ const Informativo = () => {
   const handleSubmitInfo = async () => {
     //control de errores if error exist alert error else alert success
     try {
-      const resp = await axios.put('http://localhost:4000/api/landing-page/landing-page', infoCargada);
+      const resp = await axios.put(baseURL + '/landing-page/landing-page', infoCargada);
       alert('Cambios guardados con éxito');
     } catch (error) {
       alert('Error al guardar la información, probablemente el tamaño de la imagen es muy grande intenta con otra');
@@ -25,7 +26,7 @@ const Informativo = () => {
   };
 
   const getlandingPage = async () => {
-    const resp = await axios.get('http://localhost:4000/api/landing-page/landing-page');
+    const resp = await axios.get(baseURL + '/landing-page/landing-page');
     setInfoCargada(resp.data);
   };
 
