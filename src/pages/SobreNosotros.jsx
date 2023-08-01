@@ -9,6 +9,7 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import Chip from '@mui/material/Chip';
+import CollectionsIcon from '@mui/icons-material/Collections';
 import { textAlign } from '@mui/system';
 
 
@@ -44,7 +45,6 @@ const SobreNosotros = () => {
             descripcion: "Desarrollador junior especializado en React, Nodejs, MySQL, MongoDB y Python. Hábil en el desarrollo de aplicaciones web y servicios backend, apasionado por construir soluciones innovadoras y escalables.",
             tiempoPractica: "26/04/2023 hasta la actualidad",
             linkedin: "https://www.linkedin.com/in/diego-pe%C3%B1a-gonz%C3%A1lez-ba01071ba/",
-            instagram: "https://www.instagram.com/__0_3_____",
             github: "https://github.com/penadie"
         },
         {
@@ -55,20 +55,18 @@ const SobreNosotros = () => {
             instagram: "https://www.instagram.com/_gyogon/",
             github: "https://github.com/GyoGon"
         },
-
-
+        {
+            nombre: "Daniela Cromo",
+            descripcion: "Diseñadora Gráfica inmersa en un mundo que involucra constante búsqueda de nuevos conocimientos para ser una mejor profesional.",
+            tiempoPractica: "25/12/2021 hasta la actualidad",
+            linkedin: "https://www.linkedin.com/in/danny-cromo-41a608146/",
+            behance: "https://www.behance.net/danielacruzro",
+            github: ""
+        },
         // {
         //     nombre: "",
         //     descripcion: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.",
-        //     tiempoPractica: "Practicante",
-        //     linkedin: "https://www.linkedin.com/in/javier-ignacio-ramirez-ramirez-7b1b3a1b3/",
-        //     instagram: "https://www.instagram.com/javierignacioramirez/",
-        //     github: ""
-        // },
-        // {
-        //     nombre: "",
-        //     descripcion: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.",
-        //     tiempoPractica: "Practicante",
+        //     tiempoPractica: "25/12/2021",
         //     linkedin: "https://www.linkedin.com/in/javier-ignacio-ramirez-ramirez-7b1b3a1b3/",
         //     instagram: "https://www.instagram.com/javierignacioramirez/",
         //     github: ""
@@ -87,9 +85,9 @@ const SobreNosotros = () => {
                         </Typography>
                     </Typography>
                 </Grid>
-                {participantes.map(({ nombre, descripcion, tiempoPractica, linkedin, instagram, github }) => (
+                {participantes.map(({ nombre, descripcion, tiempoPractica, linkedin, instagram, github, behance }) => (
                     <Grid xs={12} md={6} lg={4} stlye={{ height: "100%" }}>
-                        <Participante nombre={nombre} descripcion={descripcion} tiempoPractica={tiempoPractica} linkedin={linkedin} instagram={instagram} github={github} />
+                        <Participante nombre={nombre} descripcion={descripcion} tiempoPractica={tiempoPractica} linkedin={linkedin} instagram={instagram} github={github} behance={behance} />
                     </Grid>
                 ))
                 }
@@ -104,16 +102,11 @@ const SobreNosotros = () => {
 export default SobreNosotros;
 
 
-
-
-
-
-
-const Participante = ({ nombre, descripcion, tiempoPractica, linkedin, instagram, github }) => {
+const Participante = ({ nombre, descripcion, tiempoPractica, linkedin, instagram, github, behance }) => {
     return (
 
 
-        <Card sx={{ maxWidth: "90%", minHeight: '250px', display: "flex", flexDirection: "column" }} raised={true}  >
+        <Card sx={{ maxWidth: "90%", minHeight: '250px', display: "flex", flexDirection: "column", marginBottom:".8rem" }} raised={true}  >
             <CardContent>
                 <Typography gutterBottom variant="h5" component="div">
                     {nombre}
@@ -129,10 +122,8 @@ const Participante = ({ nombre, descripcion, tiempoPractica, linkedin, instagram
                 {linkedin && <Chip color="primary" avatar={<LinkedInIcon />} label="Linkedin" onClick={() => window.location.replace(linkedin)} />}
                 {instagram && <Chip style={{ backgroundColor: "#c52661", color: "white" }} avatar={<InstagramIcon style={{ color: "white" }} />} label="Instagram" onClick={() => window.location.replace(instagram)} />}
                 {github && <Chip color="secondary" avatar={<GitHubIcon />} label="GitHub" onClick={() => window.location.replace(github)} />}
+                {behance && <Chip color="secondary" avatar={<CollectionsIcon />} label="Behance" onClick={() => window.location.replace(behance)} />}
             </CardActions>
         </Card>
     )
 };
-
-
-
