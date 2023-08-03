@@ -8,22 +8,25 @@ import FitnessCenterRoundedIcon from '@mui/icons-material/FitnessCenterRounded';
 const EjercicioBox = ({ props }) => {
 
     return (
-        <div
+        <div className='container mb-5'
             style={{
                 color: 'white',
-                margin: '10px'
+                
+                
+            
             }}
         >
             <h3 className="text-center"
                 style={{
+                    marginRight: '10px',
                     background: 'rgba(200, 223, 50, 0.5)',
-                    borderRadius: '5px',
+                    borderRadius: '2px',
                     padding: '5px',
                     fontSize: '1.2rem',
                 }}>{props.ejercicio.nombre || 'Nombre del Ejercicio'}</h3>
-            <EjerciciosProps className="d-flex justify-content-center gap-2">
+            <EjerciciosProps style={{marginRight:'10px'}} className="d-flex  justify-content-center gap-2">
                 <div>
-                    <AccessAlarmsIcon fontSize='large' />
+                    <RestoreIcon fontSize='large' />
                     <h4>Series:</h4>
                     <p>{props.ejercicio.series}</p>
                 </div>
@@ -64,7 +67,8 @@ const EjerciciosProps = styled.div`
         color: white;
         background-color: rgba(200, 223, 50, 0.5);
         border: 2px solid #C0D437;
-        border-radius: 19px;
+        padding:6px;
+        border-radius: 5px;
     }
   }
 `;
