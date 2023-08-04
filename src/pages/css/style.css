@@ -1,30 +1,124 @@
 @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
 
 * {
-  font-family: 'Lato', sans-serif!important;
+  font-family: 'Lato', sans-serif !important;
 }
 
 .caf_green_bg {
- background-color: rgba(200, 223, 50, 0.5);;
+  background-color: rgba(200, 223, 50, 0.5);
+  ;
 }
 
 .card-metrics-content {
-  padding: 0!important;
+  padding: 0 !important;
 }
-.card-metrics-content > * {
+
+.card-metrics-content>* {
   padding: 5px;
 }
 
-.botonesperfil > *{
+.tituloRegistroRuti {
+  color: #FCB924;
+  font-size: 1.8rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 50px;
+  width: auto;
+  height: auto;
+  justify-content: flex-start;
+}
+
+.grid-layout-regrutina {
+  display: grid;
+  grid-template-columns: auto auto;
+  justify-content: space-between;
+}
+
+.tituloBoxRutina {
+  display: flex;
+  width: auto;
+  height: auto;
+  flex-direction: column;
+  justify-content: center;
+  color: #FFF;
+  font-family: Lato;
+  font-size: 15px;
+  font-style: normal;
+  line-height: normal;
+  margin: 0px 0px 10px 10px;
+}
+.dropdown-rutina-box {
+  background-color: rgba(192, 212, 55, 0.5);
+  margin:auto;
+  border-radius: 9px;
+  color: #FFF;
+  font-size: 16px;
+  width: 100%;
+}
+.input-group-box-rutina {
+  display: flex !important;
+  background-color: rgba(192, 212, 55, 0.5);
+  border:3px solid #C0D437 !important;
+  margin:15px -14px 15px 0!important;
+  border-radius: 9px;
+  color: #FFF;
+  font-size: 16px;
+  width: 100%;
+}
+.input-group-box-rutina & .input-group-box-rutina.Mui-focused & :after &:hover{
+  display: flex !important;
+  background-color: rgba(192, 212, 55, 0.5);
+  border:3px solid #C0D437 !important;
+  margin:15px -14px 15px 0!important;
+  border-radius: 9px;
+  color: #FFF;
+  font-size: 16px;
+  width: 100%;
+}
+.boxRutinaRegistro{
+  margin:10px;
+}
+.fechaRutina {
+  display: flex;
+  color: #fff;
+  margin:10px;
+  background-color: rgba(192, 212, 55, 0.5);
+  display: flex;
+  justify-content: center;
+  flex-direction: auto;
+  align-items: center;
+  flex-shrink: 0;
+  border-radius: 21px;
+}
+
+.botonesperfil>* {
   border-radius: 10px;
   text-align: center;
   padding: 0;
 }
+
 .card-rutine-content {
   color: #fff;
 }
 
-.botonesperfil > div > * {
+.tituloRegRut {
+  color: #fff;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  margin: 10px;
+}
+
+.registroRutina {
+  background-color: #C0D437;
+  color: #000;
+  border-radius: 44px;
+  padding: 10px;
+  margin: 10px;
+  text-align: center;
+}
+
+.botonesperfil>div>* {
   font-weight: bold;
 }
 
@@ -120,9 +214,17 @@ body::before {
 }
 
 @keyframes breathe {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.2); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
 .vector1right {
@@ -143,12 +245,15 @@ body::before {
 
 .nav-container {
   width: 100%;
-  height: 50px; /* ajustar el alto según sea necesario */
+  height: 50px;
+  /* ajustar el alto según sea necesario */
   position: fixed;
   top: 0;
   left: 0;
-  background-color: #242222; /* ajustar el color según sea necesario */
-  z-index: 9999; /* asegurarse de que la barra de navegación esté por encima de otros elementos */
+  background-color: #242222;
+  /* ajustar el color según sea necesario */
+  z-index: 9999;
+  /* asegurarse de que la barra de navegación esté por encima de otros elementos */
   font-family: 'Lato', sans-serif;
 }
 
@@ -162,7 +267,8 @@ nav {
 }
 
 .navbar-nav {
-  background-color: #242222; /* ajustar el color según sea necesario */
+  background-color: #242222;
+  /* ajustar el color según sea necesario */
   width: 100%;
 }
 
@@ -238,9 +344,11 @@ p {
   0% {
     transform: skewY(0deg);
   }
+
   50% {
     transform: skewY(5deg);
   }
+
   100% {
     transform: skewY(0deg);
   }
@@ -261,7 +369,7 @@ p {
   background-repeat: no-repeat;
   background-size: contain;
   background-position: right;
-  bottom:  0;
+  bottom: 0;
   right: 0;
   rotate: (180deg);
   transform: rotate(90deg);
@@ -285,11 +393,11 @@ p {
 .vector-4 {
   position: fixed;
   z-index: -1;
-  width:  150vw;
+  width: 150vw;
   height: 150vh;
   background-image: url("../img/vector/v4.svg");
   background-repeat: no-repeat;
-  background-size: 100% ;
+  background-size: 100%;
   left: 0;
   top: 50%;
   transform: rotate(270deg);
@@ -311,10 +419,15 @@ p {
 }
 
 @keyframes breathe {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.2); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
-
-
-
