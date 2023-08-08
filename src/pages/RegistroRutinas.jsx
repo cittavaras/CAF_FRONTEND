@@ -271,7 +271,7 @@ const RegistroRutinas = (props) => {
   return (
     <>
       {/*Esto es lo que va a quedar ahora Este es el titulo*/}
-      <div style={{ margin: '20px'}}>
+      <div style={{ margin: '20px', marginBottom: '100px'}}>
         <Box className="flex-row justify-content-around" sx={{ margin: '21px', display: 'flex', alignItems: 'center'}}>
           <div className="m-auto">
             <svg xmlns="http://www.w3.org/2000/svg" width="6rem" height="auto" viewBox="0 0 144 94" fill="none">
@@ -332,6 +332,7 @@ const RegistroRutinas = (props) => {
               todayText={''}  // replacing today text (default : - TODAY -)
               unavailableText={''}  // replacing unavailable text (default: unavailable )
               useArrows={false}  // use arrows for navigation (default: false)
+              width={'auto'}
             />
           </Col>
           <Col xs={12} style={{ padding: 0 }}>
@@ -425,6 +426,11 @@ const RegistroRutinas = (props) => {
             />
           </Col>
         </Row>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
+            <Button autoFocus color="success" variant="contained">
+              {rutina.id ? 'Guardar Cambios' : 'Crear Rutina'}
+            </Button>
+         </div>
       </div>
       {/* esto es lo que estaba antes */}
       {/* <Container style={{
