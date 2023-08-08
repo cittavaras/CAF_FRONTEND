@@ -19,8 +19,10 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-
+//import { useHistory } from 'react-router-dom';
 const RutinasAlumno = () => {
+  //const history = useHistory();
+  const navigate = useNavigate();
   const [rutinas, setRutinas] = useState([]);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -56,9 +58,12 @@ const RutinasAlumno = () => {
       // Aquí puedes manejar el error si es necesario
     }
   };
-
-  const navigate = useNavigate();
-
+  const handleEditarRutina = (rutina) => {
+    console.log("rutina", rutina)
+    navigate('/registroRutinas', { state: { rutina: rutina } });
+  };
+  
+  
 /*
  Sort rutinas by rutina 1, rutina 2, rutina 3
 */
@@ -156,7 +161,7 @@ const RutinasAlumno = () => {
                     </AccordionDetails>
                   </Accordion>
                   <div className='d-block position-absolute' style={{ top: '10px', right: '30px'}}>
-                      <EditIcon onClick={() => {console.log('click')}} sx={{ color: '#FCB924' }}></EditIcon>
+                      <EditIcon onClick={() => handleEditarRutina(rutina)} sx={{ color: '#FCB924' }}></EditIcon>
                       <DeleteIcon onClick={() => BorrarRutina(rutina._id)} sx={{ color: '#CB0303', }}></DeleteIcon>
                   </div>
               </div>
