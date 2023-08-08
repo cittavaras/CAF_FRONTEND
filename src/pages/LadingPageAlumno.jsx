@@ -22,7 +22,13 @@ const LandingPageAlumno = ({ location }) => {
   function getTwoDaysAgo() {
     const today = new Date();
     const twoDaysAgo = new Date(today);
-    twoDaysAgo.setDate(today.getDate() - 2);
+    if (today.getDay() - 1 === 0 || 1) {
+      twoDaysAgo.setDate(today.getDate() - 3);
+    } else {
+      twoDaysAgo.setDate(today.getDate() - 2);
+    }
+    // console.log(today)
+    // console.log(twoDaysAgo)
     return twoDaysAgo;
   }
 
@@ -87,7 +93,7 @@ const LandingPageAlumno = ({ location }) => {
           onPrevClick={function(startDay, selectedDays){}} // called with the new startDay
           onNextClick={function(startDay, selectedDays){}} // called with the new startDay
           unselectable={false} // if true allows to unselect a date once it has been selected. Only works when multipleDaySelect={false}
-          format={'YYYY-MM-DD'} //format of dates that handled in selectDay and unselectDay functions
+          format={'DD-MM-YYYY'} //format of dates that handled in selectDay and unselectDay functions
           firstLineFormat={'ddd'} // format for the first line of the day button
           secondLineFormat={'MMM D'} // format for the second line of the day button
           firstLineMobileFormat={'dddd'} // format for the first line of the day button mobile
@@ -95,14 +101,14 @@ const LandingPageAlumno = ({ location }) => {
           unavailables={{
             // dates:['22 July 2017'],  //unavailable dates list
             // relative:[0,1],  //unavailable dates list relative to today (0:today, 1:tomorrow, -1:yesterday)
-            weekly: [9] //unavailable dates list for each week (0:Sunday, 1:Monday ...)
-          }}
+            weekly: [6] //unavailable dates list for each week (0:Sunday, 1:Monday ...)
+          }}S
           //mobilView={window.innerWidth < 400}  // enables mobil view
           beforeToday={false}   // all dates before today set as unavailable (default:true)
           hiddens={{  // makes dates invisible
+            weekly: [6]  //each week (0:Sunday, 1:Monday ...)
             // dates: ['22 July 2017'], //absolute dates list
             //relative: [1], // relative to today (0:today, 1:tomorrow, -1:yesterday)
-            weekly: [9]  //each week (0:Sunday, 1:Monday ...)
           }}
           todayText={'Hoy'}  // replacing today text (default : - TODAY -)
           unavailableText={''}  // replacing unavailable text (default: unavailable )

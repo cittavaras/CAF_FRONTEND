@@ -44,7 +44,7 @@
 }
 
 .intructor-alumno {
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   color: #fff !important;
 }
 
@@ -66,16 +66,19 @@
   color: #fff;
 }
 
-.form-registro-rutinas > div > div > div > * {
+/* .form-registro-rutinas > div > div > div > * {
   color: #d20c0c;
 }
 
 .form-registro-rutinas > div > span {
   color: #d20c0c;
-}
+} */
 
 .BoxRutina > * > * > * {
   color: #fff;
+}
+.BoxRutina {
+  text-align: center;
 }
 .animate-entrenamiento
 {
@@ -104,80 +107,20 @@
   }
 }
 
-/*
-.grid-layout-ejercicio{
-  display: grid;
-  grid-template-columns: auto auto;
-  grid-template-rows: auto auto auto auto; 
-  background-color: rgba(0, 0, 0, 0.68);
-  border-radius: 22px;
-  margin: 11px;
-  height: auto;
-  width: auto;
+/* Mui Inputs */
+.input-group-box-rutina {
+  background-color: rgba(192, 212, 55, 0.5);
+  border:3px solid #C0D437 !important;
+  border-radius: 9px;
+  color: #FFF;
+  font-size: 16px;
+  width: 100%;
 }
 
-/* .grid-layout-regrutina {
-  display: grid;
-  grid-template-columns: 50% 50%;
-  justify-content: space-between;
-} */
-/*
-.tituloBoxRutina {
-  display: flex;
-  width: auto;
-  height: auto;
-  flex-direction: column;
-  justify-content: center;
-  color: #FFF;
-  font-family: Lato;
-  font-size: 15px;
-  font-style: normal;
-  line-height: normal;
-  margin: 0px 0px 10px 10px;
-}
-.dropdown-rutina-box {
-  background-color: rgba(192, 212, 55, 0.5);
-  margin:auto;
-  border-radius: 9px;
-  color: #FFF;
-  font-size: 16px;
-  width: 100%;
-}
-.input-group-box-rutina {
-  display: flex !important;
-  background-color: rgba(192, 212, 55, 0.5);
-  border:3px solid #C0D437 !important;
-  margin:15px -14px 15px 0!important;
-  border-radius: 9px;
-  color: #FFF;
-  font-size: 16px;
-  width: 100%;
-}
-.input-group-box-rutina & .input-group-box-rutina.Mui-focused & :after &:hover{
-  display: flex !important;
-  background-color: rgba(192, 212, 55, 0.5);
-  border:3px solid #C0D437 !important;
-  margin:15px -14px 15px 0!important;
-  border-radius: 9px;
-  color: #FFF;
-  font-size: 16px;
-  width: 100%;
-}
 .boxRutinaRegistro{
   margin:10px;
 }
-.fechaRutina {
-  display: flex;
-  color: #fff;
-  margin:10px;
-  background-color: rgba(192, 212, 55, 0.5);
-  display: flex;
-  justify-content: center;
-  flex-direction: auto;
-  align-items: center;
-  flex-shrink: 0;
-  border-radius: 21px;
-} */
+/* Fin Input Mui */
 
 .botonesperfil>* {
   border-radius: 10px;
@@ -197,14 +140,14 @@
   margin: 10px;
 }
 
-/* .registroRutina {
+.registroRutina {
   background-color: #C0D437;
   color: #000;
   border-radius: 44px;
   padding: 10px;
   margin: 10px;
   text-align: center;
-} */
+}
 
 .botonesperfil>div>* {
   font-weight: bold;
@@ -518,4 +461,99 @@ p {
   100% {
     transform: scale(1);
   }
+}
+
+/* BoxEjerciciosForm */
+
+.z-index-0 {
+  z-index: -1;
+}
+.z-index-1 {
+  z-index: 1;
+}
+
+.delete-icon {
+  color: red;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 3px;
+}
+.choice{
+    height: 89px;
+    box-sizing: border-box;
+    padding: 0;
+    overflow: hidden;
+    float: left;
+    align-items: center;
+    transition: width 0.2s;
+    border-radius:9px;
+}
+.expand{
+    width: 74%;
+}
+.unset{
+    width: 16%;
+    color: black !important;
+    background-color: #ddd !important;
+}
+.small{
+    width: 25%;
+    background-color: #ddd !important;
+}
+.small>div{
+    visibility: hidden;
+    opacity: 0;
+}
+.unset > div > p{
+    visibility: hidden;
+    opacity: 0;
+}
+.expand > svg {
+  transition-delay: 200ms;
+  opacity: 0;
+  z-index: -1;
+}
+.expand > div {
+    opacity: 1;
+}
+.horizontal-accordion {
+  display: flex;
+  width: 100%;
+  padding: 0;
+}
+
+.exercise-card {
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.exercise-card.added {
+  opacity: 0;
+}
+
+/* Fin BoxEjerciciosForm */
+.hr-droid {
+  display: flex;
+  align-items: center;
+  margin: auto;
+  margin-top: -10px;
+  margin-bottom: 3px;
+  z-index: 10;
+  width: 90%;
+}
+.hr-line{
+  width: 100%;
+  position: relative;
+  margin-left: 3px;
+  margin-right: 3px;
+  border-bottom: 3px dotted #b3b1ad;
+}
+.yellow{
+  border-color: #FCB924;
+}
+.fa {
+  position: relative;
+  top: 3px;
+  color: #ff82db;
 }

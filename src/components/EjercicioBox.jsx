@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import LoopIcon from '@mui/icons-material/Loop';
 import RestoreIcon from '@mui/icons-material/Restore';
-import AccessAlarmsIcon from '@mui/icons-material/AccessAlarms';
 import SelfImprovementRoundedIcon from '@mui/icons-material/SelfImprovementRounded';
 import FitnessCenterRoundedIcon from '@mui/icons-material/FitnessCenterRounded';
 
@@ -11,9 +10,6 @@ const EjercicioBox = ({ props }) => {
         <div className='container mb-5'
             style={{
                 color: 'white',
-                
-                
-            
             }}
         >
             <h3 className="text-center"
@@ -31,7 +27,7 @@ const EjercicioBox = ({ props }) => {
                     <p>{props.ejercicio.series}</p>
                 </div>
                 <div>
-                    {<LoopIcon fontSize='large' />}
+                    <LoopIcon fontSize='large' />
                     <br />
                     <h4> Repeticiones:</h4>
                     <p>{props.ejercicio.repeticiones} series.</p>
