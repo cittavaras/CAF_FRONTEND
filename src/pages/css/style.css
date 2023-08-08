@@ -472,15 +472,28 @@ p {
   z-index: 1;
 }
 
+.card-body {
+  padding: 5px!important;
+}
+
+/* .card-body > * {
+  border: 0;
+  border-radius: 9px;
+  background-color: white;
+} */
+
 .delete-icon {
-  color: red;
+  color: black;
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 3px;
+  border-radius:9px;
+}
+
+.card > svg {
+  color: rgb(192, 212, 55);
 }
 .choice{
-    height: 89px;
     box-sizing: border-box;
     padding: 0;
     overflow: hidden;
@@ -499,7 +512,7 @@ p {
 }
 .small{
     width: 25%;
-    background-color: #ddd !important;
+    background-color: rgba(192, 212, 55, 0.5) !important;
 }
 .small>div{
     visibility: hidden;
