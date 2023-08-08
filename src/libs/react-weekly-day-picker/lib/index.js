@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import moment from 'moment';
 import './style.css';
+import { width } from '@mui/system';
 
 export class DayCircle extends React.Component {
   makeClassNames(){
@@ -304,7 +305,7 @@ class ReactWeeklyDayPicker extends React.Component {
       days = this.renderDesktopView(weekdays)
     }
     return(
-      <div className={this.renderClassNames('container','rwdpDayPickerContainer')}>
+      <div className={this.renderClassNames('container',`${ this.props.width == 'auto' ? 'rwdpDayPickerContainerAuto' : 'rwdpDayPickerContainer'}`)}>
         {
           this.props.useArrows ? 
             <>

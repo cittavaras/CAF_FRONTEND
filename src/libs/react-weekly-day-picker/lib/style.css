@@ -3,12 +3,21 @@
  * stylesheet
  */
  .rwdpDayPickerContainer {
-   width: auto;
+   width: 390px;
    margin: auto;
    display: block;
    position: relative;
    padding: 0 30px;
  }
+
+ .rwdpDayPickerContainerAuto {
+  width: auto;
+  margin: auto;
+  display: block;
+  position: relative;
+  padding: 0 30px;
+}
+
  .rwdpDayBoxDesktop .rwdp-DayCircle-container{
    margin-top: 20px;
    margin-bottom: 20px;
@@ -16,6 +25,8 @@
    border:none;
    background: transparent;
    cursor: pointer;
+   gap: 2;
+   justify-content: center!important;
  }
  .rwdpDayBoxDesktop .rwdp-DayCircle {
    font-size: 0.8rem;
