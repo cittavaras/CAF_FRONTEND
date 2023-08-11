@@ -23,6 +23,7 @@ import BoxEjerciciosForm from '../components/BoxEjerciciosForm';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import AddIcon from '@mui/icons-material/Add';
+import Swal from 'sweetalert2'
 
 
 
@@ -37,37 +38,20 @@ function getMondayOfCurrentWeek() {
   return monday;
 }
 
-const RegistroRutinas = (props) => {
-
+const RegistroRutinas = () => {
+  let selectedDays = [];
   const isMobile = useMediaQuery('(max-width:600px)');
   const location = useLocation();
   const [alumnoSeleccionado, setAlumnoSeleccionado] = useState(null);
-  const rutina = location.state?.rutina || {};
-  const isEditing = !!rutina; // Si rutina está definida, estás en modo de edición
-  useEffect(() => {
-    const searchParams = new URLSearchParams(location.search);
-    const rut = searchParams.get('rut');
-    const nombre = searchParams.get('nombre');
-
-    // Aquí puedes hacer las validaciones y asignaciones necesarias
-    const alumnoRutina = {
-      rut,
-      nombre,
-      // Resto de los datos del alumno
-    };
-
-    setAlumnoSeleccionado(alumnoRutina);
-  }, [location.search]);
-
-  useEffect(() => {
-    if (alumnoSeleccionado) {
-      // Aquí puedes hacer las validaciones y asignaciones necesarias
-      // getRutinas();
-    }
-  }, [alumnoSeleccionado]);
+  //const rutina = location.state?.rutina || {};
+  //const isEditing = !!rutina; // Si rutina está definida, estás en modo de edición
+  const searchParams = new URLSearchParams(location.search);
+  const rut = searchParams.get('rut');
+  const nombre = searchParams.get('nombre');
+  const rutinaId = searchParams.get('rutina');
   //const filasTabla = Array.from(Array(8).keys());
   const [selectedRutina, setSelectedRutina] = useState([]);
-  const [diasSeleccionados, setDiasSeleccionados] = useState([]);
+  // const [diasSeleccionados, setDiasSeleccionados] = useState([]);
   const [rutinas, setRutinas] = useState([]);
   const [nomRutina, setNomRutina] = useState("");
   const [detalleRutina, setDetalleRutina] = useState("");
@@ -75,43 +59,44 @@ const RegistroRutinas = (props) => {
   const [cardioFinal, setCardioFinal] = useState("");
   const [calentamiento, setCalentamiento] = useState("");
   const [vueltaALaCalma, setVueltaALaCalma] = useState("");
-  const [selectedExercises, setSelectedExercises] = useState({}); // Inicialización vacía
-  const [selectedRepeticion, setSelectedRepeticion] = useState({}); // Inicialización vacía
-  const [selectedKg, setSelectedKg] = useState({}); // Inicialización vacía
-  const [selectedSerie, setSelectedSerie] = useState({}); // Inicialización vacía
-  const [selectedDescanso, setSelectedDescanso] = useState({});
+  const [ejercicios, setEjercicios] = useState();
+  const [selectedDayFromGet, setSelectedDayFromGET] = useState(getMondayOfCurrentWeek());
   const { alumno } = useAuth();
   const navigate = useNavigate();
   
-  const actionButtonText = isEditing ? 'Guardar Cambios' : 'Crear Rutina';
-  let selectedDays = [];
+  //const actionButtonText = isEditing ? 'Guardar Cambios' : 'Crear Rutina';
+  const handleEjercicios = (ejercicios) => {
 
-  const ejercicios = [
-    { id: 1, nombre: "Flexiones de brazo apoyo" },
-    { id: 2, nombre: "Rodillas" },
-    { id: 3, nombre: "Elevaciones de hombro" },
-    { id: 4, nombre: "Frontales con disco" },
-    { id: 5, nombre: "Dorsalera" },
-    { id: 6, nombre: "Remo polea" },
-    { id: 7, nombre: "Pall off press" },
-    { id: 8, nombre: "Prensa 45°" },
-    { id: 9, nombre: "Extensión de rodilla" },
-    { id: 10, nombre: "Máquina Cuadríceps" },
-    { id: 11, nombre: "Puente isquiotibiales" },
-    { id: 12, nombre: "Press banca" },
-    { id: 13, nombre: "Press de hombros" },
-    { id: 14, nombre: "Mancuernas" },
-    { id: 15, nombre: "Dorsalera polea" },
-    { id: 16, nombre: "Remo mancuernas" },
-    { id: 17, nombre: "Estocadas" },
-    { id: 18, nombre: "Peso muerto Rumano" },
-    { id: 19, nombre: "Búlgaras" },
-    { id: 20, nombre: "Hip Thrust" },
-    { id: 21, nombre: "Elevaciones de talones" },
-    { id: 22, nombre: "Smith" },
-    { id: 23, nombre: "Crunch Abdominal" },
-    { id: 24, nombre: "Puente isquiotibiales" }
-  ];
+    console.log('ejercicios', ejercicios);
+    setEjercicios(ejercicios);
+
+  };
+  // const ejercicios = [
+  //   { id: 1, nombre: "Flexiones de brazo apoyo" },
+  //   { id: 2, nombre: "Rodillas" },
+  //   { id: 3, nombre: "Elevaciones de hombro" },
+  //   { id: 4, nombre: "Frontales con disco" },
+  //   { id: 5, nombre: "Dorsalera" },
+  //   { id: 6, nombre: "Remo polea" },
+  //   { id: 7, nombre: "Pall off press" },
+  //   { id: 8, nombre: "Prensa 45°" },
+  //   { id: 9, nombre: "Extensión de rodilla" },
+  //   { id: 10, nombre: "Máquina Cuadríceps" },
+  //   { id: 11, nombre: "Puente isquiotibiales" },
+  //   { id: 12, nombre: "Press banca" },
+  //   { id: 13, nombre: "Press de hombros" },
+  //   { id: 14, nombre: "Mancuernas" },
+  //   { id: 15, nombre: "Dorsalera polea" },
+  //   { id: 16, nombre: "Remo mancuernas" },
+  //   { id: 17, nombre: "Estocadas" },
+  //   { id: 18, nombre: "Peso muerto Rumano" },
+  //   { id: 19, nombre: "Búlgaras" },
+  //   { id: 20, nombre: "Hip Thrust" },
+  //   { id: 21, nombre: "Elevaciones de talones" },
+  //   { id: 22, nombre: "Smith" },
+  //   { id: 23, nombre: "Crunch Abdominal" },
+  //   { id: 24, nombre: "Puente isquiotibiales" }
+  // ];
 
   const handleCardioInicialChange = (event) => {
     setCardioInicial(event.target.value);
@@ -125,43 +110,46 @@ const RegistroRutinas = (props) => {
   const handleVueltaALaCalmaChange = (event) => {
     setVueltaALaCalma(event.target.value);
   };
-
+  const handleNomRutina = (event) => {
+    setNomRutina(event.target.value);
+  };
 
   const handleAddDias = (day) => {
     selectedDays = day;
     console.log(selectedDays)
   };
+
   // const handleDiasChange = (index, value) => {
   //   const updatedDias = [...selectedDias];
   //   updatedDias[index] = value;
   //   setDiasSeleccionados(updatedDias);
   // };
 
-  const handleExerciseChange = (index, value) => {
-    const updatedExercises = [...selectedExercises];
-    updatedExercises[index] = value;
-    setSelectedExercises(updatedExercises);
-  };
-  const handleRepeticionChange = (index, value) => {
-    const updatedRepeticion = [...selectedRepeticion];
-    updatedRepeticion[index] = value;
-    setSelectedRepeticion(updatedRepeticion);
-  };
-  const handleSerieChange = (index, value) => {
-    const updatedSerie = [...selectedSerie];
-    updatedSerie[index] = value;
-    setSelectedSerie(updatedSerie);
-  };
-  const handleKgChange = (index, value) => {
-    const updatedKg = [...selectedKg];
-    updatedKg[index] = value;
-    setSelectedKg(updatedKg);
-  };
-  const handleDescansoChange = (index, value) => {
-    const updatedDescanso = [...selectedDescanso];
-    updatedDescanso[index] = value;
-    setSelectedDescanso(updatedDescanso);
-  };
+  // const handleExerciseChange = (index, value) => {
+  //   const updatedExercises = [...selectedExercises];
+  //   updatedExercises[index] = value;
+  //   setSelectedExercises(updatedExercises);
+  // };
+  // const handleRepeticionChange = (index, value) => {
+  //   const updatedRepeticion = [...selectedRepeticion];
+  //   updatedRepeticion[index] = value;
+  //   setSelectedRepeticion(updatedRepeticion);
+  // };
+  // const handleSerieChange = (index, value) => {
+  //   const updatedSerie = [...selectedSerie];
+  //   updatedSerie[index] = value;
+  //   setSelectedSerie(updatedSerie);
+  // };
+  // const handleKgChange = (index, value) => {
+  //   const updatedKg = [...selectedKg];
+  //   updatedKg[index] = value;
+  //   setSelectedKg(updatedKg);
+  // };
+  // const handleDescansoChange = (index, value) => {
+  //   const updatedDescanso = [...selectedDescanso];
+  //   updatedDescanso[index] = value;
+  //   setSelectedDescanso(updatedDescanso);
+  // };
   const volverALanding = (e) => {
     e.preventDefault();
     try {
@@ -184,11 +172,11 @@ const RegistroRutinas = (props) => {
           cardioFinal: cardioFinal,
           calentamiento: calentamiento,
           vueltaALaCalma: vueltaALaCalma,
-          ejercicios: getEjercicios(),
+          ejercicios: ejercicios,
         });
-
+                                                                    
         // Mostrar el alert
-        alert('Rutina registrada');
+        Swal.fire('Rutina registrada');
 
         // Redirigir al usuario a la página anterior
         navigate(-1);
@@ -207,11 +195,11 @@ const RegistroRutinas = (props) => {
           cardioFinal: cardioFinal,
           calentamiento: calentamiento,
           vueltaALaCalma: vueltaALaCalma,
-          ejercicios: getEjercicios(),
+          ejercicios: ejercicios,
         });
 
         // Mostrar el alert
-        alert('Rutina registrada');
+        Swal.fire('Rutina registrada');
 
         // Redirigir al usuario a la página anterior
         navigate(-1);
@@ -220,11 +208,42 @@ const RegistroRutinas = (props) => {
       }
     }
   }
-  const editarRutina = async (e, rutinaId, datosRutina) => {
+  const editarRutina = async (e) => {
     e.preventDefault();
     try {
-      const putRes = await axios.put(`/rutinas/alumno/${rutinaId}`, datosRutina);
-      return putRes.data;
+      const datosRutina = {
+        nombre: nomRutina,
+        diasDeSemana: selectedDays ?? selectedDayFromGet,
+        instructorId: alumno.rut,
+        alumnoId: alumnoSeleccionado.rut,
+        cardioInicial: cardioInicial,
+        cardioFinal: cardioFinal,
+        calentamiento: calentamiento,
+        vueltaALaCalma: vueltaALaCalma,
+        ejercicios: ejercicios,
+      }
+      await axios.put(baseURL + `/rutinas/alumno/${rutinaId}`, datosRutina).then((res) => {
+        //if res code 200 
+        if(res.status === 200) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Yeah!',
+            text: 'Rutina editada correctamente',
+            // footer: '<a href="">Why do I have this issue?</a>'
+          })
+          // Redirigir al usuario a la página anterior
+          navigate(-1);
+        } else { 
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Error al editar rutina',
+            // footer: '<a href="">Why do I have this issue?</a>'
+          })
+        }
+      });
+      // Mostrar el alert
+      
     } catch (error) {
       console.error(error);
       // Aquí puedes manejar el error si es necesario
@@ -232,27 +251,29 @@ const RegistroRutinas = (props) => {
     }
   }
 
-  const getEjercicios = () => {
-    const ejerciciosFormateados = selectedRutina.map((ejercicio) => {
-      return {
-        nombre: selectedExercises[ejercicio],
-        repeticiones: selectedRepeticion[ejercicio],
-        series: selectedSerie[ejercicio],
-        kg: selectedKg[ejercicio],
-        descanso: selectedDescanso[ejercicio],
-      }
-    }
-    )
-    return ejerciciosFormateados;
-  }
-  const generarEjercicios = (ejercicios = []) => {
-    setSelectedExercises(ejercicios.map(ejercicio => ejercicio.nombre));
-    setSelectedRepeticion(ejercicios.map(ejercicio => ejercicio.repeticiones));
-    setSelectedSerie(ejercicios.map(ejercicio => ejercicio.series));
-    setSelectedKg(ejercicios.map(ejercicio => ejercicio.kg));
-    setSelectedDescanso(ejercicios.map(ejercicio => ejercicio.descanso));
-    setSelectedRutina(ejercicios.map((ejercicio, index) => index));
-  }
+  // const getEjercicios = () => {
+  //   const ejerciciosFormateados = selectedRutina.map((ejercicio) => {
+  //     return {
+  //       nombre: selectedExercises[ejercicio],
+  //       repeticiones: selectedRepeticion[ejercicio],
+  //       series: selectedSerie[ejercicio],
+  //       kg: selectedKg[ejercicio],
+  //       descanso: selectedDescanso[ejercicio],
+  //     }
+  //   }
+  //   )
+  //   return ejerciciosFormateados;
+  // }
+
+
+  // const generarEjercicios = (ejercicios = []) => {
+  //   setSelectedExercises(ejercicios.map(ejercicio => ejercicio.nombre));
+  //   setSelectedRepeticion(ejercicios.map(ejercicio => ejercicio.repeticiones));
+  //   setSelectedSerie(ejercicios.map(ejercicio => ejercicio.series));
+  //   setSelectedKg(ejercicios.map(ejercicio => ejercicio.kg));
+  //   setSelectedDescanso(ejercicios.map(ejercicio => ejercicio.descanso));
+  //   setSelectedRutina(ejercicios.map((ejercicio, index) => index));
+  // }
 
   const classNames1 = {
     dayBox: 'rwdpDayBoxDesktop rwdp-flex-box rwdp-flex-row rwdp-justify-content-center',
@@ -268,6 +289,50 @@ const RegistroRutinas = (props) => {
   //   }
   // };
   
+  useEffect(() => {
+    // Aquí puedes hacer las validaciones y asignaciones necesarias
+    const alumnoRutina = {
+      rut,
+      nombre,
+      // Resto de los datos del alumno
+    };
+
+    setAlumnoSeleccionado(alumnoRutina);
+  }, [location.search]);
+  
+  useEffect(() => {
+    if (rutinaId) {
+      //obtener rutina para mostrar y editar
+
+      try {
+        axios.get(baseURL + `/rutinas/alumno/${rutinaId}`)
+          .then((res) => {
+            const rutina = res.data;
+            console.log("rutina Prueba", rutina);
+            setNomRutina(rutina.nombre);
+            setSelectedDayFromGET(rutina.diasDeSemana);
+            setCardioInicial(rutina.cardioInicial);
+            setCardioFinal(rutina.cardioFinal);
+            setCalentamiento(rutina.calentamiento);
+            setVueltaALaCalma(rutina.vueltaALaCalma);
+            setEjercicios(rutina.ejercicios);
+          })
+          .catch((error) => {
+            console.error(error);
+          }
+          );
+      } catch (error) {
+        console.error(error);
+      }
+
+    }
+  }, [rutinaId]);
+
+  // useEffect(() => {
+  //   selectedDays = selectedDayFromGet;
+  // }, [selectedDayFromGet]);
+
+
   return (
     <>
       {/*Esto es lo que va a quedar ahora Este es el titulo*/}
@@ -279,7 +344,7 @@ const RegistroRutinas = (props) => {
             </svg>
           </div>
           <p className="tituloRegistroRuti m-auto">
-            {rutina.id ? (<p className="tituloRegistroRuti mb-0 text-end">Editar <br/>Rutina</p>) : (<p className="tituloRegistroRuti mb-0 text-end">Crear <br/> Nueva Rutina</p>)}
+            <p className="tituloRegistroRuti mb-0 text-end">{rutinaId ? 'Editar' : 'Crear' } Rutina</p>
           </p>
         </Box>
         <hr style={{ height: '10px', background: '#C0D437', borderColor: '#C0D437', borderRadius: '23px', opacity: '1' }} />
@@ -297,6 +362,18 @@ const RegistroRutinas = (props) => {
         </section>
         <Row className="form-registro-rutinas">
           {/*Este es el primer box que indica la fecha*/}
+          <Col xs={12} className="BoxRutina">
+            <TextField
+                type="text"
+                required
+                id="outlined-required"
+                className="input-group-box-rutina"
+                value={nomRutina}
+                onChange={handleNomRutina}
+                label="Nombre de la rutina"
+                variant="standard"
+              />  
+          </Col> 
           <Col xs={12}>
             <ReactWeeklyDayPicker
               daysCount={6}  //How many days will be shown
@@ -313,13 +390,13 @@ const RegistroRutinas = (props) => {
               onNextClick={function(startDay, selectedDays){}} // called with the new startDay
               unselectable={false} // if true allows to unselect a date once it has been selected. Only works when multipleDaySelect={false}
               format={'dddd'} //format of dates that handled in selectDay and unselectDay functions
-              firstLineFormat={'dddd'} // format for the first line of the day button
+              firstLineFormat={'ddd'} // format for the first line of the day button
               secondLineFormat={false} // format for the second line of the day button
               firstLineMobileFormat={'dddd'} // format for the first line of the day button mobile
               secondLineMobileFormat={'MMMM D, Y'} // format for the second line of the day button mobile
               unavailables={{
                 // dates:['22 July 2017'],  //unavailable dates list
-                // relative:[0,1],  //unavailable dates list relative to today (0:today, 1:tomorrow, -1:yesterday)
+                // relative:[0,1],  //unavailab/le dates list relative to today (0:today, 1:tomorrow, -1:yesterday)
                 weekly: [9] //unavailable dates list for each week (0:Sunday, 1:Monday ...)
               }}
               //mobilView={window.innerWidth < 400}  // enables mobil view
@@ -336,7 +413,7 @@ const RegistroRutinas = (props) => {
             />
           </Col>
           <Col xs={12} style={{ padding: 0 }}>
-            <BoxEjerciciosForm></BoxEjerciciosForm>
+            <BoxEjerciciosForm onHandleEjercicios={handleEjercicios} ejerciciosFromGet={ejercicios}></BoxEjerciciosForm>
           </Col>
           {/* <div className="col col-6">
             <p style={{ width: '25%', margin: '15px', borderRight: '2px solid #FFF', textAlign: 'center', marginTop: '15px', justifyContent: 'center' }}>
@@ -376,8 +453,9 @@ const RegistroRutinas = (props) => {
               id="outlined-required"
               className="input-group-box-rutina"
               label="ej: 10 minutos"
-              value={rutina.cardioInicia || cardioInicial}
+              value={cardioInicial}
               onChange={handleCardioInicialChange}
+              variant="standard"
             />
           </Col>
           {/*Cardio Final */}
@@ -391,8 +469,9 @@ const RegistroRutinas = (props) => {
               id="outlined-required"
               className="input-group-box-rutina"
               label="ej: 10 minutos"
-              value={rutina.cardioFinal || cardioFinal}
+              value={cardioFinal}
               onChange={handleCardioFinalChange}
+              variant="standard"
             />
           </div>
           {/*Calentamiento */}
@@ -405,9 +484,10 @@ const RegistroRutinas = (props) => {
               required
               id="outlined-required"
               className="input-group-box-rutina"
-              value={rutina.calentamiento || calentamiento}
+              value={calentamiento}
               onChange={handleCalentamientoChange}
               label="descripcion del calentamiento"
+              variant="standard"
             />
           </Col>
           {/*Vuelta A la calma */}
@@ -420,15 +500,16 @@ const RegistroRutinas = (props) => {
               required
               id="outlined-required"
               className="input-group-box-rutina"
-              value={rutina.vueltaALaCalma || vueltaALaCalma}
+              value={vueltaALaCalma}
               onChange={handleVueltaALaCalmaChange}
               label="descripción de vuelta a la calma"
+              variant="standard"
             />
           </Col>
         </Row>
         <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
-            <Button autoFocus color="success" variant="contained">
-              {rutina.id ? 'Guardar Cambios' : 'Crear Rutina'}
+            <Button autoFocus color="success" variant="contained" onClick={ rutinaId ?  editarRutina : registrarRutina}>
+              { rutinaId  ? 'Confirmar edición de rutinas' : 'Confirmar registro de rutinas' }
             </Button>
          </div>
       </div>

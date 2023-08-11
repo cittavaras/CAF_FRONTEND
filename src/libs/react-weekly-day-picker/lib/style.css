@@ -3,7 +3,7 @@
  * stylesheet
  */
  .rwdpDayPickerContainer {
-   width: 390px;
+   width: auto;
    margin: auto;
    display: block;
    position: relative;

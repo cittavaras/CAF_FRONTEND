@@ -49,7 +49,7 @@ export class DayCircle extends React.Component {
         className={this.props.renderClassNames('dayCircleContainer',(this.props.mobilView ? "rwdp-DayCircle-container" : "rwdp-DayCircle-container rwdp-flex-box rwdp-flex-column rwdp-justify-content-center rwdp-align-items-center") )}
       >
         <div className={this.makeClassNames()}>
-          <strong>{name}</strong>
+          <strong>{(name.charAt(0).toUpperCase() + name.slice(1))}</strong>
           <div>{
             secondLineFormat == false ? '' : date}</div>
           {this.renderToday()}

@@ -22,7 +22,7 @@ const LandingPageAlumno = ({ location }) => {
   function getTwoDaysAgo() {
     const today = new Date();
     const twoDaysAgo = new Date(today);
-    if (today.getDay() - 1 === 0 || 1) {
+    if (today.getDay() - 1 === 0 || today.getDay() - 1 === 1) {
       twoDaysAgo.setDate(today.getDate() - 3);
     } else {
       twoDaysAgo.setDate(today.getDate() - 2);

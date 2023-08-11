@@ -25,6 +25,7 @@ import AdminControl from "../components/AdminControl";
 import Informativo from "../components/Informativo";
 import RegistroRutinas from "../pages/RegistroRutinas";
 import RutinaAlumno from "../pages/RutinaAlumno";
+import EjerciciosControl from "../components/EjerciciosControl";
 
 export default function AppRouter() {
   const { isLogged } = useAuth();
@@ -137,6 +138,11 @@ export default function AppRouter() {
           <Route path="/adminControl" element={
             <PrivateRoute hasRole={roles.admin} >
               <AdminControl />
+            </PrivateRoute>}
+          />
+          <Route path="/ejerciciosControl" element={
+            <PrivateRoute hasRole={roles.admin || roles.instructor } >
+              <EjerciciosControl />
             </PrivateRoute>}
           />
           

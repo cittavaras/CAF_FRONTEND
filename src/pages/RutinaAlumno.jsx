@@ -19,6 +19,10 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Swal from 'sweetalert2'
+
 //import { useHistory } from 'react-router-dom';
 const RutinasAlumno = () => {
   //const history = useHistory();
@@ -51,22 +55,16 @@ const RutinasAlumno = () => {
     try {
       const res = await axios.delete(baseURL + `/rutinas/alumno/${rutinaId}`);
       setRutinas((prevRutinas) => prevRutinas.filter((rutina) => rutina._id !== rutinaId));
-      console.log('Rutina eliminada exitosamente');
+      Swal.fire('Rutina eliminada exitosamente');
       // Aquí puedes manejar la respuesta si es necesario
     } catch (error) {
       console.error(error);
       // Aquí puedes manejar el error si es necesario
     }
   };
-  const handleEditarRutina = (rutina) => {
-    console.log("rutina", rutina)
-    navigate('/registroRutinas', { state: { rutina: rutina } });
-  };
-  
-  
-/*
- Sort rutinas by rutina 1, rutina 2, rutina 3
-*/
+    const handleEditarRutina = (rutinaId) => {
+        navigate(`/registroRutinas?rut=${alumno.rut}&nombre=${alumno.nombre}&rutina=${rutinaId}`);
+    };
 
   return (
     <>
@@ -105,65 +103,63 @@ const RutinasAlumno = () => {
                 how can i do it
                 */}
           {rutinas.map((rutina, i, row) => (
-            <div className='card container text-light' style={{ backgroundColor: 'rgba(0,0,0,0.68)' }}>
+            <div className='card container text-light' style={{ backgroundColor: 'rgba(0,0,0, 0)' }}>
               { console.log(rutina) }
               <div style={{ margin: 0 }}>
-                  <Accordion>
-                    <AccordionSummary
-                      expanded={expanded === 'panel'+i} 
-                      onChange={handleChange('panel1'+i)}
-                      expandIcon={<ExpandMoreIcon />}
-                      aria-controls="panel1a-content"
-                      id={'panel'+i+'a-header'}
-                      sx={{ flexDirection: 'row-reverse', backgroundColor: '#fffff!important'}}
-                    >
-                      <Typography>{rutina.nombre}</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails sx={{ backgroundColor: 'rgba(0,0,0,100)'}}>
-                      <div className="row m-2 justify-content-center">
-                        <div className="col-4 card" style={{ backgroundColor: 'rgba(200, 223, 50, 0.5)', margin: '0' }}>
-                          <div className=''>
-                            <div className='text-center' style={{ paddingTop: '25px' }}>
-                              <p>CARDIO</p>
-                            </div>
-                            <div className='mb-2 d-flex align-items-center'>
-                              <p className='m-2' style={{ display: 'inline' }}>Inicial</p>:
-                              <div className='text-center' style={{ display: 'inline-block', borderBottom: '2px solid #ffffff', width: '70%', }}>{rutina.cardioInicial}</div>
-                            </div>
-                            <div className='mb-2 d-flex align-items-center'>
-                              <p style={{ display: 'inline', margin: '11px' }}>Final</p>:
-                              <div className='text-center' style={{ display: 'inline-block', borderBottom: '2px solid #ffffff', width: '70%', }}>{rutina.cardioFinal}</div>
-                            </div>
+                <Accordion sx={{ backgroundColor: '#8f8f8f9c'}}>
+                  <AccordionSummary
+                    expanded={expanded === 'panel'+i} 
+                    onChange={handleChange('panel1'+i)}
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel1a-content"
+                    id={'panel'+i+'a-header'}
+                    sx={{ flexDirection: 'row-reverse' }}
+                  >
+                    <Typography>{rutina.nombre}</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <div className='d-flex gap-2 mb-2 justify-content-between'> 
+                      <div className='card' style={{ width: '40%', backgroundColor: 'rgba(200, 223, 50, 0.5)', border: '2px solid #C0D437' }}>
+                        <div className='text-center' style={{ paddingTop: '25px' }}>
+                          <p>CARDIO</p>
+                        </div>
+                        <div className='d-inline'>
+                          <p className='m-1'>Inicial: <span>{rutina.cardioInicial}</span></p>
+                          {/* <div className='text-center' style={{ display: 'inline-block', borderBottom: '2px solid #ffffff'}}>{rutina.cardioInicial}</div> */}
+                        </div>
+                        <div className=''>
+                          <p className='m-1'>Final:&nbsp;&nbsp; <span>{rutina.cardioFinal}</span></p>
+                          {/* <div className='text-center' style={{ display: 'inline-block', borderBottom: '2px solid #ffffff'}}>{rutina.cardioFinal}</div> */}
+                        </div>
+                      </div>
+                      <div className='d-flex flex-column gap-2' style={{width: '60%'}}>
+                        <div className='card' style={{ backgroundColor: 'rgba(200, 223, 50, 0.5)', border: '2px solid #C0D437' }}>
+                          <p>Calentamiento:</p>
+                          <div className='mb-2'>
+                            <div className='text-center' style={{ borderBottom: '2px solid #ffffff'}}>{rutina.calentamiento}</div>
                           </div>
                         </div>
-                        <div className="col-8">
-                          <div className='card p-3 mb-2' style={{ backgroundColor: 'rgba(200, 223, 50, 0.5)' }}>
-                            <p>Calentamiento:</p>
-                            <div className='mb-2 d-flex align-items-center'>
-                              <div className='text-center' style={{ borderBottom: '2px solid #ffffff', width: '100%', }}>{rutina.calentamiento}</div>
-                            </div>
-                          </div>
-                          <div className='card p-3' style={{ backgroundColor: 'rgba(200, 223, 50, 0.5)', margin: 0 }}>
-                            <p>Vuelta a la calma:</p>
-                            <div className='mb-2 d-flex align-items-center'>
-                              <div className='text-center' style={{ borderBottom: '2px solid #ffffff', width: '100%', }}> {rutina.cardioFinal}</div>
-                            </div>
+                        <div className='card' style={{ backgroundColor: 'rgba(200, 223, 50, 0.5)', border: '2px solid #C0D437'}}>
+                          <p>Vuelta a la calma:</p>
+                          <div className='mb-2'>
+                            <div className='text-center' style={{ borderBottom: '2px solid #ffffff' }}> {rutina.cardioFinal}</div>
                           </div>
                         </div>
                       </div>
-                      <div>
-                        {rutina.ejercicios.map((ejercicio) => {
-                          return (<EjercicioBox
-                            props={{ ejercicio }}
-                          />)
-                        })}
-                      </div>
-                    </AccordionDetails>
-                  </Accordion>
-                  <div className='d-block position-absolute' style={{ top: '10px', right: '30px'}}>
-                      <EditIcon onClick={() => handleEditarRutina(rutina)} sx={{ color: '#FCB924' }}></EditIcon>
-                      <DeleteIcon onClick={() => BorrarRutina(rutina._id)} sx={{ color: '#CB0303', }}></DeleteIcon>
-                  </div>
+                    </div>
+                    <div>
+                      {rutina.ejercicios.map((ejercicio) => {
+                        return (<EjercicioBox
+                          props={{ ejercicio }}
+                        />)
+                      })}
+                    </div>
+                  </AccordionDetails>
+                </Accordion>
+                <div className='d-block position-absolute' style={{ top: '10px', right: '30px'}}>
+                    <EditIcon onClick={() => handleEditarRutina(rutina._id)} sx={{ color: '#FCB924' }}></EditIcon>
+                    <DeleteIcon onClick={() => BorrarRutina(rutina._id)} sx={{ color: '#CB0303', }}></DeleteIcon>
+                </div>
               </div>
             </div>
           ))}

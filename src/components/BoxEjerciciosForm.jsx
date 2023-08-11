@@ -10,17 +10,29 @@ import AddIcon from '@mui/icons-material/Add';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 
-const BoxEjerciciosForm = () => {
+const BoxEjerciciosForm = ({ onHandleEjercicios, ejerciciosFromGet }) => {
   const [ejercicios, setEjercicios] = useState(
     [{
-      "id": 1,
+      "numEjer": 1,
       "nombre": "",
-      "repeticiones": 10,
-      "series": 3,
+      "repeticiones": 0,
+      "series": 0,
       "peso": 0,
-      "descanso": 30,
+      "descanso": 0,
     }]
     );
+
+  useEffect(() => {
+    onHandleEjercicios(ejercicios)
+    // set states onInfoCargada
+  }, [ejercicios])
+
+  useEffect(() => {
+    if (ejerciciosFromGet) {
+      setEjercicios(ejerciciosFromGet)
+    }
+  }, [ejerciciosFromGet])
+
   const [selectedExercises, setSelectedExercises] = useState();
   const [newExerciseAdded, setNewExerciseAdded] = useState(false);
   const [isDisabled, setIsDisabled] = useState();
@@ -114,8 +126,17 @@ const BoxEjerciciosForm = () => {
 
   const reusableChangeFunction = (value, objPropToChange) => {
     const newEjercicios = ejercicios.map((ejercicio) => {
-      if (ejercicio.id == parseInt(value.target.name.split('-')[1])) {
-        return { ...ejercicio, [objPropToChange]: value.target.value }
+      // when value is a number parseInt it
+      let valueParsed;
+      console.log('objPropToChange', objPropToChange)
+      if (ejercicio.numEjer === parseInt(value.target.name.split('-')[1])) {
+        //convert value to number if it is a number
+        if(objPropToChange != "nombre") { 
+          valueParsed = parseInt(value.target.value)
+        } else {
+          valueParsed = value.target.value
+        }
+        return { ...ejercicio, [objPropToChange]: valueParsed }
       }
       return ejercicio
     })
@@ -157,13 +178,18 @@ const BoxEjerciciosForm = () => {
 
   // handleAddExercise with incremental id prevent duplicate id
   const handleAddExercise = () => {
-    const newId = ejercicios[ejercicios.length - 1].id + 1
-    const newEjercicios = [...ejercicios, { id: newId, nombre: "Flexiones de brazo apoyo", repeticiones: 10, series: 3, peso: 0, descanso: 30 }]
+
+    // no agregar mas si existen 10 ejercicios
+    if (ejercicios.length === 10) {
+      return
+    }
+
+    const newId = ejercicios[ejercicios.length - 1].numEjer + 1
+    const newEjercicios = [...ejercicios, { numEjer: newId, nombre: "Flexiones de brazo apoyo", repeticiones: 0, series: 0, peso: 0, descanso: 0}]
     setEjercicios(newEjercicios)
 
     if (ejercicios.length > 0) {
       setNewExerciseAdded(newId);
-      
       setTimeout(() => {
         setNewExerciseAdded(null);
       }, 100); 
@@ -178,7 +204,7 @@ const BoxEjerciciosForm = () => {
     if (ejercicios.length === 1) {
       return
     }
-    const newEjercicios = ejercicios.filter((ejercicio) => ejercicio.id !== id)
+    const newEjercicios = ejercicios.filter((ejercicio) => ejercicio.numEjer !== id)
 
     const inputSelectors = [
       `[name="repeticionesEjercicio-${id}"]`,
@@ -196,11 +222,11 @@ const BoxEjerciciosForm = () => {
 
     setEjercicios(newEjercicios)
   }
-  
+
   useEffect(() => {
     console.log(ejercicios)
   }, [ejercicios])
-  
+    
   return (
     <div>
       <h2 className="text-center text-white">Ejercicios</h2>
@@ -227,21 +253,22 @@ const BoxEjerciciosForm = () => {
         {
           ejercicios.map((ejercicio, index) => (
             <>
-              <div className={`container horizontal-accordion mb-2 exercise-card ${ejercicio.id === newExerciseAdded ? 'added' : ''}`}>
+              { console.log(ejercicio.numEjer, ejercicio._id) }
+              <div className={`container horizontal-accordion mb-2 exercise-card ${ejercicio.numEjer === newExerciseAdded ? 'added' : ''}`}>
                 <div className="card choice bg text-white mx-1 expand select-card">
                   <div className="card-body select-card-body w-100">
                     <FormControl fullWidth sx={{ width: '100%'}}>
                       <InputLabel>Ejercicio</InputLabel>
                       <Select
-                        name={`select-${ejercicio.id}`}
+                        name={`select-${ejercicio.numEjer}`}
                         type="text"
-                        defaultValue={''}
+                        value={ejercicio.nombre}
                         label="Ejercicio"
                         onChange={handleExerciseChange}
                         style={{ width: '100%' }}
                       >
                         {getEjercicios.map((ejercicio) => (
-                          <MenuItem key={ejercicio.id} value={ejercicio.nombre}>
+                          <MenuItem key={ejercicio.numEjer} value={ejercicio.nombre}>
                             {ejercicio.nombre}
                           </MenuItem>
                         ))}
@@ -261,10 +288,11 @@ const BoxEjerciciosForm = () => {
                 <div className="card choice bg text-dark mx-1 small">
                   <div className="card-body w-100">
                     <TextField
-                      name={`repeticionesEjercicio-${ejercicio.id}`}
+                      name={`repeticionesEjercicio-${ejercicio.numEjer}`}
                       type="number"
                       label="repeticiones"
                       variant="outlined"
+                      defaultValue={ejercicio.repeticiones}
                       fullWidth
                       placeholder="Ej: 6"
                       onChange={handleExerciseRepeat}
@@ -282,9 +310,10 @@ const BoxEjerciciosForm = () => {
                 <div className="card choice bg text-white mx-1 small">
                   <div className="card-body w-100">
                     <TextField
-                      name={`pesoEjercicio-${ejercicio.id}`}
+                      name={`pesoEjercicio-${ejercicio.numEjer}`}
                       type="number"
                       label="kg"
+                      defaultValue={ejercicio.peso}
                       variant="outlined"
                       fullWidth
                       placeholder="Ej: 6"
@@ -304,9 +333,10 @@ const BoxEjerciciosForm = () => {
                 <div className="card choice bg text-dark mx-1 small">
                   <div className="card-body w-100">
                     <TextField
-                      name={`seriesEjercicio-${ejercicio.id}`}
+                      name={`seriesEjercicio-${ejercicio.numEjer}`}
                       type="number"
                       label="series"
+                      defaultValue={ejercicio.series}
                       variant="outlined"
                       onChange={handleExerciseSeries}
                       fullWidth
@@ -326,9 +356,10 @@ const BoxEjerciciosForm = () => {
                 <div className="card choice bg text-white mx-1 small">
                   <div className="card-body w-100">
                     <TextField
-                      name={`descansoEjercicio-${ejercicio.id}`}
+                      name={`descansoEjercicio-${ejercicio.numEjer}`}
                       type="number"
                       label="descanso"
+                      defaultValue={ejercicio.descanso}
                       variant="outlined"
                       fullWidth
                       onChange={handleExerciseRest}
@@ -345,7 +376,7 @@ const BoxEjerciciosForm = () => {
                       margin: 'auto',
                   }}/>
                 </div>
-                <div className="mx-1 delete-icon small" onClick={() => handleDeleteExercise(ejercicio.id)}>
+                <div className="mx-1 delete-icon small" onClick={() => handleDeleteExercise(ejercicio.numEjer)}>
                   <DeleteIcon
                     disabled
                     fontSize="medium"
