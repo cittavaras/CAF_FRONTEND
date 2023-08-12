@@ -74,9 +74,7 @@
   color: #d20c0c;
 } */
 
-.BoxRutina > * > * > * {
-  color: #fff;
-}
+
 .BoxRutina {
   text-align: center;
 }
@@ -110,7 +108,7 @@
 /* Mui Inputs */
 .input-group-box-rutina {
   background-color: rgba(192, 212, 55, 0.5);
-  border:3px solid #C0D437 !important;
+  /* border:3px solid #C0D437 !important; */
   border-radius: 9px;
   color: #FFF;
   font-size: 16px;
@@ -570,3 +568,14 @@ p {
   top: 3px;
   color: #ff82db;
 }
+
+/* React Date Picker */
+
+@media (min-width: 400px) {
+  .desktop-width-dayPicker {
+    width: 390px;
+    margin: auto;
+  }
+}
+
+/* Fin React Date Picker */

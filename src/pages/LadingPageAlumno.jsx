@@ -38,7 +38,12 @@ const LandingPageAlumno = ({ location }) => {
   const [daysCount, setDaysCount] = useState();
   const [rutinas, setRutinas] = useState([]);
   const [hasRutina, setHasRutina] = useState(false);
-  const day = '1'//moment(Date.now()).format('dddd');
+  const day = moment(Date.now()).format('dddd');
+  const [expanded, setExpanded] = React.useState(false);
+
+  const handleChange = (panel) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panel : false);
+  };
   
   console.log(day)
 
@@ -78,7 +83,7 @@ const LandingPageAlumno = ({ location }) => {
         <H1 style={{ fontSize: '2.5rem' }}> Bienvenido </H1>
         <p style={{ fontSize: '1.3rem', color: 'white' }}>{alumno?.nombre ?? 'Sin informacion'}</p>
       </div>
-      <div className='mb-5'>
+      <div className='mb-5 desktop-width-dayPicker'>
         <ReactWeeklyDayPicker
           daysCount={5}  //How many days will be shown
           // classNames={}  //Overrides classnames for custom classes (below example)
@@ -121,62 +126,64 @@ const LandingPageAlumno = ({ location }) => {
           </div>  
         </>
         {rutinas ? rutinas.map((rutina, i, row) => (
-          <div className='card container text-light' style={{ backgroundColor: 'rgba(0,0,0,0.68)' }}>
-            { console.log('RUTINA', rutina) }
-            <div style={{ margin: 0 }}>
-                <Accordion>
-                  <AccordionSummary
-                    // onChange={handleChange('panel1'+i)}
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel1a-content"
-                    id={'panel'+i+'a-header'}
-                    sx={{ flexDirection: 'row-reverse', backgroundColor: '#fffff!important'}}
-                  >
-                    <Typography>{rutina.nombre}</Typography>
-                  </AccordionSummary>
-                  <AccordionDetails sx={{ backgroundColor: 'rgba(0,0,0,100)'}}>
-                    <div className="row m-2 justify-content-center">
-                      <div className="col-4 card" style={{ backgroundColor: 'rgba(200, 223, 50, 0.5)', margin: '0' }}>
-                        <div className=''>
-                          <div className='text-center' style={{ paddingTop: '25px' }}>
-                            <p>CARDIO</p>
-                          </div>
-                          <div className='mb-2 d-flex align-items-center'>
-                            <p className='m-2' style={{ display: 'inline' }}>Inicial</p>:
-                            <div className='text-center' style={{ display: 'inline-block', borderBottom: '2px solid #ffffff', width: '70%', }}>{rutina.cardioInicial}</div>
-                          </div>
-                          <div className='mb-2 d-flex align-items-center'>
-                            <p style={{ display: 'inline', margin: '11px' }}>Final</p>:
-                            <div className='text-center' style={{ display: 'inline-block', borderBottom: '2px solid #ffffff', width: '70%', }}>{rutina.cardioFinal}</div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-8">
-                        <div className='card p-3 mb-2' style={{ backgroundColor: 'rgba(200, 223, 50, 0.5)' }}>
-                          <p>Calentamiento:</p>
-                          <div className='mb-2 d-flex align-items-center'>
-                            <div className='text-center' style={{ borderBottom: '2px solid #ffffff', width: '100%', }}>{rutina.calentamiento}</div>
-                          </div>
-                        </div>
-                        <div className='card p-3' style={{ backgroundColor: 'rgba(200, 223, 50, 0.5)', margin: 0 }}>
-                          <p>Vuelta a la calma:</p>
-                          <div className='mb-2 d-flex align-items-center'>
-                            <div className='text-center' style={{ borderBottom: '2px solid #ffffff', width: '100%', }}> {rutina.cardioFinal}</div>
-                          </div>
-                        </div>
+          <div className='card container text-light' style={{ backgroundColor: 'rgba(0,0,0, 0)' }}>
+          { console.log(rutina) }
+          <div style={{ margin: 0 }}>
+            <Accordion sx={{ backgroundColor: '#8f8f8f9c'}}>
+              <AccordionSummary
+                expanded={expanded === 'panel'+i} 
+                onChange={handleChange('panel1'+i)}
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1a-content"
+                id={'panel'+i+'a-header'}
+                sx={{ flexDirection: 'row-reverse' }}
+              >
+                <Typography sx={{color: 'white'}} >{
+                //TittleCase for nombre rutina
+                rutina.nombre.toUpperCase()
+                } 7</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <div className='d-flex gap-2 mb-2 justify-content-between'> 
+                  <div className='card' style={{ width: '40%', backgroundColor: 'rgba(200, 223, 50, 0.5)', border: '2px solid #C0D437' }}>
+                    <div className='text-center' style={{ paddingTop: '25px' }}>
+                      <p>CARDIO</p>
+                    </div>
+                    <div className='d-inline'>
+                      <p className='m-1'>Inicial: <span>{rutina.cardioInicial}</span></p>
+                      {/* <div className='text-center' style={{ display: 'inline-block', borderBottom: '2px solid #ffffff'}}>{rutina.cardioInicial}</div> */}
+                    </div>
+                    <div className=''>
+                      <p className='m-1'>Final:&nbsp;&nbsp; <span>{rutina.cardioFinal}</span></p>
+                      {/* <div className='text-center' style={{ display: 'inline-block', borderBottom: '2px solid #ffffff'}}>{rutina.cardioFinal}</div> */}
+                    </div>
+                  </div>
+                  <div className='d-flex flex-column gap-2' style={{width: '60%'}}>
+                    <div className='card' style={{ backgroundColor: 'rgba(200, 223, 50, 0.5)', border: '2px solid #C0D437' }}>
+                      <p>Calentamiento:</p>
+                      <div className='mb-2'>
+                        <div className='text-center' style={{ borderBottom: '2px solid #ffffff'}}>{rutina.calentamiento}</div>
                       </div>
                     </div>
-                    <div>
-                      {rutina.ejercicios.map((ejercicio) => {
-                        return (<EjercicioBox
-                          props={{ ejercicio }}
-                        />)
-                      })}
+                    <div className='card' style={{ backgroundColor: 'rgba(200, 223, 50, 0.5)', border: '2px solid #C0D437'}}>
+                      <p>Vuelta a la calma:</p>
+                      <div className='mb-2'>
+                        <div className='text-center' style={{ borderBottom: '2px solid #ffffff' }}> {rutina.cardioFinal}</div>
+                      </div>
                     </div>
-                  </AccordionDetails>
-                </Accordion>
-            </div>
+                  </div>
+                </div>
+                <div>
+                  {rutina.ejercicios.map((ejercicio) => {
+                    return (<EjercicioBox
+                      props={{ ejercicio }}
+                    />)
+                  })}
+                </div>
+              </AccordionDetails>
+            </Accordion>
           </div>
+        </div>
         )): null}
       </div>                    
       {

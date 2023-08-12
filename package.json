@@ -44,6 +44,7 @@
     "recharts": "^2.6.2",
     "styled-components": "^5.3.9",
     "sweetalert": "^2.1.2",
+    "sweetalert2": "^11.7.22",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

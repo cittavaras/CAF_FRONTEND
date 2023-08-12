@@ -51,20 +51,40 @@ const RutinasAlumno = () => {
       console.error(error);
     }
   };
+  
   const BorrarRutina = async (rutinaId) => {
-    try {
-      const res = await axios.delete(baseURL + `/rutinas/alumno/${rutinaId}`);
-      setRutinas((prevRutinas) => prevRutinas.filter((rutina) => rutina._id !== rutinaId));
-      Swal.fire('Rutina eliminada exitosamente');
-      // Aquí puedes manejar la respuesta si es necesario
-    } catch (error) {
-      console.error(error);
-      // Aquí puedes manejar el error si es necesario
-    }
+    Swal.fire({
+      title: 'Deseas eliminar la rutina?',
+      text: "Tendras que crear la rutina nuevamente!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, eliminar!'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const res = await axios.delete(baseURL + `/rutinas/alumno/${rutinaId}`);
+          setRutinas((prevRutinas) => prevRutinas.filter((rutina) => rutina._id !== rutinaId));
+          Swal.fire('Rutina eliminada exitosamente');
+          // Aquí puedes manejar la respuesta si es necesario
+        } catch (error) {
+          console.error(error);
+          // Aquí puedes manejar el error si es necesario
+        };
+        Swal.fire({
+          title:'Rutina Eliminada!',
+          text:'La rutina ha sido eliminada correctamente.',
+          icon:'success',
+          confirmButtonColor:'rgba(158 173 56)'
+        })
+      }
+    })
+
   };
-    const handleEditarRutina = (rutinaId) => {
-        navigate(`/registroRutinas?rut=${alumno.rut}&nombre=${alumno.nombre}&rutina=${rutinaId}`);
-    };
+  const handleEditarRutina = (rutinaId) => {
+      navigate(`/registroRutinas?rut=${alumno.rut}&nombre=${alumno.nombre}&rutina=${rutinaId}`);
+  };
 
   return (
     <>
@@ -72,7 +92,7 @@ const RutinasAlumno = () => {
         <Typography style={{
           color: '#FCB924',
           textAlign: 'right',
-          fontSize: '2.5rem',
+          fontSize: '2.2rem',
           fontStyle: 'normal',
           fontWeight: '700',
           lineHeight: '50px',
@@ -115,7 +135,10 @@ const RutinasAlumno = () => {
                     id={'panel'+i+'a-header'}
                     sx={{ flexDirection: 'row-reverse' }}
                   >
-                    <Typography>{rutina.nombre}</Typography>
+                    <Typography sx={{color:'white', width:'90%'}}>{
+                    //TittleCase for nombre rutina
+                    rutina.nombre.toUpperCase()
+                    } {rutina.diasDeSemana.length != 0 ? '(' + rutina.diasDeSemana.join(', ') + ')' : '(sin dias)'} </Typography>
                   </AccordionSummary>
                   <AccordionDetails>
                     <div className='d-flex gap-2 mb-2 justify-content-between'> 

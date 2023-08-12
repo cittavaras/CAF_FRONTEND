@@ -9,6 +9,9 @@ import SportsGymnasticsIcon from '@mui/icons-material/SportsGymnastics';
 import AddIcon from '@mui/icons-material/Add';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import AddBoxIcon from '@mui/icons-material/AddBox';
+import Swal from 'sweetalert2'
+import axios from "axios";
+import baseURL from "../helpers/rutaBase";
 
 const BoxEjerciciosForm = ({ onHandleEjercicios, ejerciciosFromGet }) => {
   const [ejercicios, setEjercicios] = useState(
@@ -21,6 +24,7 @@ const BoxEjerciciosForm = ({ onHandleEjercicios, ejerciciosFromGet }) => {
       "descanso": 0,
     }]
     );
+  const [ejerciciosSelect, setEjerciciosSelect] = useState()
 
   useEffect(() => {
     onHandleEjercicios(ejercicios)
@@ -32,36 +36,34 @@ const BoxEjerciciosForm = ({ onHandleEjercicios, ejerciciosFromGet }) => {
       setEjercicios(ejerciciosFromGet)
     }
   }, [ejerciciosFromGet])
+  useEffect(() => {
+    onHandleEjercicios(ejercicios);
+    // set states onInfoCargada
+  }, [ejercicios]);
+
+  async function fetchEjercicios() {
+    try {
+      const response = await axios.get(baseURL + '/ejercicios');
+      setEjerciciosSelect(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  
+  useEffect(() => {
+    // Cargar ejercicios disponibles desde el backend
+    fetchEjercicios();
+  }, []);
+  
+  useEffect(() => {
+    // Cargar ejercicios disponibles desde el backend
+    console.log('ejerciciosSelect', ejerciciosSelect)
+    
+  }, [ejerciciosSelect]);
 
   const [selectedExercises, setSelectedExercises] = useState();
   const [newExerciseAdded, setNewExerciseAdded] = useState(false);
   const [isDisabled, setIsDisabled] = useState();
-  const getEjercicios = [
-    { id: 1, nombre: "Flexiones de brazo apoyo" },
-    { id: 2, nombre: "Rodillas" },
-    { id: 3, nombre: "Elevaciones de hombro" },
-    { id: 4, nombre: "Frontales con disco" },
-    { id: 5, nombre: "Dorsalera" },
-    { id: 6, nombre: "Remo polea" },
-    { id: 7, nombre: "Pall off press" },
-    { id: 8, nombre: "Prensa 45°" },
-    { id: 9, nombre: "Extensión de rodilla" },
-    { id: 10, nombre: "Máquina Cuadríceps" },
-    { id: 11, nombre: "Puente isquiotibiales" },
-    { id: 12, nombre: "Press banca" },
-    { id: 13, nombre: "Press de hombros" },
-    { id: 14, nombre: "Mancuernas" },
-    { id: 15, nombre: "Dorsalera polea" },
-    { id: 16, nombre: "Remo mancuernas" },
-    { id: 17, nombre: "Estocadas" },
-    { id: 18, nombre: "Peso muerto Rumano" },
-    { id: 19, nombre: "Búlgaras" },
-    { id: 20, nombre: "Hip Thrust" },
-    { id: 21, nombre: "Elevaciones de talones" },
-    { id: 22, nombre: "Smith" },
-    { id: 23, nombre: "Crunch Abdominal" },
-    { id: 24, nombre: "Puente isquiotibiales" }
-  ];
 
   const choiceArray = document.querySelectorAll(".choice")
   const deleteIcon = document.querySelectorAll(".delete-icon")
@@ -96,6 +98,7 @@ const BoxEjerciciosForm = ({ onHandleEjercicios, ejerciciosFromGet }) => {
     const choiceArray = document.querySelectorAll(".choice");
   
     const handleClick = (e) => {
+      e.preventDefault();
       console.log(e.target.classList)
     
       choiceArray.forEach((element) => {
@@ -162,23 +165,106 @@ const BoxEjerciciosForm = ({ onHandleEjercicios, ejerciciosFromGet }) => {
       value.target.value = "";
     }
   };
-
-  const handleExerciseRepeat = (value) => {
+  const handleExerciseRepeat = (value, numEjer) => {
+    const inputValue = value.target.value;
+    const repeticiones = inputValue === ''?'' : parseInt(inputValue);
+    if (inputValue !== '' && (repeticiones <0 || repeticiones> 60)){
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'No puedes hacer mas de 60 repeticiones',
+        confirmButtonColor: 'rgb(158 173 56)',
+      });
+      return;
+    }
+    const newEjercicios = ejercicios.map((ejercicio)=> {
+      if (ejercicio.numEjer===numEjer){
+        const repeticiones = value.target.value=== '' ? '' :parseInt(value.target.value);
+        return {...ejercicio, repeticiones}
+      }
+      return ejercicio;
+    });
     reusableChangeFunction(value, 'repeticiones')
   }
-  const handleExerciseWeight = (value) => {
+  const handleExerciseWeight = (value, numEjer) => {
+    const inputValue = value.target.value;
+    const peso = inputValue === ''?'' : parseFloat(inputValue);
+    if (inputValue !== '' && (peso <0 || peso> 500)){
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'No puedes levantar mas de 500 kg',
+        confirmButtonColor: 'rgb(158 173 56)',
+      });
+      return;
+    }
+    const newEjercicios = ejercicios.map((ejercicio)=> {
+      if (ejercicio.numEjer===numEjer){
+        const peso = value.target.value=== '' ? '' :parseFloat(value.target.value);
+        return {...ejercicio, peso}
+      }
+      return ejercicio;
+    });
     reusableChangeFunction(value, 'peso')
   }
-  const handleExerciseSeries = (value) => {
+  const handleExerciseSeries = (value, numEjer) => {
+    const inputValue = value.target.value;
+    const series = inputValue === ''?'' : parseInt(inputValue);
+    if (inputValue !== '' && (series <= 0 || series> 50)){
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'No puedes hacer mas de 50 series',
+        confirmButtonColor: 'rgb(158 173 56)',
+      });
+      return;
+    }
+    const newEjercicios = ejercicios.map((ejercicio)=> {
+      if (ejercicio.numEjer===numEjer){
+        const repeticiones = value.target.value=== '' ? '' :parseInt(value.target.value);
+        return {...ejercicio, series}
+      }
+      return ejercicio;
+    });
     reusableChangeFunction(value, 'series')
   }
-  const  handleExerciseRest = (value) => {
+  const handleExerciseRest = (value, numEjer) => {
+    const inputValue = value.target.value;
+    const descansos = inputValue === ''?'' : parseFloat(inputValue);
+    if (inputValue !== '' && (descansos <0 || descansos> 30)){
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'No puedes descansar mas de 30 minutos',
+        confirmButtonColor: 'rgb(158 173 56)',
+      });
+      return;
+    }
+    const newEjercicios = ejercicios.map((ejercicio)=> {
+      if (ejercicio.numEjer===numEjer){
+        const descansos = value.target.value=== '' ? '' :parseFloat(value.target.value);
+        return {...ejercicio, descansos}
+      }
+      return ejercicio;
+    });
     reusableChangeFunction(value, 'descanso')
   }
+  // const handleExerciseRepeat = (value) => {
+    //   reusableChangeFunction(value, 'repeticiones')
+    // }
+    // const handleExerciseWeight = (value) => {
+      //   reusableChangeFunction(value, 'peso')
+      // }
+      // const handleExerciseSeries = (value) => {
+  //   reusableChangeFunction(value, 'series')
+  // }
+  // const  handleExerciseRest = (value) => {
+  //   reusableChangeFunction(value, 'descanso')
+  // }
 
   // handleAddExercise with incremental id prevent duplicate id
   const handleAddExercise = () => {
-
+    
     // no agregar mas si existen 10 ejercicios
     if (ejercicios.length === 10) {
       return
@@ -267,11 +353,12 @@ const BoxEjerciciosForm = ({ onHandleEjercicios, ejerciciosFromGet }) => {
                         onChange={handleExerciseChange}
                         style={{ width: '100%' }}
                       >
-                        {getEjercicios.map((ejercicio) => (
+                        {/* hola */}
+                        { ejerciciosSelect ? ejerciciosSelect.map((ejercicio) => (
                           <MenuItem key={ejercicio.numEjer} value={ejercicio.nombre}>
                             {ejercicio.nombre}
                           </MenuItem>
-                        ))}
+                        )): null}
                       </Select>
                     </FormControl>
                   </div>
@@ -292,10 +379,11 @@ const BoxEjerciciosForm = ({ onHandleEjercicios, ejerciciosFromGet }) => {
                       type="number"
                       label="repeticiones"
                       variant="outlined"
-                      defaultValue={ejercicio.repeticiones}
+                      // defaultValue={ejercicio.repeticiones}
+                      value={ejercicio.repeticiones===''?'':ejercicio.repeticiones}
                       fullWidth
                       placeholder="Ej: 6"
-                      onChange={handleExerciseRepeat}
+                      onChange={(value)=>handleExerciseRepeat(value, ejercicio.numEjer)}
                     />
                   </div>
                   <RestoreIcon fontSize='large' sx={{ 
@@ -313,11 +401,11 @@ const BoxEjerciciosForm = ({ onHandleEjercicios, ejerciciosFromGet }) => {
                       name={`pesoEjercicio-${ejercicio.numEjer}`}
                       type="number"
                       label="kg"
-                      defaultValue={ejercicio.peso}
+                      value={ejercicio.peso===''?'':ejercicio.peso}
                       variant="outlined"
                       fullWidth
                       placeholder="Ej: 6"
-                      onChange={handleExerciseWeight}
+                      onChange={(value)=>handleExerciseWeight(value, ejercicio.peso)}
                     />
                   </div>
                   <FitnessCenterRoundedIcon fontSize='large' sx={{
@@ -336,9 +424,9 @@ const BoxEjerciciosForm = ({ onHandleEjercicios, ejerciciosFromGet }) => {
                       name={`seriesEjercicio-${ejercicio.numEjer}`}
                       type="number"
                       label="series"
-                      defaultValue={ejercicio.series}
+                      value={ejercicio.series===''?'':ejercicio.series}
                       variant="outlined"
-                      onChange={handleExerciseSeries}
+                      onChange={(value)=>handleExerciseSeries(value, ejercicio.series)}
                       fullWidth
                       placeholder="Ej: 6"
                     />
@@ -359,10 +447,10 @@ const BoxEjerciciosForm = ({ onHandleEjercicios, ejerciciosFromGet }) => {
                       name={`descansoEjercicio-${ejercicio.numEjer}`}
                       type="number"
                       label="descanso"
-                      defaultValue={ejercicio.descanso}
+                      value={ejercicio.descanso===''?'':ejercicio.descanso}
                       variant="outlined"
                       fullWidth
-                      onChange={handleExerciseRest}
+                      onChange={(value)=>handleExerciseRest(value, ejercicio.descanso)}
                       placeholder="Ej: 6"
                     />
                   </div>

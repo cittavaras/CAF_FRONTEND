@@ -23,13 +23,13 @@ const EjercicioBox = ({ props }) => {
                 <div>
                     <RestoreIcon fontSize='large' />
                     <h4>Series:</h4>
-                    <p>{props.ejercicio.series}</p>
+                    <p>{props.ejercicio.series} series.</p>
                 </div>
                 <div>
                     <LoopIcon fontSize='large' />
                     <br />
                     <h4> Repeticiones:</h4>
-                    <p>{props.ejercicio.repeticiones} series.</p>
+                    <p>{props.ejercicio.repeticiones} reps.</p>
                 </div>
                 <div>
                     <FitnessCenterRoundedIcon fontSize='large' />
