@@ -141,7 +141,7 @@ export default function AppRouter() {
             </PrivateRoute>}
           />
           <Route path="/ejerciciosControl" element={
-            <PrivateRoute hasRole={roles.admin || roles.instructor } >
+            <PrivateRoute hasRoles={[roles.admin, roles.instructor]} >
               <EjerciciosControl />
             </PrivateRoute>}
           />

@@ -10,17 +10,19 @@ import baseURL from '../helpers/rutaBase';
 import Swal from 'sweetalert2';
 import styled from 'styled-components';
 
-
 const EjerciciosControl = () => {
   const [ejercicios, setEjercicios] = useState([]);
   const [modificar, setModificar] = useState(false);
-  const [modificarYAgregar, setModificarYAgregar] = useState(false);
   const [ejerciciosModificados, setEjerciciosModificados] = useState([]);
 
   const handleAddExercise = () => {
     setEjercicios((prevEjercicios) => [...prevEjercicios, { nombre: '' }]);
     if (modificar === true) {
-      setModificarYAgregar(true);    }
+      setEjerciciosModificados((prevEjerciciosModificados) => [
+        ...prevEjerciciosModificados,
+        { nombre: '', modificado: true },
+      ]);
+    }
   };
 
   const handleQuitarEjercicio = (index) => {
@@ -28,8 +30,7 @@ const EjerciciosControl = () => {
     if (ejercicio._id) {
       eliminarEjercicio(ejercicio._id);
     } else {
-      const nuevosEjercicios = [...ejercicios];
-      nuevosEjercicios.splice(index, 1);
+      const nuevosEjercicios = ejercicios.filter((_, idx) => idx !== index);
       setEjercicios(nuevosEjercicios);
     }
   };
@@ -37,75 +38,58 @@ const EjerciciosControl = () => {
   const handleModificarEjercicio = (index, valor) => {
     const nuevosEjercicios = [...ejercicios];
     nuevosEjercicios[index].nombre = valor;
+    nuevosEjercicios[index].modificado = true;
     setEjercicios(nuevosEjercicios);
   };
 
   const handleSubmit = async (e, ejercicios) => {
     e.preventDefault();
     try {
-      console.log(ejercicios);
       const res = await axios.post(baseURL + `/ejercicios/`, { ejercicios });
       Swal.fire('Ejercicios guardados con éxito');
     } catch (error) {
       console.error(error);
     }
   };
-  //si el usuario quiere agregar y actualizar al mismo tiempo, se llama a esta funcion, donde primero se hace un post para agregar los ejercicios nuevos, y luego se hace un put para actualizar los ejercicios modificados
-  const handleSubmitYAgregar = async (e, ejercicios) => {
-    e.preventDefault();
-    try {
-      console.log(ejercicios);
-      const res = await axios.post(baseURL + `/ejercicios/`, { ejercicios });
-      modificarEjercicio(e);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+
   const eliminarEjercicio = async (ejercicioID) => {
     try {
       const res = await axios.delete(baseURL + `/ejercicios/${ejercicioID}`);
       setEjercicios((prevEjercicios) =>
-        prevEjercicios.filter((_, index) => index !== ejercicioID)
+        prevEjercicios.filter((ejercicio) => ejercicio._id !== ejercicioID)
       );
       Swal.fire('Ejercicio eliminado exitosamente');
     } catch (error) {
       console.error(error);
     }
   };
-  const modificarEjercicio = async (e) => {
+
+  const verificarModificarYAgregar = async (e) => {
     e.preventDefault();
+  
+    const ejerciciosModificados = ejercicios.filter((ejercicio) => ejercicio.modificado && ejercicio._id);
+    const ejerciciosNuevos = ejercicios.filter((ejercicio) => !ejercicio._id);
+  
     try {
       for (const ejercicioModificado of ejerciciosModificados) {
-        // Realizar la solicitud PUT para actualizar el ejercicio
-        await axios.put(baseURL + `/ejercicios/${ejercicioModificado._id}`, { nombre: ejercicioModificado.nombre });
-        Swal.fire('Ejercicios guardados con éxito');
+        await axios.put(
+          baseURL + `/ejercicios/${ejercicioModificado._id}`,
+          { _id: ejercicioModificado._id, nombre: ejercicioModificado.nombre }
+        );
       }
-      // Limpiar el estado de ejercicios modificados después de actualizar
+  
+      if (ejerciciosNuevos.length > 0) {
+        const nuevosEjerciciosData = ejerciciosNuevos.map((ejercicio) => ({ nombre: ejercicio.nombre }));
+        await axios.post(baseURL + `/ejercicios/`, { ejercicios: nuevosEjerciciosData });
+      }
+  
       setEjerciciosModificados([]);
-      console.log('Todos los ejercicios actualizados correctamente');
+      Swal.fire('Ejercicios guardados con éxito');
     } catch (error) {
       console.error('Error al actualizar ejercicios:', error);
     }
   };
-  //funcion que cuando se modifique el texto, al hacer click en el boton de modificar ejercicios, se haga un put a la base de datos. Si se modifica mas de un ejercicio, se hace un put por cada ejercicio modificado
-  const modificarTexto = (ejercicio) => {
-    setModificar(!modificar);
-    if (modificar === true) {
-      setEjerciciosModificados((prevEjerciciosModificados) => [...prevEjerciciosModificados, ejercicio]);
-    }
-
-  };
-  //funcion que verifique si se quiere modificar y agregar al mismo tiempo, y si es asi, se llama a la funcion de handleSubmitYAgregar
-  const verificarModificarYAgregar = (e, ejercicios) => {
-    e.preventDefault(); // Prevenir el comportamiento por defecto del botón
-    if (modificarYAgregar === true) {
-      handleSubmitYAgregar(e, ejercicios);
-    } else if (modificarYAgregar === false && modificar === true) {
-      modificarEjercicio(e);
-    } else {
-      handleSubmit(e, ejercicios);
-    }
-  };
+  
   
 
   useEffect(() => {
@@ -119,9 +103,6 @@ const EjerciciosControl = () => {
     };
     getEjercicios();
   }, []);
-  useEffect(() => {
-    console.log(ejercicios);
-  }, [ejercicios]);
 
 
   const style = {
@@ -178,8 +159,7 @@ const EjerciciosControl = () => {
             </Typography>
             {ejercicios.map((ejercicio, index) => (
               <div key={index} className="ejercicio mb-2" style={{ color: 'white' }}>
-                <Row className="align-items-center"
-                >
+                <Row className="align-items-center">
                   <Col xs={8}>
                     <TextField
                       autoComplete="off"
@@ -189,18 +169,12 @@ const EjerciciosControl = () => {
                       variant="filled"
                       className="input-group-box-rutina"
                       type="text"
-                      onChange={(e) => {
-                        const nuevosEjercicios = [...ejercicios];
-                        nuevosEjercicios[index].nombre = e.target.value;
-                        setEjercicios(nuevosEjercicios);
-                        modificarTexto(ejercicio); // Llamar a modificarEjercicio cuando el valor cambie
-                      }}
+                      onChange={(e) => handleModificarEjercicio(index, e.target.value)}
                     />
                   </Col>
                   <Col xs={4} className="text-end">
                     <Button
-                      sx={{color:'red',
-                      border: '1px solid red'}}
+                      sx={{ color: 'red', border: '1px solid red' }}
                       variant="outlined"
                       onClick={() => handleQuitarEjercicio(index)}
                     >
@@ -210,14 +184,14 @@ const EjerciciosControl = () => {
                 </Row>
               </div>
             ))}
-            <Button variant="outlined" onClick={handleAddExercise} style={{border:'13px',background:'rgb(158 173 56)', color:'white'}}>
+            <Button variant="outlined" onClick={handleAddExercise} style={{ border: '13px', background: 'rgb(158 173 56)', color: 'white' }}>
               Agregar Ejercicio
             </Button>
           </StyledEjerciciosContainer>
         </div>
-        <Button style={{border:'13px',background:'rgb(158 173 56)', color:'white'}} variant="outlined" onClick={(e) => verificarModificarYAgregar(e, ejercicios)}>
-  {modificar ? 'Modificar' : 'Guardar'} Ejercicios
-</Button>
+        <Button style={{ border: '13px', background: 'rgb(158 173 56)', color: 'white' }} variant="outlined" onClick={(e) => verificarModificarYAgregar(e, ejercicios)}>
+          {modificar ? 'Modificar' : 'Guardar'} Ejercicios
+        </Button>
       </div>
     </div>
   );

@@ -138,7 +138,7 @@ const RutinasAlumno = () => {
                     <Typography sx={{color:'white', width:'90%'}}>{
                     //TittleCase for nombre rutina
                     rutina.nombre.toUpperCase()
-                    } {rutina.diasDeSemana.length != 0 ? '(' + rutina.diasDeSemana.join(', ') + ')' : '(sin dias)'} </Typography>
+                    } {rutina.diasDeSemana.length !== 0 ? '(' + rutina.diasDeSemana.join(', ') + ')' : '(sin dias)'} </Typography>
                   </AccordionSummary>
                   <AccordionDetails>
                     <div className='d-flex gap-2 mb-2 justify-content-between'> 
