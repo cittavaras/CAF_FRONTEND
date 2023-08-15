@@ -1,3 +1,3 @@
 const baseURL = 
-    "https://caf-desarrollo.ivaras.cl/api"
+    "https://caf.ivaras.cl/api"
 export default baseURL;
