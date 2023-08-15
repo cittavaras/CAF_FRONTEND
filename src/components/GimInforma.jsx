@@ -1,14 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
-import { red, green, blue } from '@mui/material/colors';
-
+import { useState } from 'react';
 const GimInforma = ({ titulo, imagen, texto }) => {
 
+  const [imagenBase64, setImagenBase64] = useState(imagen)
   const RootDiv = styled('div')(({ theme }) => ({
     [theme.breakpoints.down('md')]: {
       height: 200,
@@ -21,6 +21,11 @@ const GimInforma = ({ titulo, imagen, texto }) => {
     },
   }));
 
+  useEffect(() => {
+    if(!imagen) return
+    setImagenBase64(imagen)
+  },[imagen]);
+
   return (
     <>
       <Card className="m-auto" sx={{
@@ -32,7 +37,7 @@ const GimInforma = ({ titulo, imagen, texto }) => {
         <RootDiv>
           <CardMedia
             sx={{ height: "100%" }}
-            image={imagen}
+            image={imagenBase64}
             title="gym photo"
           />
         </RootDiv>

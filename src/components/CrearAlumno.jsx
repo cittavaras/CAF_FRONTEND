@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import baseURL from '../helpers/rutaBase';
 import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import Swal from 'sweetalert2'
 
 
 

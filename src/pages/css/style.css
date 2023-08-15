@@ -1,27 +1,153 @@
 @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
 
 * {
-  font-family: 'Lato', sans-serif!important;
+  font-family: 'Lato', sans-serif !important;
+}
+
+:root {
+  --color-primary: #fce19f;
+  --color-secondary: #fdd46a;
+  --color-tertiary: #f7c23d;
+  --color-quaternary: #f9b814;
+  --color-quinary: #FFB800;
+  /*
+  --color-primary: #5192ED;
+  --color-secondary: #69A1F0;
+  --color-tertiary: #7EAEF2;
+  --color-quaternary: #90BAF5;
+  --color-quinary: #A2C4F5;
+  */
 }
 
 .caf_green_bg {
- background-color: rgba(200, 223, 50, 0.5);;
+  background-color: rgba(200, 223, 50, 0.5);
+  ;
 }
 
 .card-metrics-content {
-  padding: 0!important;
+  padding: 0 !important;
 }
-.card-metrics-content > * {
+
+.card-metrics-content>* {
   padding: 5px;
 }
 
-.botonesperfil > *{
+.tituloRegistroRuti {
+  color: #FCB924;
+  font-size: 1.8rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 50px;
+  width: auto;
+  height: auto;
+  justify-content: flex-start;
+}
+
+.intructor-alumno {
+  font-size: 0.9rem;
+  color: #fff !important;
+}
+
+.entrenamiento {
+  font-size: 1rem;
+  color: #fff !important;
+  cursor: pointer;
+}
+.entrenamiento:hover {
+  transition: ease 0.4s;
+  color: #FCB924 !important;
+}
+.entrenamiento-desc {
+  font-size: 0.8rem;
+  color: #959CA1;
+}
+
+.form-registro-rutinas {
+  color: #fff;
+}
+
+/* .form-registro-rutinas > div > div > div > * {
+  color: #d20c0c;
+}
+
+.form-registro-rutinas > div > span {
+  color: #d20c0c;
+} */
+
+
+.BoxRutina {
+  text-align: center;
+}
+.animate-entrenamiento
+{
+   text-transform: uppercase;
+  background-image: linear-gradient(
+    -225deg,
+    #FFB800 0%,
+    #FFB800 29%,
+    #FFB800 60%,
+    #ffffff 100%
+  );
+  background-size: auto auto;
+  background-clip: border-box;
+  background-size: 200% auto;
+  color: #fff;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: textclip 2s linear infinite;
+  display: inline-block;
+}
+
+@keyframes textclip {
+  to {
+    background-position: 200% center;
+  }
+}
+
+/* Mui Inputs */
+.input-group-box-rutina {
+  background-color: rgba(192, 212, 55, 0.5);
+  /* border:3px solid #C0D437 !important; */
+  border-radius: 9px;
+  color: #FFF;
+  font-size: 16px;
+  width: 100%;
+}
+
+.boxRutinaRegistro{
+  margin:10px;
+}
+/* Fin Input Mui */
+
+.botonesperfil>* {
   border-radius: 10px;
   text-align: center;
   padding: 0;
 }
 
-.botonesperfil > div > * {
+.card-rutine-content {
+  color: #fff;
+}
+
+.tituloRegRut {
+  color: #fff;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  margin: 10px;
+}
+
+.registroRutina {
+  background-color: #C0D437;
+  color: #000;
+  border-radius: 44px;
+  padding: 10px;
+  margin: 10px;
+  text-align: center;
+}
+
+.botonesperfil>div>* {
   font-weight: bold;
 }
 
@@ -117,9 +243,17 @@ body::before {
 }
 
 @keyframes breathe {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.2); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
 .vector1right {
@@ -140,12 +274,15 @@ body::before {
 
 .nav-container {
   width: 100%;
-  height: 50px; /* ajustar el alto según sea necesario */
+  height: 50px;
+  /* ajustar el alto según sea necesario */
   position: fixed;
   top: 0;
   left: 0;
-  background-color: #242222; /* ajustar el color según sea necesario */
-  z-index: 9999; /* asegurarse de que la barra de navegación esté por encima de otros elementos */
+  background-color: #242222;
+  /* ajustar el color según sea necesario */
+  z-index: 9999;
+  /* asegurarse de que la barra de navegación esté por encima de otros elementos */
   font-family: 'Lato', sans-serif;
 }
 
@@ -159,7 +296,8 @@ nav {
 }
 
 .navbar-nav {
-  background-color: #242222; /* ajustar el color según sea necesario */
+  background-color: #242222;
+  /* ajustar el color según sea necesario */
   width: 100%;
 }
 
@@ -235,9 +373,11 @@ p {
   0% {
     transform: skewY(0deg);
   }
+
   50% {
     transform: skewY(5deg);
   }
+
   100% {
     transform: skewY(0deg);
   }
@@ -258,7 +398,7 @@ p {
   background-repeat: no-repeat;
   background-size: contain;
   background-position: right;
-  bottom:  0;
+  bottom: 0;
   right: 0;
   rotate: (180deg);
   transform: rotate(90deg);
@@ -282,11 +422,11 @@ p {
 .vector-4 {
   position: fixed;
   z-index: -1;
-  width:  150vw;
+  width: 150vw;
   height: 150vh;
   background-image: url("../img/vector/v4.svg");
   background-repeat: no-repeat;
-  background-size: 100% ;
+  background-size: 100%;
   left: 0;
   top: 50%;
   transform: rotate(270deg);
@@ -308,10 +448,134 @@ p {
 }
 
 @keyframes breathe {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.2); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
+/* BoxEjerciciosForm */
 
+.z-index-0 {
+  z-index: -1;
+}
+.z-index-1 {
+  z-index: 1;
+}
 
+.card-body {
+  padding: 5px!important;
+}
+
+/* .card-body > * {
+  border: 0;
+  border-radius: 9px;
+  background-color: white;
+} */
+
+.delete-icon {
+  color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius:9px;
+}
+
+.card > svg {
+  color: rgb(192, 212, 55);
+}
+.choice{
+    box-sizing: border-box;
+    padding: 0;
+    overflow: hidden;
+    float: left;
+    align-items: center;
+    transition: width 0.2s;
+    border-radius:9px;
+}
+.expand{
+    width: 74%;
+}
+.unset{
+    width: 16%;
+    color: black !important;
+    background-color: #ddd !important;
+}
+.small{
+    width: 25%;
+    background-color: rgba(192, 212, 55, 0.5) !important;
+}
+.small>div{
+    visibility: hidden;
+    opacity: 0;
+}
+.unset > div > p{
+    visibility: hidden;
+    opacity: 0;
+}
+.expand > svg {
+  transition-delay: 200ms;
+  opacity: 0;
+  z-index: -1;
+}
+.expand > div {
+    opacity: 1;
+}
+.horizontal-accordion {
+  display: flex;
+  width: 100%;
+  padding: 0;
+}
+
+.exercise-card {
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.exercise-card.added {
+  opacity: 0;
+}
+
+/* Fin BoxEjerciciosForm */
+.hr-droid {
+  display: flex;
+  align-items: center;
+  margin: auto;
+  margin-top: -10px;
+  margin-bottom: 3px;
+  z-index: 10;
+  width: 90%;
+}
+.hr-line{
+  width: 100%;
+  position: relative;
+  margin-left: 3px;
+  margin-right: 3px;
+  border-bottom: 3px dotted #b3b1ad;
+}
+.yellow{
+  border-color: #FCB924;
+}
+.fa {
+  position: relative;
+  top: 3px;
+  color: #ff82db;
+}
+
+/* React Date Picker */
+
+@media (min-width: 400px) {
+  .desktop-width-dayPicker {
+    width: 390px;
+    margin: auto;
+  }
+}
+
+/* Fin React Date Picker */

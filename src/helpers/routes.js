@@ -12,4 +12,5 @@ const routes = {
     registroRutinas: '/registroRutinas',
     rutina: '/rutina',
     administrarRutinas: '/administrarRutinas',
+    landingPage: '/landing-page',
 };

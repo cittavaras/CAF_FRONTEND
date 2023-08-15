@@ -171,6 +171,9 @@ const BotonesPerfil = () => {
                         <Col lg={'auto'} className="col-12 col-md-2 col-sm-3" style={{ backgroundColor: '#E6E7E9'}}>
                             <Link className='btn' to="/control" style={{color: '#042945'}}>Control administrativo</Link>
                         </Col>
+                        <Col lg={'auto'} className="col-12 col-md-2 col-sm-3" style={{ backgroundColor: '#E6E7E9'}}>
+                            <Link className='btn' to="/ejerciciosControl" style={{color: '#042945'}}>Control de ejercicios</Link>
+                        </Col>
                     </> }
                     {hasRole(roles.instructor) && <>
                     <Col lg={'auto'} className="col-12 col-md-2 col-sm-3" style={{ backgroundColor: '#C0D437' }}>
@@ -181,6 +184,9 @@ const BotonesPerfil = () => {
                     </Col>
                     <Col lg={'auto'} className="col-12 col-md-2 col-sm-3" style={{ backgroundColor: '#C0D437'}}>
                         <button className='btn' style={{ color: '#042945'}} onClick={handleOpenInforme}>Informe de Asistencia</button>
+                    </Col>
+                    <Col lg={'auto'} className="col-12 col-md-2 col-sm-3" style={{ backgroundColor: '#E6E7E9'}}>
+                            <Link className='btn' to="/ejerciciosControl" style={{color: '#042945'}}>Control de ejercicios</Link>
                     </Col>
                     </>}
                     {open && <ReservarSesion open={open} setOpen={setOpen} handleClose={handleClose} reservasAlumno={reservasAlumno} getReservasByAlumno={getReservasByAlumno} />}

@@ -16,7 +16,6 @@ import AgendaReserva from "../components/AgendaReserva";
 import Layout from "../layouts/Layout";
 import useAuth from '../auth/useAuth';
 import roles from '../helpers/roles';
-import routes from '../helpers/routes';
 import CrearUsuario from "../components/CrearUsuario";
 import ListarActivos from "../components/ListarActivos";
 import Configuracion from "../components/Configuracion";
@@ -26,6 +25,7 @@ import AdminControl from "../components/AdminControl";
 import Informativo from "../components/Informativo";
 import RegistroRutinas from "../pages/RegistroRutinas";
 import RutinaAlumno from "../pages/RutinaAlumno";
+import EjerciciosControl from "../components/EjerciciosControl";
 
 export default function AppRouter() {
   const { isLogged } = useAuth();
@@ -74,6 +74,7 @@ export default function AppRouter() {
             </PublicRoute>}
           />
           {/* Rutas privadas */}
+          
           <Route path="/landing" element={
             <PrivateRoute>
               <LandingPageAlumno />
@@ -125,7 +126,7 @@ export default function AppRouter() {
             </PrivateRoute>}
           />
           <Route path="/registroRutinas" element={
-            <PrivateRoute hasRole={roles.instructor} >
+            <PrivateRoute>
               <RegistroRutinas />
             </PrivateRoute>}
           />
@@ -134,6 +135,17 @@ export default function AppRouter() {
               <RutinaAlumno />
             </PrivateRoute>}
           />
+          <Route path="/adminControl" element={
+            <PrivateRoute hasRole={roles.admin} >
+              <AdminControl />
+            </PrivateRoute>}
+          />
+          <Route path="/ejerciciosControl" element={
+            <PrivateRoute hasRoles={[roles.admin, roles.instructor]} >
+              <EjerciciosControl />
+            </PrivateRoute>}
+          />
+          
         </Routes>
       </Layout>
     </Router>

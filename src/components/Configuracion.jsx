@@ -5,6 +5,7 @@ import '../pages/css/style.css';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../auth/useAuth';
 import baseURL from '../helpers/rutaBase';
+import Swal from 'sweetalert2'
 
 const Configuracion = () => {
 

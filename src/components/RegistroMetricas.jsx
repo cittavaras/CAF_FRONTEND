@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button, Dialog, DialogContent, Container, DialogActions, DialogTitle, IconButton, TextField, DialogContentText } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
-
+import Swal from 'sweetalert2'
 
 const RegistroMetricas = (props) => {
   const [edad, setEdad] = useState("");
@@ -27,19 +27,34 @@ const RegistroMetricas = (props) => {
     e.preventDefault();
 
     if (!edad || !imc || !grasaVisceral || !altura || !porcentajeGrasaCorporal || !peso || !porcentajeGrasaMuscular) {
-      alert('Todos los campos son obligatorios');
+      Swal.fire({
+        icon: 'error',
+        text:'Todos los campos son obligatorios'
+      });
       return;
     } else if (edad < 15 || edad > 90) {
-      alert('La edad debe estar entre 15 y 90 años');
+      Swal.fire({
+        icon: 'error',
+        text:'La edad debe estar entre 15 y 90 años'
+      });
       return;
     } else if (imc < 10 || imc > 45) {
-      alert('El IMC debe estar entre 10 y 45');
+      Swal.fire({
+        icon: 'error',
+        text:'El IMC debe estar entre 10 y 45'
+      });
       return;
     } else if (altura > 3.0) {
-      alert('La altura debe ser menor a 3.0');
+      Swal.fire({
+        icon: 'error',
+        text:'La altura debe ser menor a 3.0'
+      });
       return;
     } else if (porcentajeGrasaCorporal < 1 || porcentajeGrasaCorporal > 100) {
-      alert('El porcentaje de grasa corporal debe estar entre 1 y 100');
+      Swal.fire({
+        icon: 'error',
+        text:'El porcentaje de grasa corporal debe estar entre 1 y 100'
+      });
       return;
     }  else {props.registrarMetricas(e, metricas);};
   };
