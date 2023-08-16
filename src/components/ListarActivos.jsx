@@ -10,6 +10,9 @@ import RegistroMetricas from './RegistroMetricas';
 import baseURL from '../helpers/rutaBase';
 import { Link } from 'react-router-dom';
 import RegistroRutinas from '../pages/RegistroRutinas';
+import Swal from 'sweetalert2'
+
+
 const ListarActivos = () => {
   const [alumnos, setAlumnos] = useState([]);
   const [paginaNumero, setPaginaNumero] = useState(0);
@@ -83,17 +86,23 @@ const ListarActivos = () => {
       rut,
     } = metricas
 
-    
+
 
 
     if (!edad || !imc || !grasaVisceral || !altura || !porcentajeGrasaCorporal || !peso || !porcentajeGrasaMuscular) {
-      alert('Debe completar todos los campos');
+      Swal.fire({
+        icon: 'info', text: 'Debe completar todos los campos',
+        confirmButtonColor: 'rgb(158 173 56)',
+      });
       return;
     }
     else {
       await axios.post(`${baseURL}/metricas/`, metricas);
       //console.log(metricas);
-      alert('Metricas registradas');
+      Swal.fire({
+        icon: 'info', text: 'Metricas registradas',
+        confirmButtonColor: 'rgb(158 173 56)',
+      });
       handleClose();
     }
 
@@ -122,7 +131,10 @@ const ListarActivos = () => {
     const res = await axios.get(baseURL + '/alumnos');
     const alumno = res.data.alumnos.filter(alumno => alumno.tipoUsuario === 'Alumno' && alumno.rut === search);
     if (!search) {
-      alert('Ingrese un rut');
+      Swal.fire({
+        icon: 'info', text: 'Ingrese un rut',
+        confirmButtonColor: 'rgb(158 173 56)',
+      });
       getAlumnos();
       return;
     }
@@ -130,7 +142,10 @@ const ListarActivos = () => {
       setAlumnos(alumno);
     }
     else {
-      alert('Alumno no encontrado');
+      Swal.fire({
+        icon: 'error', text: 'Alumno no encontrado',
+        confirmButtonColor: 'rgb(158 173 56)',
+      });
       getAlumnos();
       return;
     }
@@ -193,10 +208,10 @@ const ListarActivos = () => {
                     {open && <RegistroMetricas open={open} setOpen={setOpen} handleClose={handleClose} registrarMetricas={registrarMetricas} alumnoSeleccionado={alumnoSeleccionado}
                     />
                     }
-          
-          
-                    
-                    
+
+
+
+
                   </card>
                 ))
               }

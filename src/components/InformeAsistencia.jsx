@@ -73,8 +73,8 @@ const InformeAsistencia = (props) => {
 
   const handleGenerateReport = () => {
     // Aquí puedes validar y procesar las fechas ingresadas
-    console.log("Fecha de inicio:", startDate);
-    console.log("Fecha de fin:", endDate);
+    // console.log("Fecha de inicio:", startDate);
+    // console.log("Fecha de fin:", endDate);
   };
   const handleDownloadClick = async () => {
     try {

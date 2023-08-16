@@ -5,12 +5,13 @@ import AdminControl from './AdminControl';
 import axios from 'axios';
 import { useEffect } from 'react';
 import baseURL from '../helpers/rutaBase';
+import Swal from 'sweetalert2';
 
 const Informativo = () => {
   const [infoCargada, setInfoCargada] = useState();
 
   const handleInfoCargada = (info) => {
-    console.log('INFO', info);
+    // console.log('INFO', info);
     setInfoCargada(info);
   };
   
@@ -19,10 +20,10 @@ const Informativo = () => {
     e.preventDefault();
     try {
       const resp = await axios.put(baseURL + '/landing-page/landing-page', infoCargada);
-      alert('Cambios guardados con éxito');
+      Swal.fire({icon:'info', text:'Cambios guardados con éxito'});
     } catch (error) {
-      alert('Error al guardar la información, probablemente el tamaño de la imagen es muy grande intenta con otra');
-      console.log(error.message);
+      Swal.fire({icon:'info', text:'Error al guardar la información, probablemente el tamaño de la imagen es muy grande intenta con otra'});
+      // console.log(error.message);
     }
   };
 

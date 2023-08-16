@@ -12,6 +12,7 @@ import CardMedia from '@mui/material/CardMedia';
 import { CardActionArea } from '@mui/material';
 import ButtonBase from '@mui/material/ButtonBase';
 import ivaras from './img/ivaras.png';
+import Swal from 'sweetalert2';
 
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet"></link>
 
@@ -42,11 +43,17 @@ const Login = () => {
     e.preventDefault();
 
     if (!alumno || !contraseña) {
-      alert('Debe ingresar todos los campos');
+      Swal.fire({
+        icon: 'info', text: 'Debe ingresar todos los campos',
+        confirmButtonColor: 'rgb(158 173 56)',
+      });
       return;
     }
     else if (validarCorreoElectronico(alumno) !== true) {
-      alert('El correo debe ser de duoc');
+      Swal.fire({
+        icon: 'info', text: 'El correo debe ser de duoc',
+        confirmButtonColor: 'rgb(158 173 56)',
+      });
       return;
     }
     else {
@@ -61,25 +68,40 @@ const Login = () => {
           //console.log('usuario', usuario);
           login(usuario);
           if (usuario.tipoUsuario === 'Admin') {
-            alert('Bienvenido administrador');
+            Swal.fire({
+              icon: 'success', text: 'Bienvenido administrador',
+              confirmButtonColor: 'rgb(158 173 56)',
+            });
             navigate('/landing');
           }
           else if (usuario.tipoUsuario === 'Alumno') {
-            alert('Bienvenido alumno');
+            Swal.fire({
+              icon: 'success', text: 'Bienvenido alumno',
+              confirmButtonColor: 'rgb(158 173 56)',
+            });
             navigate('/landing');
           }
           else {
-            alert('Bienvenido Instructor');
+            Swal.fire({
+              icon: 'success', text: 'Bienvenido Instructor',
+              confirmButtonColor: 'rgb(158 173 56)',
+            });
             navigate('/landing');
           }
         }
         else {
-          alert('El usuario o contraseña es incorrecto')
+          Swal.fire({
+            icon: 'error', text: 'El usuario o contraseña es incorrecto',
+            confirmButtonColor: 'rgb(158 173 56)',
+          });
         }
       }
       catch (error) {
         //console.log(error);
-        alert('Ocurrió un error al iniciar sesión')
+        Swal.fire({
+          text: 'Ocurrió un error al iniciar sesión', icon: 'error',
+          confirmButtonColor: 'rgb(158 173 56)',
+        });
       }
       ;
     }
@@ -103,12 +125,12 @@ const Login = () => {
               <div style={{ textAlign: 'center', marginTop: '20px' }}>
                 <Link to="/registro" style={{ borderBottom: '1px solid #FFF', color: '#FFF', textDecoration: 'none' }}>¿No tienes cuenta? Puedes crearte una aquí</Link></div>
               <div style={{ color: '#FFF', textDecoration: 'none' }}>Sitio Desarrollado por : </div>
-  
+
               <Link to="/nosotros">
-               <img src={ivaras} alt="Sobre Nosotros"  style={{height:"100px", width:"100%"}}/>   
+                <img src={ivaras} alt="Sobre Nosotros" style={{ height: "100px", width: "100%" }} />
               </Link>
-          
-              
+
+
             </Form>
           </Login0>
         </Wrapper>

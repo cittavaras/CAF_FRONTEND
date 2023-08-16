@@ -57,7 +57,7 @@ const BoxEjerciciosForm = ({ onHandleEjercicios, ejerciciosFromGet }) => {
   
   useEffect(() => {
     // Cargar ejercicios disponibles desde el backend
-    console.log('ejerciciosSelect', ejerciciosSelect)
+    // console.log('ejerciciosSelect', ejerciciosSelect)
     
   }, [ejerciciosSelect]);
 
@@ -71,7 +71,7 @@ const BoxEjerciciosForm = ({ onHandleEjercicios, ejerciciosFromGet }) => {
 
   const events = ['click','keypress'];
   
-  console.log('selectCardBody', selectCardBody);
+  // console.log('selectCardBody', selectCardBody);
   // choiceArray.forEach((card) => {
   //   events.forEach((evt) => {
   //     card.addEventListener(evt, (e) => {
@@ -99,7 +99,7 @@ const BoxEjerciciosForm = ({ onHandleEjercicios, ejerciciosFromGet }) => {
   
     const handleClick = (e) => {
       e.preventDefault();
-      console.log(e.target.classList)
+      // console.log(e.target.classList)
     
       choiceArray.forEach((element) => {
         element.classList.remove("expand");
@@ -131,7 +131,7 @@ const BoxEjerciciosForm = ({ onHandleEjercicios, ejerciciosFromGet }) => {
     const newEjercicios = ejercicios.map((ejercicio) => {
       // when value is a number parseInt it
       let valueParsed;
-      console.log('objPropToChange', objPropToChange)
+      // console.log('objPropToChange', objPropToChange)
       if (ejercicio.numEjer === parseInt(value.target.name.split('-')[1])) {
         //convert value to number if it is a number
         if(objPropToChange != "nombre") { 
@@ -310,7 +310,7 @@ const BoxEjerciciosForm = ({ onHandleEjercicios, ejerciciosFromGet }) => {
   }
 
   useEffect(() => {
-    console.log(ejercicios)
+    // console.log(ejercicios)
   }, [ejercicios])
     
   return (
@@ -339,7 +339,7 @@ const BoxEjerciciosForm = ({ onHandleEjercicios, ejerciciosFromGet }) => {
         {
           ejercicios.map((ejercicio, index) => (
             <>
-              { console.log(ejercicio.numEjer, ejercicio._id) }
+              {/* { console.log(ejercicio.numEjer, ejercicio._id) } */}
               <div className={`container horizontal-accordion mb-2 exercise-card ${ejercicio.numEjer === newExerciseAdded ? 'added' : ''}`}>
                 <div className="card choice bg text-white mx-1 expand select-card">
                   <div className="card-body select-card-body w-100">

@@ -59,10 +59,16 @@ const CrearUsuario = () => {
     e.preventDefault();
 
     if (!nombre || !rut || !correo || !carrera || !jornada) {
-      alert('Todos los campos son obligatorios');
+      Swal.fire({
+        icon: 'info', text: 'Todos los campos son obligatorios',
+        confirmButtonColor: 'rgb(158 173 56)',
+      });
       return;
     } else if (!validarCorreoElectronico(correo)) {
-      alert('El correo debe ser de duoc');
+      Swal.fire({
+        icon: 'info', text: 'El correo debe ser de duoc',
+        confirmButtonColor: 'rgb(158 173 56)',
+      });
       return;
     } else {
       const newAlumno = {
@@ -76,7 +82,10 @@ const CrearUsuario = () => {
       };
 
       await axios.post(baseURL + '/alumnos', newAlumno);
-      alert('Usuario creado');
+      Swal.fire({
+        icon: 'succes', text: 'Usuario creado correctamente',
+        confirmButtonColor: 'rgb(158 173 56)',
+      });
       navigate('/landing');
     }
   };
@@ -90,16 +99,16 @@ const CrearUsuario = () => {
   const calcularDigitoVerificador = (rutSinDigito) => {
     let suma = 0;
     let multiplicador = 2;
-  
+
     // Itera de derecha a izquierda multiplicando y sumando los dígitos
     for (let i = rutSinDigito.length - 1; i >= 0; i--) {
       suma += parseInt(rutSinDigito[i]) * multiplicador;
       multiplicador = multiplicador === 7 ? 2 : multiplicador + 1;
     }
-  
+
     // Calcula el dígito verificador como el complemento de la suma módulo 11
     const digito = 11 - (suma % 11);
-  
+
     // Devuelve el dígito verificador, considerando casos especiales
     if (digito === 11) {
       return "0";
@@ -109,24 +118,24 @@ const CrearUsuario = () => {
       return digito.toString();
     }
   };
-  
+
   const formatearRut = () => {
     const rutSinFormatear = rut.replace(/\./g, "").replace("-", "").trim();
     const rutNum = rutSinFormatear.slice(0, -1);
     const dvIngresado = rutSinFormatear.slice(-1);
     const dvCalculado = calcularDigitoVerificador(rutNum);
-  
+
     if (dvIngresado.toUpperCase() === dvCalculado) {
       const rutFormateado = rutNum.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "-" + dvIngresado;
       setRut(rutFormateado);
     } else {
-      alert("El RUT ingresado no es válido");
+      Swal.fire({ icon: 'info', text: "El RUT ingresado no es válido" });
       setRut("")
     }
-  }; 
+  };
 
-  return ( 
-    
+  return (
+
     <OuterContainer>
       <Container>
         <Login className='login'>
@@ -142,7 +151,7 @@ const CrearUsuario = () => {
               <InputCorreo type="mail" placeholder="CORREO DUOC:" name="correo" onChange={onChangeAlumno} />
             </div>
             <div className="form-group">
-            <Select className="form-control" name="carrera" onChange={onChangeAlumno}>
+              <Select className="form-control" name="carrera" onChange={onChangeAlumno}>
                 <option selected disabled={true}> ---Seleccione Su carrera---</option>
                 <option value="Auditoría">Auditoría</option>
                 <option value="Ecoturismo">Ecoturismo</option>
@@ -198,7 +207,7 @@ const CrearUsuario = () => {
       </Container>
       <div className="vector1right" />
     </OuterContainer>
-    
+
   )
 }
 

@@ -67,7 +67,7 @@ const RegistroRutinas = () => {
   //const actionButtonText = isEditing ? 'Guardar Cambios' : 'Crear Rutina';
   const handleEjercicios = (ejercicios) => {
 
-    console.log('ejercicios', ejercicios);
+    // console.log('ejercicios', ejercicios);
     setEjercicios(ejercicios);
 
   };
@@ -177,7 +177,7 @@ const RegistroRutinas = () => {
     // incompleto
     // if (day.length > 0 && day.length < 4 ) {
     selectedDays = day;
-    console.log(selectedDays)
+    // console.log(selectedDays)
     // }
     // else{
     //   Swal.fire({
@@ -252,7 +252,7 @@ const RegistroRutinas = () => {
     e.preventDefault();
 
     const exercisesInvalid = ejercicios.some(exercise => !validarDatosEjercicio(exercise));
-    console.log(exercisesInvalid);
+    // console.log(exercisesInvalid);
     if (!nomRutina) {
       Swal.fire({
         icon: 'error',
@@ -337,7 +337,7 @@ const RegistroRutinas = () => {
         } catch (error) {
           Swal.fire({
             icon: 'error',
-            text: 'Excedes el limite de rutina registradas',
+            text: 'Hubo un error, la rutina puede ya existir, o ya tienes 3 rutinas guardadas',
             confirmButtonColor: 'rgb(158 173 56)',
           });
           console.error(error);
@@ -550,7 +550,7 @@ const RegistroRutinas = () => {
         axios.get(baseURL + `/rutinas/alumno/${rutinaId}`)
           .then((res) => {
             const rutina = res.data;
-            console.log("rutina Prueba", rutina);
+            // console.log("rutina Prueba", rutina);
             setNomRutina(rutina.nombre);
             setSelectedDayFromGET(rutina.diasDeSemana);
             setCardioInicial(rutina.cardioInicial);
@@ -571,7 +571,7 @@ const RegistroRutinas = () => {
   }, [rutinaId]);
 
   useEffect(() => {
-    console.log("selectedDays", selectedDays);
+    // console.log("selectedDays", selectedDays);
     // setSelectedDayFromGET(selectedDays)
   }, [selectedDayFromGet]);
 

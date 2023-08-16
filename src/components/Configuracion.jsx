@@ -50,7 +50,10 @@ const Configuracion = () => {
     e.preventDefault();
 
     if (!nombre || !carrera || !jornada || !contraseña || !confirmarContraseña) {
-      alert('Todos los campos son obligatorios');
+      Swal.fire({
+        icon: 'info', text: 'Todos los campos son obligatorios',
+        confirmButtonColor: 'rgb(158 173 56)',
+      });
       return;
     } else {
       const newAlumno = {
@@ -63,12 +66,18 @@ const Configuracion = () => {
       };
 
       if (contraseña !== confirmarContraseña) {
-        alert('Las contraseñas no coinciden');
+        Swal.fire({
+          icon: 'info', text: 'Las contraseñas no coinciden',
+          confirmButtonColor: 'rgb(158 173 56)',
+        });
         return;
       }
 
       await axios.put(`${baseURL}/alumnos/rut/${alumno.rut}`, newAlumno);
-      alert('Alumno actualizado')
+      Swal.fire({
+        icon: 'success', text: 'Alumno actualizado',
+        confirmButtonColor: 'rgb(158 173 56)',
+      })
       logout();
       navigate('/');
     }
@@ -76,21 +85,21 @@ const Configuracion = () => {
 
   useEffect(() => {
     if (alumno) {
-        setNombre(alumno.nombre)
-        setRut(alumno.rut)
-        setCorreo(alumno.correo)
-        setCarrera(alumno.carrera)
-        setJornada(alumno.jornada)
-        setTipoUsuario(alumno.tipoUsuario)
+      setNombre(alumno.nombre)
+      setRut(alumno.rut)
+      setCorreo(alumno.correo)
+      setCarrera(alumno.carrera)
+      setJornada(alumno.jornada)
+      setTipoUsuario(alumno.tipoUsuario)
     }
   }, [alumno]);
 
   return (
     <OuterContainer>
-      
+
       <Container>
-      
-        <div className='login' style={{marginTop: '70px'}}>
+
+        <div className='login' style={{ marginTop: '70px' }}>
           <form className="form-horizontal" >
             <link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet"></link>
             <H1>Actualizar Datos de</H1>
@@ -99,10 +108,10 @@ const Configuracion = () => {
               <H2>Correo: {alumno?.correo ?? 'Sin informacion'}</H2>
             </div>
             <div className="form-group">
-              <InputN type="text" placeholder="Actualizar Nombre:" name="nombre" onChange={onChangeAlumno} value={nombre}/>
+              <InputN type="text" placeholder="Actualizar Nombre:" name="nombre" onChange={onChangeAlumno} value={nombre} />
             </div>
             <div className="form-group">
-              <InputN type="password" placeholder="Actualizar Contraseña:" name="contraseña" onChange={onChangeAlumno}/>
+              <InputN type="password" placeholder="Actualizar Contraseña:" name="contraseña" onChange={onChangeAlumno} />
             </div>
             <div className="form-group">
               <InputN type="password" placeholder="Confirmar Contraseña:" name="confirmarContraseña" onChange={onChangeAlumno} />
@@ -161,6 +170,8 @@ const Configuracion = () => {
 
 const OuterContainer = styled.div`
   display: flex;
+  margin-bottom: 50px;
+  margin-top: 0px;
 /*   justify-content: center; */
 /*   align-items: center; */
 /*   height: 100vh; */

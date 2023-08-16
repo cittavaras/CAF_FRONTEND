@@ -28,7 +28,7 @@ const Metrica = () => {
   }, []);
 
   useEffect(() => {
-    console.log(metricasRecientes);
+    // console.log(metricasRecientes);
   }, [metricasRecientes])
 
   function getNumericValue(valor) {

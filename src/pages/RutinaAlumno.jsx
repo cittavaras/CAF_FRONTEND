@@ -124,7 +124,7 @@ const RutinasAlumno = () => {
                 */}
           {rutinas.map((rutina, i, row) => (
             <div className='card container text-light' style={{ backgroundColor: 'rgba(0,0,0, 0)' }}>
-              { console.log(rutina) }
+              {/* { console.log(rutina) } */}
               <div style={{ margin: 0 }}>
                 <Accordion sx={{ backgroundColor: '#8f8f8f9c'}}>
                   <AccordionSummary

@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import '../pages/css/style.css';
 import { useNavigate } from 'react-router-dom';
 import baseURL from '../helpers/rutaBase';
-import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Swal from 'sweetalert2'
 
@@ -14,27 +14,33 @@ import Swal from 'sweetalert2'
 const CrearAlumno = () => {
 
   const [open, setOpen] = useState(false);
-  
+
   const handleClickOpen = (e) => {
     e.preventDefault();
     if (!nombre || !rut || !correo || !carrera || !jornada) {
-      alert('Todos los campos son obligatorios');
+      Swal.fire({
+        icon: 'info', text: 'Todos los campos son obligatorios',
+        confirmButtonColor: 'rgb(158 173 56)',
+      });
       return;
     } else if (!validarCorreoElectronico(correo)) {
-      alert('El correo debe ser de duoc');
+      Swal.fire({
+        icon: 'info', text: 'El correo debe ser de duoc',
+        confirmButtonColor: 'rgb(158 173 56)',
+      });
       return;
     }
-    else{
+    else {
       setOpen(true);
     };
-    
+
   };
   const handleClose = () => {
     setOpen(false);
   };
-  
+
   const navigate = useNavigate();
-  
+
   const [alumnos, setAlumnos] = useState([]);
   const [nombre, setNombre] = useState('');
   const [rut, setRut] = useState('');
@@ -80,16 +86,16 @@ const CrearAlumno = () => {
   const calcularDigitoVerificador = (rutSinDigito) => {
     let suma = 0;
     let multiplicador = 2;
-  
+
     // Itera de derecha a izquierda multiplicando y sumando los dígitos
     for (let i = rutSinDigito.length - 1; i >= 0; i--) {
       suma += parseInt(rutSinDigito[i]) * multiplicador;
       multiplicador = multiplicador === 7 ? 2 : multiplicador + 1;
     }
-  
+
     // Calcula el dígito verificador como el complemento de la suma módulo 11
     const digito = 11 - (suma % 11);
-  
+
     // Devuelve el dígito verificador, considerando casos especiales
     if (digito === 11) {
       return "0";
@@ -99,57 +105,60 @@ const CrearAlumno = () => {
       return digito.toString();
     }
   };
-  
+
   const formatearRut = () => {
     const rutSinFormatear = rut.replace(/\./g, "").replace("-", "").trim();
     const rutNum = rutSinFormatear.slice(0, -1);
     const dvIngresado = rutSinFormatear.slice(-1);
     const dvCalculado = calcularDigitoVerificador(rutNum);
-  
+
     if (dvIngresado.toUpperCase() === dvCalculado) {
       const rutFormateado = rutNum.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "-" + dvIngresado;
       setRut(rutFormateado);
     } else {
-      alert("El RUT ingresado no es válido");
+      Swal.fire({
+        icon: 'info', text: 'El RUT ingresado no es válido',
+        confirmButtonColor: 'rgb(158 173 56)',
+      });
       setRut("")
     }
-  };  
+  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
-      console.log({nombre, rut, correo, carrera, jornada, active, tipoUsuario})
-      correo.toLowerCase();
-      const newAlumno = {
-        nombre,
-        rut,
-        correo,
-        carrera,
-        jornada,
-        active,
-        tipoUsuario,
-      };
-      console.log(newAlumno)
-      const res = await axios.post(baseURL + '/alumnos', newAlumno);
-      //console.log(res);
+    // console.log({nombre, rut, correo, carrera, jornada, active, tipoUsuario})
+    correo.toLowerCase();
+    const newAlumno = {
+      nombre,
+      rut,
+      correo,
+      carrera,
+      jornada,
+      active,
+      tipoUsuario,
+    };
+    // console.log(newAlumno)
+    const res = await axios.post(baseURL + '/alumnos', newAlumno);
+    //console.log(res);
 
-      await axios
-        .post(baseURL + '/send-email', {
-          to: correo,
-          subject: 'Registro CAF',
-          text: `${nombre}: nos es grato saber que estas interesado(a) en nuestros servicios de CAF. En los proximos días activaremos tu cuenta y te enviaremos un correo notificandote como acceder a la plataforma y a sus servicios. Atentamente, el equipo de CAF`,
-          html: `<strong>${nombre}</strong>: nos es grato saber que estas interesado(a) en nuestros servicios de CAF. En los proximos días activaremos tu cuenta y te enviaremos un correo notificandote como acceder a la plataforma y a sus servicios. Atentamente, el equipo de CAF`,
-        })
-        .then((response) => {
-          //console.log('Email sent successfully:', response.data);
-        })
-        .catch((error) => {
-         // console.error('Error sending email:', error);
-        });
+    await axios
+      .post(baseURL + '/send-email', {
+        to: correo,
+        subject: 'Registro CAF',
+        text: `${nombre}: nos es grato saber que estas interesado(a) en nuestros servicios de CAF. En los proximos días activaremos tu cuenta y te enviaremos un correo notificandote como acceder a la plataforma y a sus servicios. Atentamente, el equipo de CAF`,
+        html: `<strong>${nombre}</strong>: nos es grato saber que estas interesado(a) en nuestros servicios de CAF. En los proximos días activaremos tu cuenta y te enviaremos un correo notificandote como acceder a la plataforma y a sus servicios. Atentamente, el equipo de CAF`,
+      })
+      .then((response) => {
+        //console.log('Email sent successfully:', response.data);
+      })
+      .catch((error) => {
+        // console.error('Error sending email:', error);
+      });
 
-      navigate('/notificacion');
-    
+    navigate('/notificacion');
+
   };
-  
+
 
   const validarCorreoElectronico = (correo) => {
     const expresionRegular = /^[a-zA-Z0-9._%+-]+@(duocuc\.cl|profesor\.duoc\.cl|duoc\.cl)$/;
@@ -212,7 +221,7 @@ const CrearAlumno = () => {
                 <option value="vespertino">Vespertino</option>
               </SelectJ>
             </div>
-            <Button className="button" onClick={(e) => {handleClickOpen(e)}}>
+            <Button className="button" onClick={(e) => { handleClickOpen(e) }}>
               ENVIAR SOLICITUD
             </Button>
             <Dialog
@@ -234,7 +243,7 @@ const CrearAlumno = () => {
               </DialogContent>
               <DialogActions>
                 <Button onClick={handleClose}>Cancelar</Button>
-                <Button onClick={(e) => {onSubmit(e)}} >
+                <Button onClick={(e) => { onSubmit(e) }} >
                   Aceptar
                 </Button>
               </DialogActions>
