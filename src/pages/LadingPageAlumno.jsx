@@ -45,7 +45,7 @@ const LandingPageAlumno = ({ location }) => {
     setExpanded(isExpanded ? panel : false);
   };
   
-  console.log(day)
+  // console.log(day)
 
   const getRutinas = async () => {
     try {
@@ -62,11 +62,11 @@ const LandingPageAlumno = ({ location }) => {
   const getlandingPage = async () => {
     const resp = await axios.get(baseURL + '/landing-page/landing-page');
     setInfoCargada(resp.data);
-    console.log(infoCargada)
+    // console.log(infoCargada)
   };
 
   useEffect(() => { 
-    console.log(daysCount);
+    // console.log(daysCount);
   },[daysCount]);
 
   useEffect(() => { 
@@ -74,8 +74,8 @@ const LandingPageAlumno = ({ location }) => {
     getRutinas();
   },[]);
 
-  useEffect(() => {console.log(rutinas); },[rutinas]);
-  useEffect(() => {console.log(infoCargada); },[infoCargada]);
+  // useEffect(() => {console.log(rutinas); },[rutinas]);
+  // useEffect(() => {console.log(infoCargada); },[infoCargada]);
 
   return (
     <>
@@ -92,7 +92,7 @@ const LandingPageAlumno = ({ location }) => {
           multipleDaySelect={false} //enables multiple day selection
           selectDay={function(day){
             //console log name of the day
-            console.log(day);
+            // console.log(day);
           }}
           unselectDay={function(day){}}
           onPrevClick={function(startDay, selectedDays){}} // called with the new startDay
@@ -127,7 +127,7 @@ const LandingPageAlumno = ({ location }) => {
         </>
         {rutinas ? rutinas.map((rutina, i, row) => (
           <div className='card container text-light' style={{ backgroundColor: 'rgba(0,0,0, 0)' }}>
-          { console.log(rutina) }
+          {/* { console.log(rutina) } */}
           <div style={{ margin: 0 }}>
             <Accordion sx={{ backgroundColor: '#8f8f8f9c'}}>
               <AccordionSummary

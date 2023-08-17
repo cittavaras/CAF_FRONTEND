@@ -9,6 +9,7 @@ import Container from '@mui/material/Container';
 import baseURL from '../helpers/rutaBase';
 import ConfirmarEliminar from './ConfirmarEliminar';
 import ModificarUsuario from './ModificarUsuario';
+import Swal from 'sweetalert2';
 
 const ModificarEliminarUsuario = () => {
   const [alumnos, setAlumnos] = useState([]);
@@ -77,7 +78,7 @@ const ModificarEliminarUsuario = () => {
   }
 
   const handleInputValue = (e) => {
-    
+
     formatearRut(e);
   }
 
@@ -87,7 +88,10 @@ const ModificarEliminarUsuario = () => {
     const res = await axios.get(baseURL + '/alumnos');
     const alumno = res.data.alumnos.filter(alumno => alumno.tipoUsuario === 'Alumno' && alumno.rut === search);
     if (!search) {
-      alert('Ingrese un rut');
+      Swal.fire({
+        icon: 'info', text: 'Ingrese un rut',
+        confirmButtonColor: 'rgb(158 173 56)',
+      });
       getAlumnos();
       return;
     }
@@ -95,7 +99,10 @@ const ModificarEliminarUsuario = () => {
       setAlumnos(alumno);
     }
     else {
-      alert('Alumno no encontrado');
+      Swal.fire({
+        icon: 'info', text: 'Alumno no encontrado',
+        confirmButtonColor: 'rgb(158 173 56)',
+      });
       getAlumnos();
       return;
     }
@@ -112,14 +119,20 @@ const ModificarEliminarUsuario = () => {
       tipoUsuario,
     } = actualizar
 
-    if (!nombre || !rut || !contraseña|| !correo || !carrera || !jornada || !tipoUsuario) {
-      alert('Debe completar todos los campos');
+    if (!nombre || !rut || !contraseña || !correo || !carrera || !jornada || !tipoUsuario) {
+      Swal.fire({
+        icon: 'info', text: 'Debe completar todos los campos',
+        confirmButtonColor: 'rgb(158 173 56)',
+      });
       return;
     }
     else {
       await axios.put(`${baseURL}/alumnos/${alumnoModificado._id}`, actualizar);
       //console.log(actualizar);
-      alert('Datos del alumno actualizadas con éxito');
+      Swal.fire({
+        icon: 'info', text: 'Datos del alumno actualizadas con éxito',
+        confirmButtonColor: 'rgb(158 173 56)',
+      });
       handleCloseModificar();
     }
     getAlumnos();
@@ -179,13 +192,13 @@ const ModificarEliminarUsuario = () => {
                         <p>Carrera: {alumno.carrera}</p>
                       </div>
                       <div className="card-footer">
-                      
-                      <button type="button" className="btn btn-danger" onClick={(e) => { handleOpen(e, alumno) }} >
-                        Eliminar
-                      </button>
-                      {open && <ConfirmarEliminar open={open} setOpen={setOpen} handleClose={handleClose} alumnoEliminado={alumnoEliminado} eliminarAlumno={eliminarAlumno} />}
+
+                        <button type="button" className="btn btn-danger" onClick={(e) => { handleOpen(e, alumno) }} >
+                          Eliminar
+                        </button>
+                        {open && <ConfirmarEliminar open={open} setOpen={setOpen} handleClose={handleClose} alumnoEliminado={alumnoEliminado} eliminarAlumno={eliminarAlumno} />}
                       </div>
-                    </div>  
+                    </div>
                   </card>
                 ))
               }

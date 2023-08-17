@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button, Dialog, DialogContent, Container, DialogActions, DialogTitle, IconButton, TextField, DialogContentText } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
+import Swal from 'sweetalert2';
 
 
 const ModificarUsuario = (props) => {
@@ -59,7 +60,10 @@ const ModificarUsuario = (props) => {
             const rutFormateado = rutNum.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "-" + dvIngresado;
             setRut(rutFormateado);
         } else {
-            alert("El RUT ingresado no es válido");
+            Swal.fire({
+                icon: 'info', text: 'El RUT ingresado no es válido',
+                confirmButtonColor: 'rgb(158 173 56)',
+            });
             setRut("")
         }
     };
@@ -68,15 +72,24 @@ const ModificarUsuario = (props) => {
         e.preventDefault();
 
         if (!nombre || !rut || !contraseña || !confirmarContraseña || !correo || !carrera || !jornada || !tipoUsuario) {
-            alert('Todos los campos son obligatorios');
+            Swal.fire({
+                icon: 'info', text: 'Todos los campos son obligatorios',
+                confirmButtonColor: 'rgb(158 173 56)',
+            });
             return;
         }
         else if (contraseña !== confirmarContraseña) {
-            alert('Las contraseñas no coinciden');
+            Swal.fire({
+                icon: 'info', text: 'Las contraseñas no coinciden',
+                confirmButtonColor: 'rgb(158 173 56)',
+            });
             return;
         }
         else if (!validarCorreoElectronico(correo)) {
-            alert('El correo debe ser de duoc');
+            Swal.fire({
+                icon: 'info', text: 'El correo debe ser de duoc',
+                confirmButtonColor: 'rgb(158 173 56)',
+            });
             return;
         } else { props.modificarAlumno(e, actualizar); }
     };

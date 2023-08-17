@@ -45,6 +45,11 @@ function ResponsiveAppBar() {
         setIsOpen(!isOpen);
     };
 
+    const handleActionButtonClick= (e) => {
+        e.preventDefault();
+        navigate('/configuracion')
+
+    }
     const handleLogout = (e) => {
         e.preventDefault();
         handleCloseUserMenu();
@@ -79,7 +84,7 @@ function ResponsiveAppBar() {
             <Box sx={{ flexGrow: 0 }}>
                 <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                    <Avatar alt="" src="/static/images/avatar/2.jpg" />
                 </IconButton>
                 </Tooltip>
                 <Menu
@@ -99,7 +104,7 @@ function ResponsiveAppBar() {
                 onClose={handleCloseUserMenu}
                 >
                 {settings.map((setting) => (
-                    <MenuItem key={setting} onClick={setting == 'Cerrar Sesion' ? handleLogout : handleCloseUserMenu}>
+                    <MenuItem key={setting} onClick={setting == 'Cerrar Sesion' ? handleLogout : handleCloseUserMenu || setting == 'Perfil'? handleActionButtonClick: handleActionButtonClick }>
                     <Typography textAlign="center">{setting}</Typography>
                     </MenuItem>
                 ))}
