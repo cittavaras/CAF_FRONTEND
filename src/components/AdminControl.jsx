@@ -25,7 +25,7 @@ const AdminControl = ({ onInfoCargada, infoCargada}) => {
     if (e.target.id === 'titulo') {
       setTitulo(e.target.value);
     } else if (e.target.id === 'desc') {
-      console.log(e.which)
+      // console.log(e.which)
       if (e.key === 'Enter') {
         e.preventDefault(); // Evita que se agregue una nueva línea en el campo de descripción
         setTexto((prevTexto) => prevTexto, '\n'); // Agrega un salto de línea al texto
