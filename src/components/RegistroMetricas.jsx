@@ -25,38 +25,108 @@ const RegistroMetricas = (props) => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-
-    if (!edad || !imc || !grasaVisceral || !altura || !porcentajeGrasaCorporal || !peso || !porcentajeGrasaMuscular) {
+    try {
+      if (!edad || !imc || !grasaVisceral || !altura || !porcentajeGrasaCorporal || !peso || !porcentajeGrasaMuscular) {
+        Swal.fire({
+          icon: 'error',
+          text:'Todos los campos son obligatorios',
+          customClass:{
+            container: 'my-swal',
+          },
+        });
+        return;
+      } else if (edad < 15 || edad > 90) {
+        Swal.fire({
+          icon: 'error',
+          text:'La edad debe estar entre 15 y 90 años',
+          customClass:{
+            container: 'my-swal',
+          },
+          confirmButtonColor: 'rgba(158 173 56)'
+        });
+        return;
+      }else if (imc < 10 || imc > 45) {
+        Swal.fire({
+          icon: 'error',
+          text:'El IMC debe estar entre 10 y 45',
+          customClass:{
+            container: 'my-swal',
+          },
+          confirmButtonColor: 'rgba(158 173 56)'
+        });
+        return;
+      } else if (grasaVisceral < 1 || grasaVisceral > 150) {
+        Swal.fire({
+          icon: 'error',
+          text:'La grasa visceral debe estar entre 1 y 150',
+          customClass:{
+            container: 'my-swal',
+          },
+          confirmButtonColor: 'rgba(158 173 56)'
+        });
+        return;
+      } else if (altura > 3.0) {
+        Swal.fire({
+          icon: 'error',
+          text:'La altura debe ser menor a 3.0',
+          customClass:{
+            container: 'my-swal',
+          },
+          confirmButtonColor: 'rgba(158 173 56)'
+        });
+        return;
+      } else if (porcentajeGrasaCorporal < 1 || porcentajeGrasaCorporal > 100) {
+        Swal.fire({
+          icon: 'error',
+          text:'El porcentaje de grasa corporal debe estar entre 1 y 100',
+          customClass:{
+            container: 'my-swal',
+          },
+          confirmButtonColor: 'rgba(158 173 56)'
+        });
+        return;
+      } else if (peso < 1 || peso > 300) {
+        Swal.fire({
+          icon: 'error',
+          text:'El peso debe estar en un valor entre 1 y 300',
+          customClass:{
+            container: 'my-swal',
+          },
+          confirmButtonColor: 'rgba(158 173 56)'
+        });
+        return;
+      }  else if (setPorcentajeGrasaMuscular < 1 || porcentajeGrasaMuscular > 100) {
+        Swal.fire({
+          icon: 'error',
+          text:'El porcentaje de grasa Muscular debe estar entre 1 y 100',
+          customClass:{
+            container: 'my-swal',
+          },
+          confirmButtonColor: 'rgba(158 173 56)'
+        });
+        return;
+      } else {
+        Swal.fire({
+          icon: 'success',
+          text:'Metricas guardadas correctamente',
+          customClass:{
+            container: 'my-swal',
+          },
+          confirmButtonColor: 'rgba(158 173 56)'
+        });
+        props.registrarMetricas(e, metricas);
+      };
+    }
+    catch (e) {
       Swal.fire({
         icon: 'error',
-        text:'Todos los campos son obligatorios'
+        text: `${e}`,
+        customClass:{
+          container: 'my-swal',
+        },
+        confirmButtonColor: 'rgba(158 173 56)'
       });
-      return;
-    } else if (edad < 15 || edad > 90) {
-      Swal.fire({
-        icon: 'error',
-        text:'La edad debe estar entre 15 y 90 años'
-      });
-      return;
-    } else if (imc < 10 || imc > 45) {
-      Swal.fire({
-        icon: 'error',
-        text:'El IMC debe estar entre 10 y 45'
-      });
-      return;
-    } else if (altura > 3.0) {
-      Swal.fire({
-        icon: 'error',
-        text:'La altura debe ser menor a 3.0'
-      });
-      return;
-    } else if (porcentajeGrasaCorporal < 1 || porcentajeGrasaCorporal > 100) {
-      Swal.fire({
-        icon: 'error',
-        text:'El porcentaje de grasa corporal debe estar entre 1 y 100'
-      });
-      return;
-    }  else {props.registrarMetricas(e, metricas);};
+    };
   };
   
 

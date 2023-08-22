@@ -73,7 +73,9 @@
 .form-registro-rutinas > div > span {
   color: #d20c0c;
 } */
-
+.my-swal{
+  z-index: 9999!important;
+}
 
 .BoxRutina {
   text-align: center;
