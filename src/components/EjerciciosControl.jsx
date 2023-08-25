@@ -54,8 +54,8 @@ const EjerciciosControl = () => {
 
   const eliminarEjercicio = async (ejercicioID) => {
     Swal.fire({
-      title: '¿Desea Actualizar los cambios?',
-      text: 'Se modificaran todos los cambios agregados',
+      title: '¿Desea Eliminar el ejercicio actual?',
+      text: 'Se eliminara el ejercicio',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
