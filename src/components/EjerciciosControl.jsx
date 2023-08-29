@@ -53,44 +53,71 @@ const EjerciciosControl = () => {
   };
 
   const eliminarEjercicio = async (ejercicioID) => {
-    try {
-      const res = await axios.delete(baseURL + `/ejercicios/${ejercicioID}`);
-      setEjercicios((prevEjercicios) =>
-        prevEjercicios.filter((ejercicio) => ejercicio._id !== ejercicioID)
-      );
-      Swal.fire('Ejercicio eliminado exitosamente');
-    } catch (error) {
-      console.error(error);
-    }
+    Swal.fire({
+      title: '¿Desea Eliminar el ejercicio actual?',
+      text: 'Se eliminara el ejercicio',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, aceptar!'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const res = await axios.delete(baseURL + `/ejercicios/${ejercicioID}`);
+          setEjercicios((prevEjercicios) =>
+            prevEjercicios.filter((ejercicio) => ejercicio._id !== ejercicioID)
+          );
+          Swal.fire('Ejercicio eliminado exitosamente');
+        } catch (error) {
+          console.error(error);
+        }
+      };
+    })
   };
+
 
   const verificarModificarYAgregar = async (e) => {
     e.preventDefault();
-  
+
     const ejerciciosModificados = ejercicios.filter((ejercicio) => ejercicio.modificado && ejercicio._id);
     const ejerciciosNuevos = ejercicios.filter((ejercicio) => !ejercicio._id);
-  
-    try {
-      for (const ejercicioModificado of ejerciciosModificados) {
-        await axios.put(
-          baseURL + `/ejercicios/${ejercicioModificado._id}`,
-          { _id: ejercicioModificado._id, nombre: ejercicioModificado.nombre }
-        );
+    Swal.fire({
+      title: '¿Desea Actualizar los cambios?',
+      text: 'Se modificaran todos los cambios agregados',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, aceptar!'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          for (const ejercicioModificado of ejerciciosModificados) {
+            await axios.put(
+              baseURL + `/ejercicios/${ejercicioModificado._id}`,
+              { _id: ejercicioModificado._id, nombre: ejercicioModificado.nombre }
+            );
+          }
+          if (ejerciciosNuevos.length > 0) {
+            const nuevosEjerciciosData = ejerciciosNuevos.map((ejercicio) => ({ nombre: ejercicio.nombre }));
+            await axios.post(baseURL + `/ejercicios/`, { ejercicios: nuevosEjerciciosData });
+          }
+          setEjerciciosModificados([]);
+          Swal.fire({
+            title: 'Actualizado!',
+            text: 'Ejercicios guardados con éxito',
+            icon: 'success',
+            confirmButtonColor: 'rgba(158,173,56)',
+          });
+        } catch (error) {
+          console.error('Error al actualizar ejercicios:', error);
+        }
       }
-  
-      if (ejerciciosNuevos.length > 0) {
-        const nuevosEjerciciosData = ejerciciosNuevos.map((ejercicio) => ({ nombre: ejercicio.nombre }));
-        await axios.post(baseURL + `/ejercicios/`, { ejercicios: nuevosEjerciciosData });
-      }
-  
-      setEjerciciosModificados([]);
-      Swal.fire('Ejercicios guardados con éxito');
-    } catch (error) {
-      console.error('Error al actualizar ejercicios:', error);
-    }
+    })
   };
-  
-  
+
+
 
   useEffect(() => {
     const getEjercicios = async () => {
@@ -195,7 +222,7 @@ const EjerciciosControl = () => {
       </div>
     </div>
   );
-};  
+};
 const StyledEjerciciosContainer = styled.div`
   background: rgba(0, 0, 0, 0);
   padding: 15px;
