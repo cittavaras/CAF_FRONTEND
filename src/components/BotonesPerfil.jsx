@@ -157,7 +157,7 @@ const BotonesPerfil = () => {
                   style={{ color: "#042945" }}
                   onClick={handleOpen}
                 >
-                  Activar/Desactivar Bloques
+                  Gestionar Bloques
                 </button>
               </Col>
               <Col
@@ -170,7 +170,7 @@ const BotonesPerfil = () => {
                   to="/gestionarBloques"
                   style={{ color: "#042945" }}
                 >
-                  Gestionar Bloques
+                  Crear Bloques
                 </Link>
               </Col>
               <Col

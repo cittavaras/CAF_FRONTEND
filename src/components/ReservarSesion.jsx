@@ -3,7 +3,6 @@ import styled from "styled-components";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles"; //TODO
 import baseURL from '../helpers/rutaBase';
-
 import React, { useState, useEffect } from "react";
 import { Button, Dialog, DialogContent, Container, DialogActions, DialogTitle, IconButton, Typography, Box } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
@@ -23,6 +22,7 @@ import {
 } from "@mui/material";
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
+import Swal from 'sweetalert2';
 
 moment.locale("es");
 moment.weekdays(true, 2)
@@ -92,7 +92,7 @@ const ReservarSesion = (props) => {
   }, []);
   const fetchServerDate = async () => {
     try {
-      const response = await fetch('/api/date'); // Replace with your server endpoint
+      const response = await fetch(baseURL + '/date'); // Replace with your server endpoint
       const data = await response.json();
       const serverDate = moment(data.serverDate).toDate();
       var serverAdjust = serverDate;
@@ -377,6 +377,28 @@ const ReservarSesion = (props) => {
       //console.error('Error al desactivar la sesión:', error);
     }
   }
+
+  const deleteSesion = async () => {
+    try {
+      console.log(selectedSesion)
+      setLoading(true);
+      await axios.delete(`${baseURL}/sesiones/${selectedSesion.id}`).then(() => {
+        //get back to prev modal
+        props.handleClose();
+        Swal.fire({
+          icon: 'success',
+          title: 'Sesión eliminada correctamente',
+          showConfirmButton: false,
+          timer: 1500
+        })
+      });
+      setLoading(false);
+    } catch (error) {
+      console.error('Error al eliminar la sesión:', error);
+    }
+
+  }
+
   const handleViewChange = (view) => {
     console.log(view);
     setView(view);
@@ -487,8 +509,11 @@ const ReservarSesion = (props) => {
             <>
               <AlumnosSesion alumnosSesion={alumnosSesion} setAlumnosSesion={setAlumnosSesion} tomarAsistencia={tomarAsistencia} />
               <div className='d-flex  justify-content-between' style={{ marginTop: '20px' }}>
-                {hasRole(roles.admin) && <button variant="contained" className={selectedSesion.desactivada ? "btn btn-outline-success" : "btn btn-outline-danger"} onClick={desactivarSesion} disabled={loading}>
+                {hasRole(roles.admin) && <button variant="contained" className={selectedSesion.desactivada ? "btn btn-outline-success" : "btn btn-outline-warning"} onClick={desactivarSesion} disabled={loading}>
                   {selectedSesion.desactivada ? "Activar sesion" : "Desactivar sesion"}
+                </button>}
+                {hasRole(roles.admin) && <button variant="contained" className={"btn btn-outline-danger"} onClick={deleteSesion} disabled={loading}>
+                  {"Eliminar sesion"}
                 </button>}
                 <button variant="contained" className="btn btn-success " onClick={handleBackClick}>
                   Guardar asistencia
