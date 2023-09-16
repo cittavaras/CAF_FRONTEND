@@ -54,10 +54,10 @@ function GestionarBloques() {
                     >
                         <MenuItem value={'Lunes'}>Lunes</MenuItem>
                         <MenuItem value={'Martes'}>Martes</MenuItem>
-                        <MenuItem value={'Miercoles'}>Miercoles</MenuItem>
+                        <MenuItem value={'Miércoles'}>Miercoles</MenuItem>
                         <MenuItem value={'Jueves'}>Jueves</MenuItem>
                         <MenuItem value={'Viernes'}>Viernes</MenuItem>
-                        <MenuItem value={'Sabado'}>Sabado</MenuItem>
+                        <MenuItem value={'Sábado'}>Sabado</MenuItem>
                     </Select>
                 </FormControl>
                 <FormControl fullWidth>
@@ -116,7 +116,7 @@ function GestionarBloques() {
                     variant="outlined"
                 /> */}
                 <Button type="submit" variant="contained">
-                    save
+                    Guardar
                 </Button>
             </form>
         </section>

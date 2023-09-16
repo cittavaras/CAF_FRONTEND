@@ -382,16 +382,28 @@ const ReservarSesion = (props) => {
     try {
       console.log(selectedSesion)
       setLoading(true);
-      await axios.delete(`${baseURL}/sesiones/${selectedSesion.id}`).then(() => {
-        //get back to prev modal
-        props.handleClose();
-        Swal.fire({
-          icon: 'success',
-          title: 'Sesión eliminada correctamente',
-          showConfirmButton: false,
-          timer: 1500
-        })
-      });
+      props.handleClose();
+      Swal.fire({
+        title: '¿Estás seguro?',
+        text: "No sera posible revertir esta acción!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, borrar',
+        cancelButtonText: 'Cancelar'
+      }).then( async (result) => {
+        if (result.isConfirmed) {
+          await axios.delete(`${baseURL}/sesiones/${selectedSesion.id}`).then(() => {
+          //get back to prev modal
+          });
+          Swal.fire(
+            'Eliminado!',
+            'Tu bloque ha sido eliminado.',
+            'success'
+          )
+        }
+      })
       setLoading(false);
     } catch (error) {
       console.error('Error al eliminar la sesión:', error);

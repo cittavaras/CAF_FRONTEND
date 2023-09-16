@@ -117,7 +117,7 @@ export default function AppRouter() {
             </PrivateRoute>}
           />
           <Route path="/gestionarBloques" element={
-            <PrivateRoute hasRoles={[roles.admin, roles.instructor]} >
+            <PrivateRoute hasRole={roles.admin} >
               <GestionarBloques/>
             </PrivateRoute>}
           />
