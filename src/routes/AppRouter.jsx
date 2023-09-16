@@ -26,6 +26,7 @@ import Informativo from "../components/Informativo";
 import RegistroRutinas from "../pages/RegistroRutinas";
 import RutinaAlumno from "../pages/RutinaAlumno";
 import EjerciciosControl from "../components/EjerciciosControl";
+import GestionarBloques from "../components/GestionarBloques";
 
 export default function AppRouter() {
   const { isLogged } = useAuth();
@@ -113,6 +114,11 @@ export default function AppRouter() {
           <Route path="/crearUsuario" element={
             <PrivateRoute hasRole={roles.admin} >
               <CrearUsuario/>
+            </PrivateRoute>}
+          />
+          <Route path="/gestionarBloques" element={
+            <PrivateRoute hasRoles={[roles.admin, roles.instructor]} >
+              <GestionarBloques/>
             </PrivateRoute>}
           />
           <Route path="/listarActivos" element={
