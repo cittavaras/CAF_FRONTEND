@@ -94,16 +94,11 @@ const ReservarSesion = (props) => {
   const fetchServerDate = async () => {
     try {
       const response = await fetch(baseURL + '/date'); // Replace with your server endpoint
-      console.log("response", response)
       const data = await response.json();
-      console.log("data", data)
       const serverDate = moment(data.serverDate).toDate();
-      console.log("serverDate", serverDate)
       var serverAdjust = serverDate;
-      console.log("serverAdjust", serverAdjust)
       if(moment(serverAdjust).isoWeekday() === 7)
         serverAdjust = moment(serverAdjust).add(1, 'day').startOf('day');
-        console.log("serverAdjust IF iso Weekday === 7", serverAdjust)
       return serverAdjust;
     } catch (error) {
       console.error('Error fetching server date:', error);
@@ -129,16 +124,18 @@ const ReservarSesion = (props) => {
           fecha: fechaVista
         }
       });
+
       setSesiones(res?.data ?? []);
+      
     } catch (error) {
-      //console.log(error);
+      console.log(error);
     }
     setLoading(false);
   }
 
-  useEffect(() => {
-    console.log("sesionesUseEffect", sesiones);
-  }, [sesiones]);
+  // useEffect(() => {
+  //   console.log("sesionesUseEffect", sesiones);
+  // }, [sesiones]);
   
   const crearReservas = async (e) => {
     e.preventDefault();
@@ -206,19 +203,24 @@ const ReservarSesion = (props) => {
   }, [fechaVista]);
 
   useEffect(() => {
+    console.log('PROPS ALUMNO', props.reservasAlumno)
     if (props.reservasAlumno && hasRole(roles.alumno)) {
       const sesionesAlumno = props.reservasAlumno.map(r => {
-        return {
-          ...r.sesion[0], count: 0
+        if(r.sesion.length !== 0) {   
+          console.log('MAP PROPS', r)
+          return {
+            ...r.sesion[0], count: 0
+          }
         }
-      }
-      )
-      setSelectedEvents(generateTrainingEvents(sesionesAlumno, fechaVista))
+      })
+        Object.keys(sesionesAlumno).forEach(key => sesionesAlumno[key] === undefined && delete sesionesAlumno[key])
+        setSelectedEvents(generateTrainingEvents(sesionesAlumno, fechaVista))
     }
   }, [props.reservasAlumno]);
 
   useEffect(() => {
-    if (sesiones.length > 0) {
+    console.log('USEEFFECT EJECUTING FUNCTION', sesiones)
+    if (sesiones.length > 3) {
       const generatedEvents = generateTrainingEvents(sesiones, fechaVista)
 
       setEventos(generatedEvents);
@@ -558,7 +560,7 @@ const ReservarSesion = (props) => {
 };
 
 const generateTrainingEvents = (sesiones = [], fecha) => {
-  console.log('INSIDE FUNCTION EVENTS', sesiones)
+  // console.log('INSIDE FUNCTION EVENTS', sesiones)
   const newSesiones = sesiones.map(sesion => {
     let [hours, minutes] = sesion.horaIni.split(":");
     const start = moment(fecha).day(sesion.dia).set({ hours, minutes }).toDate();
@@ -580,6 +582,7 @@ const generateTrainingEvents = (sesiones = [], fecha) => {
 };
 
 const generateTrainingEventsForMonth = (month, year, sesiones) => {
+  // console.log('INSIDE generateTrainingEventsForMonth', sesiones)
   const startOfMonth = moment(`${year}-${month}-01`, "YYYY-MM-DD").toDate();
   const endOfMonth = moment(startOfMonth).endOf('month').toDate();
   const monthEvents = [];
@@ -590,7 +593,7 @@ const generateTrainingEventsForMonth = (month, year, sesiones) => {
     const eventsDia = generateTrainingEvents(sesionesDia, date);
     monthEvents.push(...eventsDia);
   }
-
+  // console.log(monthEvents)
   return monthEvents;
 };
 
