@@ -90,14 +90,20 @@ const ReservarSesion = (props) => {
       setFechaVista(serverDate)
     });
   }, []);
+  
   const fetchServerDate = async () => {
     try {
       const response = await fetch(baseURL + '/date'); // Replace with your server endpoint
+      console.log("response", response)
       const data = await response.json();
+      console.log("data", data)
       const serverDate = moment(data.serverDate).toDate();
+      console.log("serverDate", serverDate)
       var serverAdjust = serverDate;
+      console.log("serverAdjust", serverAdjust)
       if(moment(serverAdjust).isoWeekday() === 7)
         serverAdjust = moment(serverAdjust).add(1, 'day').startOf('day');
+        console.log("serverAdjust IF iso Weekday === 7", serverAdjust)
       return serverAdjust;
     } catch (error) {
       console.error('Error fetching server date:', error);
@@ -130,6 +136,10 @@ const ReservarSesion = (props) => {
     setLoading(false);
   }
 
+  useEffect(() => {
+    console.log("sesionesUseEffect", sesiones);
+  }, [sesiones]);
+  
   const crearReservas = async (e) => {
     e.preventDefault();
     try {
@@ -352,7 +362,7 @@ const ReservarSesion = (props) => {
     try {
       await axios.put(`${baseURL}/sesiones/reserva/${reservaId}/asistencia`, { asistencia: asistencia });
     } catch (error) {
-      //console.log(error);
+      console.log(error);
     }
   }
 
@@ -548,6 +558,7 @@ const ReservarSesion = (props) => {
 };
 
 const generateTrainingEvents = (sesiones = [], fecha) => {
+  console.log('INSIDE FUNCTION EVENTS', sesiones)
   const newSesiones = sesiones.map(sesion => {
     let [hours, minutes] = sesion.horaIni.split(":");
     const start = moment(fecha).day(sesion.dia).set({ hours, minutes }).toDate();
