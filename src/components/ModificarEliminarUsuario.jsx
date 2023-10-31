@@ -78,13 +78,15 @@ const ModificarEliminarUsuario = () => {
   }
 
   const handleInputValue = (e) => {
-
     formatearRut(e);
   }
 
   // Filtrar por rut
   const filtrarAlumnos = async (e) => {
     e.preventDefault();
+    if(e.key !== undefined) {
+      if(e.key !== 'Enter') return;
+    }
     const res = await axios.get(baseURL + '/alumnos');
     const alumno = res.data.alumnos.filter(alumno => alumno.tipoUsuario === 'Alumno' && alumno.rut === search);
     if (!search) {
@@ -161,6 +163,7 @@ const ModificarEliminarUsuario = () => {
             <div>
               <h2>
                 <Paper
+                  onSubmit={(e) => { e.preventDefault(); }}
                   component="form"
                   sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400, marginLeft: 'auto', marginRight: 'auto' }}
                 >
@@ -169,6 +172,7 @@ const ModificarEliminarUsuario = () => {
                     placeholder="Ingrese el rut del alumno ej: 12.345.678-9"
                     inputProps={{ 'aria-label': 'Ingrese el rut del alumno' }}
                     onChange={handleInputValue}
+                    onKeyUp={filtrarAlumnos}
                     value={search} />
                   <button className='btn btn-dark' type="button" sx={{ p: '10px' }} aria-label="search" onClick={filtrarAlumnos}>
                     <SearchIcon />
