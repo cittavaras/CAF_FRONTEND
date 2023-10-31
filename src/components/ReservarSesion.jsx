@@ -203,11 +203,11 @@ const ReservarSesion = (props) => {
   }, [fechaVista]);
 
   useEffect(() => {
-    console.log('PROPS ALUMNO', props.reservasAlumno)
+    //console.log('PROPS ALUMNO', props.reservasAlumno)
     if (props.reservasAlumno && hasRole(roles.alumno)) {
       const sesionesAlumno = props.reservasAlumno.map(r => {
         if(r.sesion.length !== 0) {   
-          console.log('MAP PROPS', r)
+          //console.log('MAP PROPS', r)
           return {
             ...r.sesion[0], count: 0
           }
@@ -219,7 +219,7 @@ const ReservarSesion = (props) => {
   }, [props.reservasAlumno]);
 
   useEffect(() => {
-    console.log('USEEFFECT EJECUTING FUNCTION', sesiones)
+    //console.log('USEEFFECT EJECUTING FUNCTION', sesiones)
     if (sesiones.length > 3) {
       const generatedEvents = generateTrainingEvents(sesiones, fechaVista)
 
@@ -392,7 +392,7 @@ const ReservarSesion = (props) => {
 
   const deleteSesion = async () => {
     try {
-      console.log(selectedSesion)
+      //console.log(selectedSesion)
       setLoading(true);
       props.handleClose();
       Swal.fire({
@@ -424,12 +424,12 @@ const ReservarSesion = (props) => {
   }
 
   const handleViewChange = (view) => {
-    console.log(view);
+    //console.log(view);
     setView(view);
     const mes = 5; // mayo
     const anio = 2023;
     const eventosMes = generateTrainingEventsForMonth(mes, anio, sesiones);
-    console.log("eventosMes", eventosMes);
+    //console.log("eventosMes", eventosMes);
     setEventos(eventosMes);
   };
 

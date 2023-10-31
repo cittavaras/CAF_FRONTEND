@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import './css/landing.css';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
@@ -33,27 +33,53 @@ const LandingPageAlumno = ({ location }) => {
   }
 
   const { alumno, hasRole } = useAuth();
-  
+  // const day = moment(Date.now()).format('dddd');
+  const event = new CustomEvent('localdatachanged');
   const [infoCargada, setInfoCargada] = useState({ titulo: "test", imagenBase64: "hola", descripcion: "test" });
-  const [daysCount, setDaysCount] = useState();
+  const [day, setDay] = useState(moment(Date.now()).format('dddd'));
   const [rutinas, setRutinas] = useState([]);
   const [hasRutina, setHasRutina] = useState(false);
-  const day = moment(Date.now()).format('dddd');
   const [expanded, setExpanded] = React.useState(false);
+  const [dayTrain, setDayTrain] = useState(moment(Date.now()).format('DD-MM-yyyy'));
+
+  const { rut } = JSON.parse(sessionStorage.getItem('alumno_sesion'));
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
 
-  // console.log(day)
+  document.addEventListener('localdatachanged', () => {
+    setDayTrain(localStorage.getItem('TrainDaySelect'));
+  });
 
+  // useEffect(() => {
+  //   console.log(dayTrain)
+  // }, [dayTrain])
+
+  const getBloquesReservados= async () => {
+    const response = await axios.get(baseURL + `/reservas/${rut}`);
+    const bloquesReservados = response.data;
+    return bloquesReservados;
+  };
   const getRutinas = async () => {
     try {
-      const { rut } = JSON.parse(sessionStorage.getItem('alumno_sesion'));
-      const res = await axios.get(baseURL + '/rutinas/alumno/', { params: { rutAlumno: rut, day: day } });
-      const rutinaAlumno = res.data;
-      setRutinas(rutinaAlumno || [{}]);
-      setHasRutina(rutinaAlumno.length > 0);
+      const bloquesReservados = await getBloquesReservados();
+      //console.log(bloquesReservados)
+      
+      bloquesReservados.map(async (bloque) => {
+        //console.log(moment(bloque.diaReserva).format('DD-MM-yyyy'), dayTrain)
+        if (moment(bloque.diaReserva).format('DD-MM-yyyy') == dayTrain) {
+          console.log('HERE')
+          setDay(moment(bloque.diaReserva).format('dddd'));
+          const res = await axios.get(baseURL + '/rutinas/alumno/', { params: { rutAlumno: rut, day: moment(bloque.diaReserva).format('dddd') } });
+          const rutinaAlumno = res.data;
+          setRutinas(rutinaAlumno || [{}]);
+          setHasRutina(rutinaAlumno.length > 0);
+        } else {
+          setRutinas();
+          setHasRutina();
+        }
+      })
     } catch (error) {
       console.error(error);
     }
@@ -66,13 +92,13 @@ const LandingPageAlumno = ({ location }) => {
   };
 
   useEffect(() => {
-    // console.log(daysCount);
-  }, [daysCount]);
+    console.log(day);
+  }, [day]);
 
   useEffect(() => {
     getlandingPage();
     getRutinas();
-  }, []);
+  }, [dayTrain]);
 
   // useEffect(() => {console.log(rutinas); },[rutinas]);
   // useEffect(() => {console.log(infoCargada); },[infoCargada]);
@@ -93,14 +119,14 @@ const LandingPageAlumno = ({ location }) => {
             startDay={getTwoDaysAgo()} // First day as Date Object or 22 June 2016
             selectedDays={[new Date()]} // Selected days list
             multipleDaySelect={false} //enables multiple day selection
-            selectDay={function (day) {
-              //console log name of the day
-              // console.log(day);
+            selectDay={ function (day) {
+              // localStorage.setItem('TrainDaySelect', day);
+              // document.dispatchEvent(event);
             }}
             unselectDay={function (day) { }}
             onPrevClick={function (startDay, selectedDays) { }} // called with the new startDay
             onNextClick={function (startDay, selectedDays) { }} // called with the new startDay
-            unselectable={false} // if true allows to unselect a date once it has been selected. Only works when multipleDaySelect={false}
+            unselectable={true} // if true allows to unselect a date once it has been selected. Only works when multipleDaySelect={false}
             format={'DD-MM-YYYY'} //format of dates that handled in selectDay and unselectDay functions
             firstLineFormat={'ddd'} // format for the first line of the day button
             secondLineFormat={'MMM D'} // format for the second line of the day button
@@ -108,7 +134,7 @@ const LandingPageAlumno = ({ location }) => {
             secondLineMobileFormat={'MMMM D, Y'} // format for the second line of the day button mobile
             unavailables={{
               // dates:['22 July 2017'],  //unavailable dates list
-              // relative:[0,1],  //unavailable dates list relative to today (0:today, 1:tomorrow, -1:yesterday)
+              relative:[1, 2 ,3],  //unavailable dates list relative to today (0:today, 1:tomorrow, -1:yesterday)
               weekly: [6] //unavailable dates list for each week (0:Sunday, 1:Monday ...)
             }} S
             //mobilView={window.innerWidth < 400}  // enables mobil view
@@ -120,7 +146,7 @@ const LandingPageAlumno = ({ location }) => {
             }}
             todayText={'Hoy'}  // replacing today text (default : - TODAY -)
             unavailableText={''}  // replacing unavailable text (default: unavailable )
-            useArrows={true}  // use arrows for navigation (default: false)
+            useArrows={false}  // use arrows for navigation (default: false)
           />
           <>
             <div className='text-center entrenamiento content'>
@@ -129,12 +155,11 @@ const LandingPageAlumno = ({ location }) => {
             </div>
           </>
           {rutinas ? rutinas.map((rutina, i, row) => (
-            <div className='card container text-light' style={{ backgroundColor: 'rgba(0,0,0, 0)' }}>
+            <div key={i} className='card container text-light' style={{ backgroundColor: 'rgba(0,0,0, 0)' }}>
               {/* { console.log(rutina) } */}
               <div style={{ margin: 0 }}>
                 <Accordion sx={{ backgroundColor: '#8f8f8f9c' }}>
                   <AccordionSummary
-                    expanded={expanded === 'panel' + i}
                     onChange={handleChange('panel1' + i)}
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel1a-content"
@@ -144,7 +169,7 @@ const LandingPageAlumno = ({ location }) => {
                     <Typography sx={{ color: 'white' }} >{
                       //TittleCase for nombre rutina
                       rutina.nombre.toUpperCase()
-                    } 7</Typography>
+                    }</Typography>
                   </AccordionSummary>
                   <AccordionDetails>
                     <div className='d-flex gap-2 mb-2 justify-content-between'>
@@ -177,10 +202,10 @@ const LandingPageAlumno = ({ location }) => {
                       </div>
                     </div>
                     <div>
-                      {rutina.ejercicios.map((ejercicio) => {
-                        return (<EjercicioBox
+                      {rutina.ejercicios.map((ejercicio, index) => {
+                        return (<Fragment key={index}><EjercicioBox
                           props={{ ejercicio }}
-                        />)
+                        /></Fragment>)
                       })}
                     </div>
                   </AccordionDetails>
