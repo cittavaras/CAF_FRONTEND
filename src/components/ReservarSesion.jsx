@@ -203,18 +203,12 @@ const ReservarSesion = (props) => {
   }, [fechaVista]);
 
   useEffect(() => {
-    //console.log('PROPS ALUMNO', props.reservasAlumno)
     if (props.reservasAlumno && hasRole(roles.alumno)) {
-      const sesionesAlumno = props.reservasAlumno.map(r => {
-        if(r.sesion.length !== 0) {   
-          //console.log('MAP PROPS', r)
-          return {
-            ...r.sesion[0], count: 0
-          }
-        }
-      })
-        Object.keys(sesionesAlumno).forEach(key => sesionesAlumno[key] === undefined && delete sesionesAlumno[key])
-        setSelectedEvents(generateTrainingEvents(sesionesAlumno, fechaVista))
+      const sesionesAlumno = props.reservasAlumno
+        .map(r => r.sesion.length !== 0 ? { ...r.sesion[0], count: 0 } : null)
+        .filter(session => session !== null);
+  
+      setSelectedEvents(generateTrainingEvents(sesionesAlumno, fechaVista));
     }
   }, [props.reservasAlumno]);
 
