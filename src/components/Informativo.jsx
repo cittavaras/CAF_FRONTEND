@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Modal, Button, Form } from 'react-bootstrap';
 //import AdminControl from './AdminControl.jsx';
 import GimInforma from './GimInforma';
 import AdminControl from './AdminControl';
@@ -9,6 +10,9 @@ import Swal from 'sweetalert2';
 
 const Informativo = () => {
   const [infoCargada, setInfoCargada] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [phrase, setPhrase] = useState('reiniciarsemestre');
+  const [inputValue, setInputValue] = useState('');
 
   const handleInfoCargada = (info) => {
     // console.log('INFO', info);
@@ -42,6 +46,23 @@ const Informativo = () => {
     getlandingPage();
   }, []);
 
+ const handleCloseModal = () => {
+    setShowModal(false);
+    setInputValue('');
+  };
+
+  const handleConfirm = () => {
+    if (inputValue === phrase) {
+      // Execute your function here
+      alert('Reinicio de Semestre Confirmado!');
+      setInputValue('');
+    } else {
+      alert('Frase Incorrecta!');
+      setInputValue('');
+    }
+    setShowModal(false);
+  };
+
 
   return (
     <div className='container mt-4 rounded' style={{ backgroundColor: '#adb5bd42' }}>
@@ -59,6 +80,9 @@ const Informativo = () => {
               <h2 className='text-center' style={{ color: 'white' }}>Previsualizacion</h2>
 
               <GimInforma titulo={infoCargada.titulo} imagen={infoCargada.imagenBase64} texto={infoCargada.descripcion} />
+              <button className='button w-50 mx-auto mt-3 mb-5 d-block'  style={{ backgroundColor: 'red' }} onClick={() => setShowModal(true)}>
+                Reiniciar Semestre
+              </button>
             </div>
           </>
           ) : (
@@ -66,6 +90,29 @@ const Informativo = () => {
           )
         }
       </div>
+      <Modal show={showModal} onHide={handleCloseModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirmar Reinicio Semestre WIP</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>Escribir frase para confirmar - Semestre recien reiniciado, funcion desactivada temporalmente:</p>
+          <p>{phrase}</p>
+          <Form.Control
+            type="text"
+            placeholder="Escribir frase"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+          />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModal}>
+            Cancelar
+          </Button>
+          <Button variant="primary" onClick={handleConfirm} style={{ backgroundColor: 'red' }}>
+            Confirmar 
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };
