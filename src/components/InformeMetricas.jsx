@@ -14,15 +14,15 @@ import {
   Box,
   IconButton,
 } from "@mui/material";
-
-import axios from "axios";
+import { useEffect } from 'react';
+import axios from 'axios'; import useAxiosInterceptors from '../auth/axiosResponse';
 
 import styled from "styled-components";
 import { useTheme } from "@mui/material/styles"; //TODO
 
 import CloseIcon from "@mui/icons-material/Close";
 import DescriptionIcon from "@mui/icons-material/Description";
-import baseURL from "../helpers/rutaBase";
+import baseURL from '../helpers/rutaBase';
 
 const sortingOptions = [
   { value: "orderByRut", label: "Ordenar por RUT" },
@@ -76,6 +76,9 @@ const InformeMetricas = (props) => {
   const [rutAlumno, setRutAlumno] = useState("");
   //rut valido 
   const [rutValido, setRutValido] = useState(true);
+const accessToken = localStorage.getItem('accessToken');
+const refreshToken = localStorage.getItem('refreshToken');
+useAxiosInterceptors();
   // const handleRutAlumnoChange = () => {
   //   const rutSinFormatear = rut.replace(/\./g, "").replace("-", "").trim();
   //   const rutNum = rutSinFormatear.slice(0, -1);
@@ -168,7 +171,10 @@ const handleRutAlumnoChange = (event) => {
       const response = await axios.post(
         `${baseURL}/metricas/reporte`,
         { orderBy, startDate, endDate, rutFiltro: rutAlumno }, //TODO: aqui agregan los filtros, id de cita etc
-        { responseType: "blob" }
+        { responseType: "blob",headers: {
+          'Authorization': accessToken // Include the JWT token in the Authorization header
+      },
+       }
       );
 
       const file = new Blob([response.data], {

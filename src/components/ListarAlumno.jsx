@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
+import axios from 'axios'; import useAxiosInterceptors from '../auth/axiosResponse';
 import ReactPaginate from 'react-paginate';
 import MotivoRechazo from './MotivoRechazo';
 import baseURL from '../helpers/rutaBase';
@@ -11,8 +11,9 @@ const ListarAlumno = () => {
   const [porPagina, setPorPagina] = useState(5);
   const [totalCount, setTotalCount] = useState(0);
   const [alumnoEliminado, setAlumnoEliminado] = useState(null);
-
-
+const accessToken = localStorage.getItem('accessToken');
+const refreshToken = localStorage.getItem('refreshToken');
+useAxiosInterceptors();
   const [open, setOpen] = useState(false);
 
   const handleOpen = (e, al) => {
@@ -35,7 +36,12 @@ const ListarAlumno = () => {
   // Función para obtener la lista de alumnos
   const getAlumnos = async () => {
     try {
-      const res = await axios.get(baseURL + '/alumnos');
+      const res = await axios.get(baseURL + '/alumnos', {
+        headers: {
+            'Authorization': accessToken // Include the JWT token in the Authorization header
+        },
+        
+    });
       const alumnos = res.data.alumnos.filter(alumno => alumno.tipoUsuario === 'Alumno' && alumno.active === false);
       const startIndex = paginaNumero * porPagina;
       const alumnosSeleccionados = alumnos.slice(startIndex, startIndex + porPagina);
@@ -49,7 +55,12 @@ const ListarAlumno = () => {
   // Función para eliminar un alumno
   const eliminarAlumno = async (e, message) => {
     e.preventDefault();
-    const res = await axios.delete(`${baseURL}/alumnos/${alumnoEliminado._id}`);
+    const res = await axios.delete(`${baseURL}/alumnos/id/${alumnoEliminado._id}`, {
+      headers: {
+          'Authorization': accessToken // Include the JWT token in the Authorization header
+      },
+      
+  });
 
     await axios
       .post(baseURL + '/send-email', {
@@ -57,7 +68,12 @@ const ListarAlumno = () => {
         subject: 'Solicitud declinada CAF',
         text: `${alumnoEliminado?.nombre}, ${message} `,
         html: `<strong>${alumnoEliminado?.nombre}</strong>, ${message}`,
-      })
+      }, {
+        headers: {
+            'Authorization': accessToken // Include the JWT token in the Authorization header
+        },
+        
+    })
       .then((response) => {
         //console.log('Email sent successfully:', response.data);
       })
@@ -72,14 +88,24 @@ const ListarAlumno = () => {
 
   // Función para aceptar un alumno
   const aceptarAlumno = async (alumno) => {
-    const res = await axios.put(`${baseURL}/alumnos/aceptar/${alumno._id}`, { active: true });
+    const res = await axios.put(`${baseURL}/alumnos/aceptar/${alumno._id}`, { active: true }, {
+      headers: {
+          'Authorization': accessToken // Include the JWT token in the Authorization header
+      },
+      
+  });
     await axios
       .post(baseURL + '/send-email', {
         to: alumno.correo,
         subject: 'Solicitud Aceptada CAF',
         text: `${alumno.nombre}, Le informamos que su cuenta ha sido activada exitosamente, recuerde que para ingresar necesita su correo y el rut como contraseña sin puntos, sin guion y sin digito verificador guiense por el siguiente link https://caf.ivaras.cl`,
         html: `<strong>${alumno.nombre}</strong>, Le informamos que su cuenta ha sido activada exitosamente, recuerde que para ingresar necesita su correo y el rut como contraseña sin puntos, sin guion y sin digito verificador guiense por el siguiente link https://caf.ivaras.cl`,
-      })
+      }, {
+        headers: {
+            'Authorization': accessToken // Include the JWT token in the Authorization header
+        },
+        
+    })
       .then((response) => {
        // console.log('Email sent successfully:', response.data);
       })

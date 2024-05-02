@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from 'axios'; import useAxiosInterceptors from '../auth/axiosResponse';
 import styled from 'styled-components';
 import '../pages/css/style.css';
 import { useNavigate } from 'react-router-dom';
@@ -14,7 +14,9 @@ import Swal from 'sweetalert2'
 const CrearAlumno = () => {
 
   const [open, setOpen] = useState(false);
-
+const accessToken = localStorage.getItem('accessToken');
+const refreshToken = localStorage.getItem('refreshToken');
+useAxiosInterceptors();
   const handleClickOpen = (e) => {
     e.preventDefault();
     if (!nombre || !rut || !correo || !carrera || !jornada) {
@@ -41,7 +43,7 @@ const CrearAlumno = () => {
 
   const navigate = useNavigate();
 
-  const [alumnos, setAlumnos] = useState([]);
+  //const [alumnos, setAlumnos] = useState([]);
   const [nombre, setNombre] = useState('');
   const [rut, setRut] = useState('');
   const [correo, setCorreo] = useState('');
@@ -50,14 +52,18 @@ const CrearAlumno = () => {
   const [active, setActive] = useState(false);
   const [tipoUsuario, setTipoUsuario] = useState('Alumno');
 
-  useEffect(() => {
+/*  useEffect(() => {
     const getAlumnos = async () => {
-      const res = await axios.get(baseURL + '/alumnos');
+      const res = await axios.get(baseURL + '/alumnos', {
+        headers: {
+            'Authorization': accessToken // Include the JWT token in the Authorization header
+        }
+    });
       setAlumnos(res.data);
     };
 
     getAlumnos();
-  }, []);
+  }, []);*/
 
   const onChangeAlumno = (e) => {
     const { name, value } = e.target;
@@ -138,7 +144,7 @@ const CrearAlumno = () => {
       tipoUsuario,
     };
     // console.log(newAlumno)
-    const res = await axios.post(baseURL + '/alumnos', newAlumno);
+    const res = await axios.post(baseURL + '/alumnos/register/', newAlumno);
     //console.log(res);
 
     await axios
@@ -147,7 +153,12 @@ const CrearAlumno = () => {
         subject: 'Registro CAF',
         text: `${nombre}: nos es grato saber que estas interesado(a) en nuestros servicios de CAF. En los proximos días activaremos tu cuenta y te enviaremos un correo notificandote como acceder a la plataforma y a sus servicios. Atentamente, el equipo de CAF`,
         html: `<strong>${nombre}</strong>: nos es grato saber que estas interesado(a) en nuestros servicios de CAF. En los proximos días activaremos tu cuenta y te enviaremos un correo notificandote como acceder a la plataforma y a sus servicios. Atentamente, el equipo de CAF`,
-      })
+      }, {
+        headers: {
+            'Authorization': accessToken // Include the JWT token in the Authorization header
+        },
+        
+    })
       .then((response) => {
         //console.log('Email sent successfully:', response.data);
       })

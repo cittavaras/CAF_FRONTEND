@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axios from 'axios'; import useAxiosInterceptors from '../auth/axiosResponse';
 import styled from "styled-components";
 import { useNavigate, Link } from 'react-router-dom';
 import useAuth from '../auth/useAuth';
@@ -17,9 +17,7 @@ import Swal from 'sweetalert2';
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet"></link>
 
 const Login = () => {
-
   const navigate = useNavigate();
-
   const { login } = useAuth();
 
   const [alumno, setAlumno] = useState('');
@@ -27,7 +25,6 @@ const Login = () => {
 
   const onChangeCorreo = (e) => {
     setAlumno(e.target.value.toLowerCase());
-    //console.log(alumno);
   }
 
   const onChangeConstraseña = (e) => {
@@ -57,56 +54,33 @@ const Login = () => {
       return;
     }
     else {
-      const res = await axios.post(`${baseURL}/alumnos/login`, { correo: alumno, password: contraseña });
-      //console.log(res);
       try {
-        const usuario = res?.data?.respAlumno
-
-
-        if (!!usuario && res.data.success) {
-
-          //console.log('usuario', usuario);
-          login(usuario);
-          if (usuario.tipoUsuario === 'Admin') {
-            Swal.fire({
-              icon: 'success', text: 'Bienvenido administrador',
-              confirmButtonColor: 'rgb(158 173 56)',
-            });
-            navigate('/landing');
-          }
-          else if (usuario.tipoUsuario === 'Alumno') {
-            Swal.fire({
-              icon: 'success', text: 'Bienvenido alumno',
-              confirmButtonColor: 'rgb(158 173 56)',
-            });
-            navigate('/landing');
-          }
-          else {
-            Swal.fire({
-              icon: 'success', text: 'Bienvenido Instructor',
-              confirmButtonColor: 'rgb(158 173 56)',
-            });
-            navigate('/landing');
-          }
-        }
-        else {
+        const res = await axios.post(`${baseURL}/alumnos/login`, { correo: alumno, password: contraseña });
+        if (res.data.success) {
+          const { accessToken, refreshToken } = res.data;
+          localStorage.setItem('accessToken', accessToken);
+          localStorage.setItem('refreshToken', refreshToken);
+          login(accessToken, refreshToken);
+          Swal.fire({
+            icon: 'success', text: 'Login successful!',
+            confirmButtonColor: 'rgb(158 173 56)',
+          });
+          navigate('/landing');
+        } else {
           Swal.fire({
             icon: 'error', text: 'El usuario o contraseña es incorrecto',
             confirmButtonColor: 'rgb(158 173 56)',
           });
         }
-      }
-      catch (error) {
-        //console.log(error);
+      } catch (error) {
+        console.error('Error:', error);
         Swal.fire({
           text: 'Ocurrió un error al iniciar sesión', icon: 'error',
           confirmButtonColor: 'rgb(158 173 56)',
         });
       }
-      ;
     }
   }
-
 
   return (
 

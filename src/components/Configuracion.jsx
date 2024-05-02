@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from 'axios'; import useAxiosInterceptors from '../auth/axiosResponse';
 import styled from 'styled-components';
 import '../pages/css/style.css';
 import { useNavigate } from 'react-router-dom';
@@ -22,7 +22,9 @@ const Configuracion = () => {
   const [jornada, setJornada] = useState('');
   const [active, setActive] = useState('true');
   const [tipoUsuario, setTipoUsuario] = useState(alumno.tipoUsuario);
-
+const accessToken = localStorage.getItem('accessToken');
+const refreshToken = localStorage.getItem('refreshToken');
+useAxiosInterceptors();
   const onChangeAlumno = (e) => {
     const { name, value } = e.target;
 
@@ -60,9 +62,7 @@ const Configuracion = () => {
         nombre,
         password: contraseña,
         carrera,
-        jornada,
-        active,
-        tipoUsuario,
+        jornada
       };
 
       if (contraseña !== confirmarContraseña) {
@@ -73,7 +73,12 @@ const Configuracion = () => {
         return;
       }
 
-      await axios.put(`${baseURL}/alumnos/rut/${alumno.rut}`, newAlumno);
+      await axios.put(`${baseURL}/alumnos/rut`, newAlumno,{
+        headers: {
+            'Authorization': accessToken // Include the JWT token in the Authorization header
+        },
+        
+    });
       Swal.fire({
         icon: 'success', text: 'Alumno actualizado',
         confirmButtonColor: 'rgb(158 173 56)',

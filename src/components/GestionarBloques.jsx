@@ -2,13 +2,15 @@ import React from 'react'
 import { useState } from 'react';
 import baseURL from '../helpers/rutaBase';
 import { TextField, Button, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
-import axios from 'axios';
+import axios from 'axios'; import useAxiosInterceptors from '../auth/axiosResponse';
 import { useEffect } from 'react';
 import Swal from 'sweetalert2';
 
 function GestionarBloques() {
     const [formData, setFormData] = useState({horaIni: "",horaFin: "", cantidadUsuarios: 20, dia: "Lunes", desactivado: false});
-
+  const accessToken = localStorage.getItem('accessToken');
+const refreshToken = localStorage.getItem('refreshToken');
+useAxiosInterceptors();
     const handleChange = (event) => {
         const { name, value } = event.target;
         setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
@@ -16,7 +18,12 @@ function GestionarBloques() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        axios.post(`${baseURL}/sesiones`, formData).then((response) => {
+        axios.post(`${baseURL}/sesiones`, formData, {
+            headers: {
+                'Authorization': accessToken // Include the JWT token in the Authorization header
+            },
+            
+        }).then((response) => {
             Swal.fire({
                 icon: 'success',
                 title: 'Bloque creado con exito',

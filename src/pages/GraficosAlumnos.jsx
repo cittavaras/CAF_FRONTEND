@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTable } from 'react-table';
 import { Container, Box } from '@mui/system';
-import axios from 'axios';
+import axios from 'axios'; import useAxiosInterceptors from '../auth/axiosResponse';
 import { useState, useEffect } from 'react';
 import baseURL from '../helpers/rutaBase';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
@@ -13,14 +13,21 @@ import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Area, CartesianGrid, 
 
 const Graficos = () => {
   const [metricas, setMetricas] = useState([]);
-
   useEffect(() => {
     getMetricas();
   }, []);
-
+  useAxiosInterceptors();
   const getMetricas = async () => {
-    const { rut } = JSON.parse(sessionStorage.getItem('alumno_sesion'));
-    const res = await axios.get(baseURL + '/metricas/', { params: { rut } });
+  const accessToken = localStorage.getItem('accessToken');
+const refreshToken = localStorage.getItem('refreshToken');
+
+
+    const res = await axios.get(baseURL + '/metricas/', {
+      headers: {
+          'Authorization': accessToken // Include the JWT token in the Authorization header
+      },
+       // Include the refreshToken in the request body
+    })
     const metricaAlumno = res.data;
     setMetricas(metricaAlumno);
   };

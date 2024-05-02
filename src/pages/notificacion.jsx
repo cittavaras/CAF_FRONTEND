@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import check from './img/check.png';
-
+import { useNavigate } from 'react-router-dom';
 const Check = styled.div`
   width: 100px;
   height: 100px;
@@ -44,12 +44,16 @@ const BotonExcelente = styled.button`
 `;
 
 const Notificacion = () => {
+  const navigate = useNavigate();
+  const handleClick = () => {
+    navigate('/');
+  };
   return (
     <Container>
       <Check />
       <div style={{height: '20px'}}></div>
       <Mensaje>TU SOLICITUD HA SIDO ENVIADA Y ESTÁ SIENDO REVISADA POR EL ADMINISTRADOR</Mensaje>
-      <BotonExcelente>Ya puedes cerrar esta ventana</BotonExcelente>
+      <BotonExcelente onclick={handleClick}>Ya puedes cerrar esta ventana</BotonExcelente>
     </Container>
   );
 };

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import baseURL from '../helpers/rutaBase';
-import axios from 'axios';
+import axios from 'axios'; import useAxiosInterceptors from '../auth/axiosResponse';
 import {
   Typography, Grid
 } from "@mui/material";
@@ -25,12 +25,16 @@ import Swal from 'sweetalert2'
 
 //import { useHistory } from 'react-router-dom';
 const RutinasAlumno = () => {
+
   //const history = useHistory();
   const navigate = useNavigate();
   const [rutinas, setRutinas] = useState([]);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const { alumno } = useAuth();
+const accessToken = localStorage.getItem('accessToken');
+const refreshToken = localStorage.getItem('refreshToken');
+useAxiosInterceptors();
   useEffect(() => {
     getRutinas();
   }, []);
@@ -43,8 +47,13 @@ const RutinasAlumno = () => {
 
   const getRutinas = async () => {
     try {
-      const { rut } = JSON.parse(sessionStorage.getItem('alumno_sesion'));
-      const res = await axios.get(baseURL + '/rutinas/alumno/', { params: { rutAlumno: rut } });
+      
+      const res = await axios.get(baseURL + '/rutinas/alumno/', {
+        headers: {
+            'Authorization': accessToken // Include the JWT token in the Authorization header
+        },
+         // Include the refreshToken in the request body
+      })
       const rutinaAlumno = res.data;
       setRutinas(rutinaAlumno);
     } catch (error) {
@@ -64,7 +73,12 @@ const RutinasAlumno = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          const res = await axios.delete(baseURL + `/rutinas/alumno/${rutinaId}`);
+          const res = await axios.delete(baseURL + `/rutinas/alumno/id/${rutinaId}`,{
+            headers: {
+                'Authorization': accessToken // Include the JWT token in the Authorization header
+            },
+             // Include the refreshToken in the request body
+          })
           setRutinas((prevRutinas) => prevRutinas.filter((rutina) => rutina._id !== rutinaId));
           Swal.fire('Rutina eliminada exitosamente');
           // Aquí puedes manejar la respuesta si es necesario

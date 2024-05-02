@@ -3,43 +3,48 @@ import { createContext, useState, useEffect } from "react";
 export const AuthContext = createContext();
 
 export default function AuthProvider({ children }) {
-
-    //const [alumno, setAlumno ] = useState(null);  //useState({ id: 1, role: roles.alumno });
-    const [alumno, setAlumno] = useState(sessionStorage.getItem("alumno_sesion"));
+    const [alumno, setAlumno] = useState(null);
 
     const loadSession = () => {
-        const sesion = sessionStorage.getItem("alumno_sesion");
-        if (sesion) {
-            setAlumno(JSON.parse(sesion));
+        const accessToken = localStorage.getItem("accessToken");
+        if (accessToken) {
+            // Decode the JWT token to extract user information
+            const decodedToken = decodeToken(accessToken);
+            if (decodedToken) {
+                setAlumno(decodedToken);
+            }
         }
     };
 
     useEffect(() => {
         loadSession();
-        //return () => clearTimeout(timer);
     }, []);
 
-    const login = (userCredentials) => {
-        if (!!userCredentials) {
-            const newAlumno = {
-                tipoUsuario: userCredentials?.tipoUsuario,
-                nombre: userCredentials?.nombre,
-                correo: userCredentials?.correo,
-                rut: userCredentials?.rut,
-                carrera: userCredentials?.carrera,
-                jornada: userCredentials?.jornada,
-                id: userCredentials?.id//TODO: revisar login
+    const login = async (accessToken, refreshToken) => {
+        if (accessToken && refreshToken) {
+          try {
+            // Store the access token and refresh token in local storage
+            localStorage.setItem("accessToken", accessToken);
+            localStorage.setItem("refreshToken", refreshToken);
+      
+            // Decode the access token to extract user information
+            const decodedToken = decodeToken(accessToken);
+            if (decodedToken) {
+              setAlumno(decodedToken);
             }
-            setAlumno(newAlumno)
-            sessionStorage.setItem("alumno_sesion", JSON.stringify(newAlumno));
+          } catch (error) {
+            console.error("Error during login:", error);
+          }
         }
-    }; 
+      };
+      
+      
 
     const logout = () => {
-        sessionStorage.setItem("alumno_sesion", null);
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
         setAlumno(null);
-        loadSession();
-      };
+    };
 
     const isLogged = () => !!alumno;
     const hasRole = (tipoUsuario) => alumno?.tipoUsuario === tipoUsuario;
@@ -50,11 +55,25 @@ export default function AuthProvider({ children }) {
         hasRole,
         login,
         logout
-    }
+    };
 
     return (
         <AuthContext.Provider value={contextValue}>
             {children}
         </AuthContext.Provider>
-    )
+    );
+}
+
+function decodeToken(accessToken) {
+    try {
+        const parts = accessToken.split(".");
+        if (parts.length !== 3) {
+            throw new Error("Invalid token format: missing parts");
+        }
+        const decodedToken = JSON.parse(atob(parts[1]));
+        return decodedToken;
+    } catch (error) {
+        console.error("Error decoding token:", error);
+        return null;
+    }
 }

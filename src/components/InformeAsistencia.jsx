@@ -12,8 +12,8 @@ import { Dialog,
     Box,
     IconButton } from  "@mui/material";
 
-import axios from "axios";
-
+import axios from 'axios'; import useAxiosInterceptors from '../auth/axiosResponse';
+import { useEffect } from 'react';
 import styled from "styled-components";
 import { useTheme } from "@mui/material/styles"; //TODO
 
@@ -62,7 +62,9 @@ const InformeAsistencia = (props) => {
   const [direction, setDirection] = useState(directionOptions[0].value);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-
+const accessToken = localStorage.getItem('accessToken');
+const refreshToken = localStorage.getItem('refreshToken');
+useAxiosInterceptors();
   const handleStartDateChange = (event) => {
     setStartDate(event.target.value);
   };
@@ -85,7 +87,10 @@ const InformeAsistencia = (props) => {
 
       const response = await axios.post(`${baseURL}/reservas/reporte`,
         { orderBy, startDate,endDate }, //TODO: aqui agregan los filtros, id de cita etc
-        { responseType: "blob" }
+        { responseType: "blob",headers: {
+          'Authorization': accessToken // Include the JWT token in the Authorization header
+      },
+       }
       );
 
       // Create a Blob from the PDF Stream
