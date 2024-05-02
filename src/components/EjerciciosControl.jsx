@@ -5,7 +5,7 @@ import Button from '@mui/material/Button';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import axios from 'axios';
+import axios from 'axios'; import useAxiosInterceptors from '../auth/axiosResponse';
 import baseURL from '../helpers/rutaBase';
 import Swal from 'sweetalert2';
 import styled from 'styled-components';
@@ -14,7 +14,9 @@ const EjerciciosControl = () => {
   const [ejercicios, setEjercicios] = useState([]);
   const [modificar, setModificar] = useState(false);
   const [ejerciciosModificados, setEjerciciosModificados] = useState([]);
-
+const accessToken = localStorage.getItem('accessToken');
+const refreshToken = localStorage.getItem('refreshToken');
+useAxiosInterceptors();
   const handleAddExercise = () => {
     setEjercicios((prevEjercicios) => [...prevEjercicios, { nombre: '' }]);
     if (modificar === true) {
@@ -45,7 +47,12 @@ const EjerciciosControl = () => {
   const handleSubmit = async (e, ejercicios) => {
     e.preventDefault();
     try {
-      const res = await axios.post(baseURL + `/ejercicios/`, { ejercicios });
+      const res = await axios.post(baseURL + `/ejercicios/`, { ejercicios }, {
+        headers: {
+            'Authorization': accessToken // Include the JWT token in the Authorization header
+        },
+        
+    });
       Swal.fire('Ejercicios guardados con éxito');
     } catch (error) {
       console.error(error);
@@ -64,7 +71,12 @@ const EjerciciosControl = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          const res = await axios.delete(baseURL + `/ejercicios/${ejercicioID}`);
+          const res = await axios.delete(baseURL + `/ejercicios/${ejercicioID}`, {
+            headers: {
+                'Authorization': accessToken // Include the JWT token in the Authorization header
+            },
+            
+        });
           setEjercicios((prevEjercicios) =>
             prevEjercicios.filter((ejercicio) => ejercicio._id !== ejercicioID)
           );
@@ -96,12 +108,22 @@ const EjerciciosControl = () => {
           for (const ejercicioModificado of ejerciciosModificados) {
             await axios.put(
               baseURL + `/ejercicios/${ejercicioModificado._id}`,
-              { _id: ejercicioModificado._id, nombre: ejercicioModificado.nombre }
+              { _id: ejercicioModificado._id, nombre: ejercicioModificado.nombre }, {
+                headers: {
+                    'Authorization': accessToken // Include the JWT token in the Authorization header
+                },
+                
+            }
             );
           }
           if (ejerciciosNuevos.length > 0) {
             const nuevosEjerciciosData = ejerciciosNuevos.map((ejercicio) => ({ nombre: ejercicio.nombre }));
-            await axios.post(baseURL + `/ejercicios/`, { ejercicios: nuevosEjerciciosData });
+            await axios.post(baseURL + `/ejercicios/`, { ejercicios: nuevosEjerciciosData }, {
+              headers: {
+                  'Authorization': accessToken // Include the JWT token in the Authorization header
+              },
+              
+          });
           }
           setEjerciciosModificados([]);
           Swal.fire({
@@ -122,7 +144,12 @@ const EjerciciosControl = () => {
   useEffect(() => {
     const getEjercicios = async () => {
       try {
-        const res = await axios.get(baseURL + '/ejercicios');
+        const res = await axios.get(baseURL + '/ejercicios', {
+          headers: {
+              'Authorization': accessToken // Include the JWT token in the Authorization header
+          },
+          
+      });
         setEjercicios(res.data);
       } catch (error) {
         console.error(error);

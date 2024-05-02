@@ -12,7 +12,7 @@ import React, { useEffect, useState } from 'react';
 import baseURL from '../helpers/rutaBase';
 import { Container, Box, bgcolor, color, padding } from '@mui/system';
 import useAuth from '../auth/useAuth';
-import axios from 'axios';
+import axios from 'axios'; import useAxiosInterceptors from '../auth/axiosResponse';
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -63,7 +63,9 @@ const RegistroRutinas = () => {
   const [selectedDayFromGet, setSelectedDayFromGET] = useState();
   const { alumno } = useAuth();
   const navigate = useNavigate();
-
+const accessToken = localStorage.getItem('accessToken');
+const refreshToken = localStorage.getItem('refreshToken');
+useAxiosInterceptors();
   //const actionButtonText = isEditing ? 'Guardar Cambios' : 'Crear Rutina';
   const handleEjercicios = (ejercicios) => {
 
@@ -324,7 +326,12 @@ const RegistroRutinas = () => {
             calentamiento: calentamiento,
             vueltaALaCalma: vueltaALaCalma,
             ejercicios: ejercicios,
-          });
+          }, {
+            headers: {
+                'Authorization': accessToken // Include the JWT token in the Authorization header
+            },
+             // Include the refreshToken in the request body
+          })
 
           // Mostrar el alert
           Swal.fire({
@@ -356,7 +363,12 @@ const RegistroRutinas = () => {
             calentamiento: calentamiento,
             vueltaALaCalma: vueltaALaCalma,
             ejercicios: ejercicios,
-          });
+          },{
+            headers: {
+                'Authorization': accessToken // Include the JWT token in the Authorization header
+            },
+             // Include the refreshToken in the request body
+          })
           // Mostrar el alert
           Swal.fire({
             icon: 'success',
@@ -461,7 +473,13 @@ const RegistroRutinas = () => {
           vueltaALaCalma: vueltaALaCalma,
           ejercicios: ejercicios,
         }
-        await axios.put(baseURL + `/rutinas/alumno/${rutinaId}`, datosRutina).then((res) => {
+        await axios.put(baseURL + `/rutinas/alumno/id/${rutinaId}`, datosRutina, {
+          headers: {
+              'Authorization': accessToken // Include the JWT token in the Authorization header
+          },
+           // Include the refreshToken in the request body
+        })
+        .then((res) => {
           //if res code 200 
           if (res.status === 200) {
             Swal.fire({
@@ -547,22 +565,23 @@ const RegistroRutinas = () => {
       //obtener rutina para mostrar y editar
 
       try {
-        axios.get(baseURL + `/rutinas/alumno/${rutinaId}`)
-          .then((res) => {
-            const rutina = res.data;
-            // console.log("rutina Prueba", rutina);
-            setNomRutina(rutina.nombre);
-            setSelectedDayFromGET(rutina.diasDeSemana);
-            setCardioInicial(rutina.cardioInicial);
-            setCardioFinal(rutina.cardioFinal);
-            setCalentamiento(rutina.calentamiento);
-            setVueltaALaCalma(rutina.vueltaALaCalma);
-            setEjercicios(rutina.ejercicios);
-          })
-          .catch((error) => {
-            console.error(error);
-          }
-          );
+        axios.get(baseURL + `/rutinas/alumno/id/${rutinaId}`, {
+          headers: {
+              'Authorization': accessToken // Include the JWT token in the Authorization header
+          },
+         // Include the refreshToken in the request body
+      }).then((res) => {
+        const rutina = res.data;
+        // console.log("rutina Prueba", rutina);
+        setNomRutina(rutina.nombre);
+        setSelectedDayFromGET(rutina.diasDeSemana);
+        setCardioInicial(rutina.cardioInicial);
+        setCardioFinal(rutina.cardioFinal);
+        setCalentamiento(rutina.calentamiento);
+        setVueltaALaCalma(rutina.vueltaALaCalma);
+        setEjercicios(rutina.ejercicios);
+      })
+          
       } catch (error) {
         console.error(error);
       }

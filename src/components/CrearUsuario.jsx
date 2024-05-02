@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from 'axios'; import useAxiosInterceptors from '../auth/axiosResponse';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import baseURL from '../helpers/rutaBase';
@@ -17,10 +17,17 @@ const CrearUsuario = () => {
   const [jornada, setJornada] = useState('');
   const [active, setActive] = useState(true);
   const [tipoUsuario, setTipoUsuario] = useState('');
-
+const accessToken = localStorage.getItem('accessToken');
+const refreshToken = localStorage.getItem('refreshToken');
+useAxiosInterceptors();
   useEffect(() => {
     const getAlumnos = async () => {
-      const res = await axios.get(baseURL + '/alumnos');
+      const res = await axios.get(baseURL + '/alumnos', {
+        headers: {
+            'Authorization': accessToken // Include the JWT token in the Authorization header
+        },
+        
+    });
       setAlumnos(res.data);
     };
 
@@ -81,7 +88,12 @@ const CrearUsuario = () => {
         tipoUsuario,
       };
 
-      await axios.post(baseURL + '/alumnos', newAlumno);
+      await axios.post(baseURL + '/alumnos', newAlumno, {
+        headers: {
+            'Authorization': accessToken // Include the JWT token in the Authorization header
+        },
+        
+    });
       Swal.fire({
         icon: 'succes', text: 'Usuario creado correctamente',
         confirmButtonColor: 'rgb(158 173 56)',

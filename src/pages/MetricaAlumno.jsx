@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container, Box } from '@mui/system';
 import styled from 'styled-components';
-import axios from 'axios';
+import axios from 'axios'; import useAxiosInterceptors from '../auth/axiosResponse';
 import { useState, useEffect } from 'react';
 import baseURL from '../helpers/rutaBase';
 import useAuth from '../auth/useAuth';
@@ -17,12 +17,15 @@ import 'moment/locale/es';
 import CircularProgress from '@mui/material/CircularProgress';
 
 const Metrica = () => {
+
   const { alumno } = useAuth();
   const [metricasRecientes, setMetricasRecientes] = useState([]);
   const [isFetchDone, setIsFetchDone] = useState(true);
   const [metricas, setMetricas] = useState([]);
   const [fecha, setFecha] = useState([]);
-
+const accessToken = localStorage.getItem('accessToken');
+const refreshToken = localStorage.getItem('refreshToken');
+useAxiosInterceptors();
   useEffect(() => {
     MetricasRecientes()
   }, []);
@@ -48,8 +51,13 @@ const Metrica = () => {
 
 
   const MetricasRecientes = async () => {
-    const { rut } = JSON.parse(sessionStorage.getItem('alumno_sesion'));
-    const res = await axios.post(baseURL + '/metricas/alumno', { rut });
+    
+    const res = await axios.post(baseURL + '/metricas/alumno', '',{
+      headers: {
+          'Authorization': accessToken // Include the JWT token in the Authorization header
+      },
+       // Include the refreshToken in the request body
+    })
     const metricaAlumno = res.data;
     const valor = data[0]?.valor; // Suponiendo que data es un arreglo de objetos y quieres acceder al primer elemento
 
@@ -65,8 +73,12 @@ const Metrica = () => {
   }
 
   const getMetricas = async () => {
-    const { rut } = JSON.parse(sessionStorage.getItem('alumno_sesion'));
-    const res = await axios.get(baseURL + '/metricas/', { params: { rut } });
+    const res = await axios.get(baseURL + '/metricas/', {
+      headers: {
+          'Authorization': accessToken // Include the JWT token in the Authorization header
+      },
+       // Include the refreshToken in the request body
+    })
 
     const metricaAlumno = res.data;
     setMetricas(metricaAlumno);

@@ -10,8 +10,8 @@ import AddIcon from '@mui/icons-material/Add';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import Swal from 'sweetalert2'
-import axios from "axios";
-import baseURL from "../helpers/rutaBase";
+import axios from 'axios'; import useAxiosInterceptors from '../auth/axiosResponse';
+import baseURL from '../helpers/rutaBase';
 
 const BoxEjerciciosForm = ({ onHandleEjercicios, ejerciciosFromGet }) => {
   const [ejercicios, setEjercicios] = useState(
@@ -25,7 +25,9 @@ const BoxEjerciciosForm = ({ onHandleEjercicios, ejerciciosFromGet }) => {
     }]
     );
   const [ejerciciosSelect, setEjerciciosSelect] = useState()
-
+const accessToken = localStorage.getItem('accessToken');
+const refreshToken = localStorage.getItem('refreshToken');
+useAxiosInterceptors();
   useEffect(() => {
     onHandleEjercicios(ejercicios)
     // set states onInfoCargada
@@ -43,7 +45,12 @@ const BoxEjerciciosForm = ({ onHandleEjercicios, ejerciciosFromGet }) => {
 
   async function fetchEjercicios() {
     try {
-      const response = await axios.get(baseURL + '/ejercicios');
+      const response = await axios.get(baseURL + '/ejercicios',{
+        headers: {
+            'Authorization': accessToken // Include the JWT token in the Authorization header
+        },
+        
+    });
       setEjerciciosSelect(response.data);
     } catch (error) {
       console.error(error);

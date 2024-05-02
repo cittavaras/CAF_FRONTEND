@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from 'axios'; import useAxiosInterceptors from '../auth/axiosResponse';
 import React, { useState, useEffect, Fragment } from 'react';
 import './css/landing.css';
 import styled from 'styled-components';
@@ -42,8 +42,10 @@ const LandingPageAlumno = ({ location }) => {
   const [expanded, setExpanded] = React.useState(false);
   const [dayTrain, setDayTrain] = useState(moment(Date.now()).format('DD-MM-yyyy'));
 
-  const { rut } = JSON.parse(sessionStorage.getItem('alumno_sesion'));
-
+  //const { rut } = JSON.parse(sessionStorage.getItem('alumno_sesion'));
+const accessToken = localStorage.getItem('accessToken');
+const refreshToken = localStorage.getItem('refreshToken');
+useAxiosInterceptors();
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
@@ -55,9 +57,13 @@ const LandingPageAlumno = ({ location }) => {
   // useEffect(() => {
   //   console.log(dayTrain)
   // }, [dayTrain])
-
   const getBloquesReservados= async () => {
-    const response = await axios.get(baseURL + `/reservas/${rut}`);
+    const response = await axios.get(baseURL + '/reservas/', {
+      headers: {
+        'Authorization': accessToken
+      }
+       // Include the refreshToken in the request body
+    })
     const bloquesReservados = response.data;
     return bloquesReservados;
   };
@@ -71,7 +77,12 @@ const LandingPageAlumno = ({ location }) => {
         if (moment(bloque.diaReserva).format('DD-MM-yyyy') == dayTrain) {
           console.log('HERE')
           setDay(moment(bloque.diaReserva).format('dddd'));
-          const res = await axios.get(baseURL + '/rutinas/alumno/', { params: { rutAlumno: rut, day: moment(bloque.diaReserva).format('dddd') } });
+          const res = await axios.get(baseURL + '/rutinas/alumno/', { params: {day: moment(bloque.diaReserva).format('dddd') }, 
+          headers: {
+            'Authorization': accessToken // Include the JWT token in the Authorization header
+        } ,
+         // Include the refreshToken in the request body
+      })
           const rutinaAlumno = res.data;
           setRutinas(rutinaAlumno || [{}]);
           setHasRutina(rutinaAlumno.length > 0);
@@ -86,7 +97,12 @@ const LandingPageAlumno = ({ location }) => {
   };
 
   const getlandingPage = async () => {
-    const resp = await axios.get(baseURL + '/landing-page/landing-page');
+    const resp = await axios.get(baseURL + '/landing-page/landing-page', {
+      headers: {
+          'Authorization': accessToken // Include the JWT token in the Authorization header
+      },
+       // Include the refreshToken in the request body
+    })
     setInfoCargada(resp.data);
     // console.log(infoCargada)
   };

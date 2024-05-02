@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
+import axios from 'axios'; import useAxiosInterceptors from '../auth/axiosResponse';
 import ReactPaginate from 'react-paginate';
 import Paper from '@mui/material/Paper';
 import InputBase from '@mui/material/InputBase';
@@ -20,8 +20,9 @@ const ListarActivos = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [search, setSearch] = useState('');
   const [alumnoSeleccionado, setAlumnoSeleccionado] = useState(null);
-
-
+const accessToken = localStorage.getItem('accessToken');
+const refreshToken = localStorage.getItem('refreshToken');
+useAxiosInterceptors();
   const [open, setOpen] = useState(false);
   const [openRutinas, setOpenRutinas] = useState(false);
 
@@ -47,7 +48,12 @@ const ListarActivos = () => {
   // Función para obtener la lista de alumnos
   const getAlumnos = async () => {
     try {
-      const res = await axios.get(baseURL + '/alumnos');
+      const res = await axios.get(baseURL + '/alumnos', {
+        headers: {
+            'Authorization': accessToken // Include the JWT token in the Authorization header
+        },
+        
+    });
       const alumnos = res.data.alumnos.filter(alumno => alumno.tipoUsuario === 'Alumno' && alumno.active === true);
       const startIndex = paginaNumero * porPagina;
       const alumnosSeleccionados = alumnos.slice(startIndex, startIndex + porPagina);
@@ -60,9 +66,19 @@ const ListarActivos = () => {
 
   const actualizarAlumno = async (e) => {
     e.preventDefault();
-    const res = await axios.get(`${baseURL}/alumnos/${search}`);
+    const res = await axios.get(`${baseURL}/alumnos/${search}`, {//¿siquera funciona esto?
+      headers: {
+          'Authorization': accessToken // Include the JWT token in the Authorization header
+      },
+      
+  });
     await axios
-      .post(baseURL + '/alumnos', { rut: search, })
+      .post(baseURL + '/alumnos', { rut: search, }, {
+        headers: {
+            'Authorization': accessToken // Include the JWT token in the Authorization header
+        },
+        
+    })
       .then((response) => {
         //console.log('Email sent successfully:', response.data);
       })
@@ -97,7 +113,12 @@ const ListarActivos = () => {
       return;
     }
     else {
-      await axios.post(`${baseURL}/metricas/`, metricas);
+      await axios.post(`${baseURL}/metricas/`, metricas, {
+        headers: {
+            'Authorization': accessToken // Include the JWT token in the Authorization header
+        },
+        
+    });
       //console.log(metricas);
       Swal.fire({
         icon: 'info', text: 'Metricas registradas',
@@ -128,7 +149,12 @@ const ListarActivos = () => {
   // Filtrar por rut
   const filtrarAlumnos = async (e) => {
     e.preventDefault();
-    const res = await axios.get(baseURL + '/alumnos');
+    const res = await axios.get(baseURL + '/alumnos', {
+      headers: {
+          'Authorization': accessToken // Include the JWT token in the Authorization header
+      },
+      
+  });
     const alumno = res.data.alumnos.filter(alumno => alumno.tipoUsuario === 'Alumno' && alumno.rut === search);
     if (!search) {
       Swal.fire({

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
+import axios from 'axios'; import useAxiosInterceptors from '../auth/axiosResponse';
 import ReactPaginate from 'react-paginate';
 import Paper from '@mui/material/Paper';
 import InputBase from '@mui/material/InputBase';
@@ -24,7 +24,9 @@ const ModificarEliminarUsuario = () => {
 
   const [open, setOpen] = useState(false);
   const [openModificar, setOpenModificar] = useState(false);
-
+const accessToken = localStorage.getItem('accessToken');
+const refreshToken = localStorage.getItem('refreshToken');
+useAxiosInterceptors();
   const handleOpen = (e, al) => {
     e.preventDefault();
     setAlumnoEliminado(al)
@@ -56,7 +58,12 @@ const ModificarEliminarUsuario = () => {
   // Función para obtener la lista de alumnos
   const getAlumnos = async () => {
     try {
-      const res = await axios.get(baseURL + '/alumnos');
+      const res = await axios.get(baseURL + '/alumnos', {
+        headers: {
+            'Authorization': accessToken // Include the JWT token in the Authorization header
+        },
+        
+    });
       const alumnos = res.data.alumnos.filter(alumno => alumno.tipoUsuario === 'Alumno' && alumno.active === true);
       const startIndex = paginaNumero * porPagina;
       const alumnosSeleccionados = alumnos.slice(startIndex, startIndex + porPagina);
@@ -87,7 +94,12 @@ const ModificarEliminarUsuario = () => {
     if(e.key !== undefined) {
       if(e.key !== 'Enter') return;
     }
-    const res = await axios.get(baseURL + '/alumnos');
+    const res = await axios.get(baseURL + '/alumnos', {
+      headers: {
+          'Authorization': accessToken // Include the JWT token in the Authorization header
+      },
+       // Include the refreshToken in the request body
+    })
     const alumno = res.data.alumnos.filter(alumno => alumno.tipoUsuario === 'Alumno' && alumno.rut === search);
     if (!search) {
       Swal.fire({
@@ -129,7 +141,12 @@ const ModificarEliminarUsuario = () => {
       return;
     }
     else {
-      await axios.put(`${baseURL}/alumnos/${alumnoModificado._id}`, actualizar);
+      await axios.put(`${baseURL}/alumnos/id/${alumnoModificado._id}`, actualizar, {
+        headers: {
+            'Authorization': accessToken // Include the JWT token in the Authorization header
+        },
+         // Include the refreshToken in the request body
+      })
       //console.log(actualizar);
       Swal.fire({
         icon: 'info', text: 'Datos del alumno actualizadas con éxito',
@@ -143,7 +160,12 @@ const ModificarEliminarUsuario = () => {
 
   const eliminarAlumno = async (e) => {
     e.preventDefault();
-    const res = await axios.delete(`${baseURL}/alumnos/${alumnoEliminado._id}`);
+    const res = await axios.delete(`${baseURL}/alumnos/id/${alumnoEliminado._id}`, {
+      headers: {
+          'Authorization': accessToken // Include the JWT token in the Authorization header
+      },
+       // Include the refreshToken in the request body
+    })
 
     handleClose();
     getAlumnos();

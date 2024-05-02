@@ -3,7 +3,7 @@ import { Modal, Button, Form } from 'react-bootstrap';
 //import AdminControl from './AdminControl.jsx';
 import GimInforma from './GimInforma';
 import AdminControl from './AdminControl';
-import axios from 'axios';
+import axios from 'axios'; import useAxiosInterceptors from '../auth/axiosResponse';
 import { useEffect } from 'react';
 import baseURL from '../helpers/rutaBase';
 import Swal from 'sweetalert2';
@@ -14,6 +14,10 @@ const Informativo = () => {
   const [phrase, setPhrase] = useState('reiniciarsemestre');
   const [inputValue, setInputValue] = useState('');
 
+const accessToken = localStorage.getItem('accessToken');
+const refreshToken = localStorage.getItem('refreshToken');
+useAxiosInterceptors();
+
   const handleInfoCargada = (info) => {
     // console.log('INFO', info);
     setInfoCargada(info);
@@ -23,7 +27,12 @@ const Informativo = () => {
     //control de errores if error exist alert error else alert success
     e.preventDefault();
     try {
-      const resp = await axios.put(baseURL + '/landing-page/landing-page', infoCargada);
+      const resp = await axios.put(baseURL + '/landing-page/landing-page', infoCargada, {
+        headers: {
+            'Authorization': accessToken // Include the JWT token in the Authorization header
+        },
+        
+    });
       Swal.fire({
         icon: 'success', text: 'Cambios guardados con éxito',
         confirmButtonColor: 'rgb(158 173 56)',
@@ -38,7 +47,12 @@ const Informativo = () => {
   };
 
   const getlandingPage = async () => {
-    const resp = await axios.get(baseURL + '/landing-page/landing-page');
+    const resp = await axios.get(baseURL + '/landing-page/landing-page', {
+      headers: {
+          'Authorization': accessToken // Include the JWT token in the Authorization header
+      },
+      
+  });
     setInfoCargada(resp.data);
   };
 
@@ -92,6 +106,7 @@ const Informativo = () => {
       </div>
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
+
           <Modal.Title>Confirmar Reinicio Semestre WIP</Modal.Title>
         </Modal.Header>
         <Modal.Body>

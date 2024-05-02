@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios'; import useAxiosInterceptors from '../auth/axiosResponse';
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import roles from "../helpers/roles";
@@ -6,7 +6,7 @@ import useAuth from "../auth/useAuth";
 import ReservarSesion from "./ReservarSesion";
 import InformeAsistencia from "./InformeAsistencia";
 import InformeMetricas from "./InformeMetricas";
-import baseURL from "../helpers/rutaBase";
+import baseURL from '../helpers/rutaBase';
 import Box from "@mui/material/Box";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
@@ -70,13 +70,19 @@ const BotonesPerfil = () => {
   const handleCloseInformeMetrica = async () => {
     setInformeMetrica(false);
   };
-
+const accessToken = localStorage.getItem('accessToken');
+const refreshToken = localStorage.getItem('refreshToken');
+useAxiosInterceptors();
   const getReservasByAlumno = async (fecha = new Date()) => {
     try {
-      const res = await axios.post(baseURL + "/reservas/alumno", {
-        rut: alumno.rut,
-        fecha,
-      });
+      const res = await axios.post(`${baseURL}/reservas/alumno`, {
+        fecha
+    }, {
+        headers: {
+            'Authorization': accessToken // Include the JWT token in the Authorization header
+        },
+        
+    });
       const nuevasReservas = res?.data ?? [];
       setReservasAlumno(nuevasReservas);
       //console.log("res?.data", nuevasReservas);

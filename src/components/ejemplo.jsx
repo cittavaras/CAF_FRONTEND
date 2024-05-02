@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
+import axios from 'axios'; import useAxiosInterceptors from '../auth/axiosResponse';
 import { Link } from 'react-router-dom';
 import NavAdmin from './Navigation';
 import ReactPaginate from 'react-paginate'; //para importar la libreria de paginacion
 import baseURL from '../helpers/rutaBase';
-
+const accessToken= localStorage.getItem('accessToken');
+const refreshToken = localStorage.getItem('refreshToken');
+useAxiosInterceptors();
 class ListarAlumno extends Component {
   state = {
     alumnos: [],
@@ -22,7 +24,13 @@ class ListarAlumno extends Component {
   // Función para obtener la lista de alumnos
   getAlumnos = async () => {
     try {
-      const res = await axios.get(baseURL + '/alumnos');
+      
+      const res = await axios.get(baseURL + '/alumnos', {
+        headers: {
+            'Authorization': accessToken // Include the JWT token in the Authorization header
+        },
+        
+    });
       // Filtrar los alumnos que son del tipo 'Alumno' y que no estén activos
       const alumnos = res.data.alumnos.filter(alumno => alumno.tipoUsuario === 'Alumno' && alumno.active === false);
       const startIndex = this.state.paginaNumero * this.state.porPagina;
@@ -39,7 +47,12 @@ class ListarAlumno extends Component {
   // Función para eliminar un alumno
   eliminarAlumno = async (id) => {
     
-    const alu = await axios.delete(`${baseURL}/alumnos/${id}`);
+    const alu = await axios.delete(`${baseURL}/alumnos/id/${id}`, {
+      headers: {
+          'Authorization': accessToken // Include the JWT token in the Authorization header
+      },
+      
+  });
     clg(alu);
     this.getAlumnos();
   }
@@ -47,7 +60,12 @@ class ListarAlumno extends Component {
 
   // Función para aceptar un alumno
   aceptarAlumno = async (id) => {
-    const res = await axios.put(`${baseURL}/alumnos/${id}`, { active: true });
+    const res = await axios.put(`${baseURL}/alumnos/id/${id}`, { active: true }, {
+      headers: {
+          'Authorization': accessToken // Include the JWT token in the Authorization header
+      },
+      
+  });
     this.getAlumnos();
     //console.log(res);
     //console.log(res.data.alumnos);

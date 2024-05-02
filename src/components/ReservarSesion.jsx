@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from 'axios'; import useAxiosInterceptors from '../auth/axiosResponse';
 import styled from "styled-components";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles"; //TODO
@@ -37,8 +37,6 @@ const messages = {
   week: 'Semana',
   day: 'Día'
 };
-
-const alumno_sesion = JSON.parse(sessionStorage.getItem("alumno_sesion"));  
 
 const CALENDAR_TITLE = "Reserva tu Entrenamiento";
 const CALENDAR_PARAGRAPH = "Selecciona Mes y Día que deseas agendar para ver los bloques disponibles. Luego selecciona el bloque que deseas reservar. Recuerda que solo puedes reservar 3 bloques por semana.";
@@ -84,6 +82,9 @@ const ReservarSesion = (props) => {
   const [selectedSesion, setSelectedSesion] = useState(null);
   const [alumnosSesion, setAlumnosSesion] = useState([]);
   const [view, setView] = useState(['week','day']);
+const accessToken = localStorage.getItem('accessToken');
+const refreshToken = localStorage.getItem('refreshToken');
+useAxiosInterceptors();
   useEffect(() => {
     fetchServerDate().then((serverDate) => {
       setFechaActual(serverDate);
@@ -93,7 +94,12 @@ const ReservarSesion = (props) => {
   
   const fetchServerDate = async () => {
     try {
-      const response = await fetch(baseURL + '/date'); // Replace with your server endpoint
+      const response = await fetch(baseURL + '/date',{
+        headers: {
+            'Authorization': accessToken // Include the JWT token in the Authorization header
+        },
+         // Include the refreshToken in the request body
+      }) // Replace with your server endpoint
       const data = await response.json();
       const serverDate = moment(data.serverDate).toDate();
       var serverAdjust = serverDate;
@@ -119,16 +125,22 @@ const ReservarSesion = (props) => {
     setLoading(true);
     setEventos([]);
     try {
+      console.log("Fetching sesiones...");
       const res = await axios.get(baseURL + '/sesiones', {
         params: {
           fecha: fechaVista
-        }
-      });
-
+        },
+          headers: {
+              'Authorization': accessToken // Include the JWT token in the Authorization header
+          },
+           // Include the refreshToken in the request body
+        })
+      console.log("Sesiones fetched:", res.data);
       setSesiones(res?.data ?? []);
       
+      
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching sesiones:", error);
     }
     setLoading(false);
   }
@@ -140,21 +152,39 @@ const ReservarSesion = (props) => {
   const crearReservas = async (e) => {
     e.preventDefault();
     try {
+      console.log("Creating reservas...");
       const body = {
-        rut: alumno.rut,
         sesiones: selectedEvents,
         fecha: fechaVista
       }
-      const res = await axios.post(baseURL + '/reservas', body);
-      alert('Sesiones Reservadas');
+      const res = await axios.post(baseURL + '/reservas', body,{
+        headers: {
+            'Authorization': accessToken // Include the JWT token in the Authorization header
+        },
+         // Include the refreshToken in the request body
+      })
+      
+    console.log("Reservas created:", res.data);
+    const { message, rev, fallidas } = res.data;
+    let alertMessage = message;
+    if (fallidas && fallidas.length > 0 && !rev.length>0) {
+      const filledSessionsMessage = `Reservación Fallida. Las siguientes sesiones ya se encuentran llenas:\n${fallidas.map(session => `día ${session.dia} sesion ${session.numeroSesion}`).join('\n')}`;
+      alertMessage =filledSessionsMessage;
+    }else if(fallidas && fallidas.length > 0 && rev.length>0){
+      const filledSessionsMessage = `Reservación completada con problemas. Las siguientes sesiones ya se encuentran llenas:\n${fallidas.map(session => `día ${session.dia} sesion ${session.numeroSesion}`).join('\n')}`;
+      alertMessage =filledSessionsMessage;
+    }else{
+      alertMessage='Reservación completada exitosamente'
+    }
+      alert(alertMessage);
 
       const reservas = await props.getReservasByAlumno(fechaVista);
-
+      console.log("Reservas fetched:", reservas);
       await enviarCorreoReservasCreadas(alumno, reservas);
 
       props.handleClose();
     } catch (error) {
-      //console.log(error);
+      console.error("Error creating reservas:", error);
     }
   }
 
@@ -185,7 +215,12 @@ const ReservarSesion = (props) => {
         subject: 'Reserva de Sesiones CAF',
         text: `Estimado ${alumno.nombre}, Le informamos que en la semana seleccionada cuenta con las siguientes reservas:\n${sesionesReservadasText}.`,
         html: `<p>Estimado <strong>${alumno.nombre}</strong>,</p><p>Le informamos que en la semana seleccionada cuenta con las siguientes reservas:</p><p>${sesionesReservadasText}</p>`,
-      });}
+      },{
+        headers: {
+            'Authorization': accessToken // Include the JWT token in the Authorization header
+        },
+         // Include the refreshToken in the request body
+      })}
       
       
 
@@ -229,6 +264,7 @@ const ReservarSesion = (props) => {
 
   useEffect(() => {
     if (selectedSesion != null) {
+      console.log("Selected session:", selectedSesion);
       getAlumnosByNumeroSesion()
     }
   }, [selectedSesion]);
@@ -343,20 +379,31 @@ const ReservarSesion = (props) => {
 
   const getAlumnosByNumeroSesion = async () => {
     try {
+      console.log("Fetching alumnos by numero sesion...");
       const res = await axios.get(`${baseURL}/sesiones/${selectedSesion.id}/alumnos`, {
         params: {
           fecha: fechaVista
-        }
-      });
+        },
+          headers: {
+              'Authorization': accessToken // Include the JWT token in the Authorization header
+          },
+           // Include the refreshToken in the request body
+        })
+      console.log("Alumnos fetched:", res.data);
       setAlumnosSesion(res?.data ?? []);
     } catch (error) {
-      //console.log(error);
+      console.error("Error fetching alumnos by numero sesion:", error);
     }
   }
 
   const tomarAsistencia = async (reservaId, asistencia) => {
     try {
-      await axios.put(`${baseURL}/sesiones/reserva/${reservaId}/asistencia`, { asistencia: asistencia });
+      await axios.put(`${baseURL}/sesiones/reserva/${reservaId}/asistencia`, { asistencia: asistencia },{
+        headers: {
+            'Authorization': accessToken // Include the JWT token in the Authorization header
+        },
+         // Include the refreshToken in the request body
+      })
     } catch (error) {
       console.log(error);
     }
@@ -365,7 +412,12 @@ const ReservarSesion = (props) => {
   const desactivarSesion = async () => {
     try {
       setLoading(true);
-      await axios.put(`${baseURL}/sesiones/${selectedSesion.id}/desactivar`, { fecha: fechaVista, activar: selectedSesion.desactivada });
+      await axios.put(`${baseURL}/sesiones/${selectedSesion.id}/desactivar`, { fecha: fechaVista, activar: selectedSesion.desactivada },{
+        headers: {
+            'Authorization': accessToken // Include the JWT token in the Authorization header
+        },
+         // Include the refreshToken in the request body
+      })
       setSelectedSesion({ ...selectedSesion, desactivada: !selectedSesion.desactivada });
       setLoading(false);
       getSesiones();
@@ -374,13 +426,18 @@ const ReservarSesion = (props) => {
         const alumnos = alumnosSesion
         for (const alumno of alumnos) {
           await enviarCorreoSesionDesactivada(alumno);
-          await axios.delete(`${baseURL}/reservas/${alumno.reservaId}`)
+          await axios.delete(`${baseURL}/reservas/${alumno.reservaId}`,{
+            headers: {
+                'Authorization': accessToken // Include the JWT token in the Authorization header
+            },
+             // Include the refreshToken in the request body
+          })
         }
         await getAlumnosByNumeroSesion();
         getSesiones();
       }
     } catch (error) {
-      //console.error('Error al desactivar la sesión:', error);
+      console.error('Error al desactivar la sesión:', error);
     }
   }
 
@@ -389,6 +446,7 @@ const ReservarSesion = (props) => {
       //console.log(selectedSesion)
       setLoading(true);
       props.handleClose();
+      console.log("Deleting sesion...");
       Swal.fire({
         title: '¿Estás seguro?',
         text: "No sera posible revertir esta acción!",
@@ -400,9 +458,15 @@ const ReservarSesion = (props) => {
         cancelButtonText: 'Cancelar'
       }).then( async (result) => {
         if (result.isConfirmed) {
-          await axios.delete(`${baseURL}/sesiones/${selectedSesion.id}`).then(() => {
+          await axios.delete(`${baseURL}/sesiones/${selectedSesion.id}`,{
+            headers: {
+                'Authorization': accessToken // Include the JWT token in the Authorization header
+            },
+             // Include the refreshToken in the request body
+          }).then(() => {
           //get back to prev modal
           });
+          console.log("Sesion deleted successfully"); 
           Swal.fire(
             'Eliminado!',
             'Tu bloque ha sido eliminado.',
@@ -434,7 +498,12 @@ const ReservarSesion = (props) => {
         subject: 'Sesión Desactivada CAF',
         text: `Estimado ${alumno.nombre}, Lamentamos informarle que una de las sesiones que reservo ha sido desactivada. Recomendamos reservar otra sesion en el sitio. https://caf.ivaras.cl/`,
         html: `<p>Estimado <strong>${alumno.nombre}</strong>,</p><p>Lamentamos informarle que una de las sesiones que reservo ha sido desactivada. Recomendamos reservar otra sesion en el sitio. https://caf.ivaras.cl/</p>`,
-      });
+      },{
+        headers: {
+            'Authorization': accessToken // Include the JWT token in the Authorization header
+        },
+         // Include the refreshToken in the request body
+      })
       //console.log(`Correo enviado a ${alumno.nombre}`);
     } catch (error) {
       //console.error('Error al enviar el correo:', error);
@@ -568,6 +637,7 @@ const generateTrainingEvents = (sesiones = [], fecha) => {
       isValid: sesion.count < sesion.cantidadUsuarios,
       dia: sesion.dia,
       cantidadUsuarios: sesion.count,
+      cantidadMax: sesion.cantidadUsuarios,
       desactivada: sesion.desactivada
     };
     return newSesion;
