@@ -61,12 +61,35 @@ const Login = () => {
           localStorage.setItem('accessToken', accessToken);
           localStorage.setItem('refreshToken', refreshToken);
           login(accessToken, refreshToken);
+          if(res.data.message2==="DIAS20"){
           Swal.fire({
-            icon: 'success', text: 'Login successful!',
+            icon: 'success', text: 'Recuerda realizar tus evaluaciones, llevas sobre 20 dias desde tu ultima evaluación',
+            confirmButtonColor: 'rgb(158 173 56)',
+          });}
+          else if(res.data.message2==="NDIAS20"){
+            Swal.fire({
+              icon: 'success', text: 'Llevas sobre 20 días de inactividad, recuerda realizar tus evaluaciones',
+              confirmButtonColor: 'rgb(158 173 56)',
+            });}
+          else{
+            Swal.fire({
+              icon: 'success', text: 'Login successful!',
+              confirmButtonColor: 'rgb(158 173 56)',
+            });
+          }
+          navigate('/landing');
+        } else if(res.data.message==="DIAS30") {
+          Swal.fire({
+            icon: 'error', text: 'Han pasado sobre 30 días desde su ultima evaluación. Favor hablar con instructor.',
             confirmButtonColor: 'rgb(158 173 56)',
           });
-          navigate('/landing');
-        } else {
+        }else if(res.data.message==="NDIAS30"){
+          Swal.fire({
+            icon: 'error', text: 'Han pasado sobre 30 días de inactividad. Favor hablar con instructor.',
+            confirmButtonColor: 'rgb(158 173 56)',
+          });
+        }
+        else{
           Swal.fire({
             icon: 'error', text: 'El usuario o contraseña es incorrecto',
             confirmButtonColor: 'rgb(158 173 56)',
