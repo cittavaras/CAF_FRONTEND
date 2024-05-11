@@ -13,9 +13,11 @@ const Informativo = () => {
   const [showModal, setShowModal] = useState(false);
   const [phrase, setPhrase] = useState('reiniciarsemestre');
   const [inputValue, setInputValue] = useState('');
+
 const accessToken = localStorage.getItem('accessToken');
 const refreshToken = localStorage.getItem('refreshToken');
 useAxiosInterceptors();
+
   const handleInfoCargada = (info) => {
     // console.log('INFO', info);
     setInfoCargada(info);
@@ -104,10 +106,11 @@ useAxiosInterceptors();
       </div>
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
-          <Modal.Title>Confirmar Reinicio Semestre</Modal.Title>
+
+          <Modal.Title>Confirmar Reinicio Semestre WIP</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p>Escribir frase para confirmar:</p>
+          <p>Escribir frase para confirmar - Semestre recien reiniciado, funcion desactivada temporalmente:</p>
           <p>{phrase}</p>
           <Form.Control
             type="text"
