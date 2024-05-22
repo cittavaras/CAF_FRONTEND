@@ -155,7 +155,7 @@ useAxiosInterceptors();
       },
       
   });
-    const alumno = res.data.alumnos.filter(alumno => alumno.tipoUsuario === 'Alumno' && alumno.rut === search);
+    const alumno = res.data.alumnos.filter(alumno => alumno.tipoUsuario === 'Alumno' && alumno.rut.toUpperCase() === search.toUpperCase());
     if (!search) {
       Swal.fire({
         icon: 'info', text: 'Ingrese un rut',
