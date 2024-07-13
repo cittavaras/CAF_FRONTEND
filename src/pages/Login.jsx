@@ -63,12 +63,12 @@ const Login = () => {
           login(accessToken, refreshToken);
           if(res.data.message2==="DIAS20"){
           Swal.fire({
-            icon: 'success', text: 'Recuerda realizar tus evaluaciones, llevas sobre 20 dias desde tu ultima evaluación',
+            icon: 'success', text: 'Recuerda: Debes realizar una evaluación con tu instructor antes de 30 días desde la ultima evaluación realizada y así evitar que tu cuenta sea deshabilitada por inactividad.',
             confirmButtonColor: 'rgb(158 173 56)',
           });}
           else if(res.data.message2==="NDIAS20"){
             Swal.fire({
-              icon: 'success', text: 'Llevas sobre 20 días de inactividad, recuerda realizar tus evaluaciones',
+              icon: 'success', text: 'Recuerda: Debes realizar una evaluación con tu instructor antes de 30 días desde la ultima evaluación realizada y así evitar que tu cuenta sea deshabilitada por inactividad.',
               confirmButtonColor: 'rgb(158 173 56)',
             });}
           else{
@@ -80,12 +80,12 @@ const Login = () => {
           navigate('/landing');
         } else if(res.data.message==="DIAS30") {
           Swal.fire({
-            icon: 'error', text: 'Han pasado sobre 30 días desde su ultima evaluación. Favor hablar con instructor.',
+            icon: 'error', text: 'Lamentablemente, tu cuenta ha sido desactivada por inactividad. Por favor acércate a tu instructor para hacer una nueva evaluación.',
             confirmButtonColor: 'rgb(158 173 56)',
           });
         }else if(res.data.message==="NDIAS30"){
           Swal.fire({
-            icon: 'error', text: 'Han pasado sobre 30 días de inactividad. Favor hablar con instructor.',
+            icon: 'error', text: 'Lamentablemente, tu cuenta ha sido desactivada por inactividad. Por favor acércate a tu instructor para hacer una nueva evaluación.',
             confirmButtonColor: 'rgb(158 173 56)',
           });
         }

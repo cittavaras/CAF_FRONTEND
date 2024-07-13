@@ -6,6 +6,7 @@ import useAuth from "../auth/useAuth";
 import ReservarSesion from "./ReservarSesion";
 import InformeAsistencia from "./InformeAsistencia";
 import InformeMetricas from "./InformeMetricas";
+import ReiniciarSemestre from "./ReiniciarSemestre";
 import baseURL from '../helpers/rutaBase';
 import Box from "@mui/material/Box";
 import BottomNavigation from "@mui/material/BottomNavigation";
@@ -37,6 +38,7 @@ const BotonesPerfil = () => {
   const [asistenciaOpen, setAsistenciaOpen] = useState(false);
   const [reservasAlumno, setReservasAlumno] = useState([]);
   const [informeMetrica, setInformeMetrica] = useState(false);
+  const [reiniciarSemestre, setReiniciarSemestre] = useState(false);
 
   const navigate = useNavigate();
 
@@ -70,6 +72,13 @@ const BotonesPerfil = () => {
   const handleCloseInformeMetrica = async () => {
     setInformeMetrica(false);
   };
+  const handleOpenReiniciarSemestre = async () => {
+    setReiniciarSemestre(true);
+  };
+  const handleCloseReiniciarSemestre = async () => {
+    setReiniciarSemestre(false);
+  };
+  
 const accessToken = localStorage.getItem('accessToken');
 const refreshToken = localStorage.getItem('refreshToken');
 useAxiosInterceptors();
@@ -98,6 +107,25 @@ useAxiosInterceptors();
       getReservasByAlumno();
     }
   }, [alumno]);
+
+  const downloadExcel = async () => {
+    try {
+      const response = await axios.get(`${baseURL}/alumnos/reporteDB`, {
+        responseType: 'blob',
+        headers: {
+          Authorization: accessToken,
+        },
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'BaseDeDatos.xlsx');
+      document.body.appendChild(link);
+      link.click();
+    } catch (error) {
+      console.error('Error downloading the Excel file', error);
+    }
+  };
 
   return (
     <div>
@@ -177,6 +205,19 @@ useAxiosInterceptors();
                   style={{ color: "#042945" }}
                 >
                   Crear Bloques
+                </Link>
+              </Col>
+              <Col
+                lg={"auto"}
+                className="col-12 col-md-2 col-sm-3"
+                style={{ backgroundColor: "#E6E7E9" }}
+              >
+                <Link
+                  className="btn"
+                  to="/gestionarRutinasBase"
+                  style={{ color: "#042945" }}
+                >
+                  Sugerir Rutinas
                 </Link>
               </Col>
               <Col
@@ -266,6 +307,32 @@ useAxiosInterceptors();
                   Control de ejercicios
                 </Link>
               </Col>
+              <Col
+              lg={"auto"}
+              className="col-12 col-md-2 col-sm-3"
+              style={{ backgroundColor: "#E6E7E9" }}
+            >
+              <button
+                className="btn"
+                style={{ color: "#042945" }}
+                onClick={downloadExcel}
+              >
+                Descargar Base de Datos
+              </button>
+            </Col>
+              <Col
+                lg={"auto"}
+                className="col-12 col-md-2 col-sm-3"
+                style={{ backgroundColor: "red" }}
+              >
+                <button
+                  className="btn"
+                  style={{ backgroundColor: "red", color: "white" }}
+                  onClick={handleOpenReiniciarSemestre}
+                >
+                  Reiniciar Semestre
+                </button>
+              </Col>
             </>
           )}
           {hasRole(roles.instructor) && (
@@ -331,6 +398,7 @@ useAxiosInterceptors();
                   Control de ejercicios
                 </Link>
               </Col>
+             
             </>
           )}
           {open && (
@@ -354,6 +422,13 @@ useAxiosInterceptors();
               open={informeMetrica}
               setOpen={setInformeMetrica}
               handleClose={handleCloseInformeMetrica}
+            />
+          )}
+          {reiniciarSemestre && (
+            <ReiniciarSemestre
+              open={reiniciarSemestre}
+              setOpen={setReiniciarSemestre}
+              handleClose={handleCloseReiniciarSemestre}
             />
           )}
         </Row>
