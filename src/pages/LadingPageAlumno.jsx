@@ -15,6 +15,7 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import EjercicioBox from '../components/EjercicioBox'
+import ModalHasReserva from '../components/ModalHasReserva';
 import { Typography } from "@mui/material";
 
 const LandingPageAlumno = ({ location }) => {
@@ -39,8 +40,33 @@ const LandingPageAlumno = ({ location }) => {
   const [day, setDay] = useState(moment(Date.now()).format('dddd'));
   const [rutinas, setRutinas] = useState([]);
   const [hasRutina, setHasRutina] = useState(false);
+  const [hasReserva, setHasReserva] = useState(false);
   const [expanded, setExpanded] = React.useState(false);
-  const [dayTrain, setDayTrain] = useState(moment(Date.now()).format('DD-MM-yyyy'));
+  const [dayTrain, setDayTrain] = useState(moment(Date.now()).format('DD-MM-yyyy')); 
+
+  const [showModal, setShowModal] = useState(false);
+  const [exercises, setExercises] = useState([]);
+
+  const handleOpenModal = () => setShowModal(true);
+  const handleCloseModal = () => setShowModal(false);
+
+  const fetchExercises = async () => {
+    try {
+      const resp = await axios.get(baseURL + '/rutinaBase/', {
+        headers: {
+          'Authorization': accessToken
+        }
+      });
+      setExercises(resp.data);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchExercises();
+  }, []);
+  
 
   //const { rut } = JSON.parse(sessionStorage.getItem('alumno_sesion'));
 const accessToken = localStorage.getItem('accessToken');
@@ -76,6 +102,7 @@ useAxiosInterceptors();
         //console.log(moment(bloque.diaReserva).format('DD-MM-yyyy'), dayTrain)
         if (moment(bloque.diaReserva).format('DD-MM-yyyy') == dayTrain) {
           console.log('HERE')
+          setHasReserva(true);
           setDay(moment(bloque.diaReserva).format('dddd'));
           const res = await axios.get(baseURL + '/rutinas/alumno/', { params: {day: moment(bloque.diaReserva).format('dddd') }, 
           headers: {
@@ -169,6 +196,18 @@ useAxiosInterceptors();
               <p className='mb-0 text_shadows animate-entrenamiento'> {hasRutina ? 'TIENES ENTRENAMIENTO' : 'NO TIENES ENTRENAMIENTO'}</p>
               <p className='entrenamiento-desc'>(presiona para saber el contenido)</p>
             </div>
+            {hasReserva && (
+        <div className='text-center entrenamiento content'>
+          <Link variant="contained" className="btn btn-secondary" onClick={handleOpenModal}>¿Que quieres entrenar hoy?</Link>
+        </div>
+      )}
+      {showModal && (
+        <ModalHasReserva
+          onClose={handleCloseModal}
+          exercises={exercises}
+        />
+      )}
+
           </>
           {rutinas ? rutinas.map((rutina, i, row) => (
             <div key={i} className='card container text-light' style={{ backgroundColor: 'rgba(0,0,0, 0)' }}>
