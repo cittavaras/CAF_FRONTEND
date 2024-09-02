@@ -324,37 +324,36 @@ useAxiosInterceptors();
   const handleEventClick = (event) => {
     if (hasRole(roles.alumno)) {
       const isSelected = selectedEvents.map((e) => e.id).includes(event.id);
+      const sameDaySessions = selectedEvents.filter(selected => selected.dia === event.dia);
       if (!isSelected && !event.isValid) {
         alert("La sesion esta completa");
         return;
-      }
-      else if (event.desactivada) {
+      } else if (event.desactivada) {
         alert('No se puede hacer clic en una sesión desactivada');
         return;
       }
+      if (sameDaySessions.length > 0 && !sameDaySessions.some(e => e.id === event.id)) {
+        alert('Solo puedes reservar 1 sesion por día');
+        return;
+      }
+      
       if (moment(event.start).isBefore(fechaActual)) {
         alert('No puedes seleccionar un evento pasado');
         return;
       }
-      if (selectedEvents.some(selected => selected.dia === event.dia && selected.id !== event.id)) {
-        alert('Solo puedes reservar 1 sesion por día');
-        return;
-      }
+      
       const maxSelections = 3;
-      if (
-        selectedEvents.length < maxSelections ||
-        selectedEvents.map(e => e.id).includes(event.id)
-      ) {
-        setSelectedEvents((prevState) => {
-          if (prevState.map(e => e.id).includes(event.id)) {
-            return prevState.filter((e) => e.id !== event.id);
-          } else {
-            return [...prevState, event];
-          }
-        });
-      } else {
-        alert(`¡Solo se permiten seleccionar hasta ${maxSelections} eventos!`);
-      }
+    if (selectedEvents.length < maxSelections || isSelected) {
+      setSelectedEvents((prevState) => {
+        if (isSelected) {
+          return prevState.filter((e) => e.id !== event.id);
+        } else {
+          return [...prevState, event];
+        }
+      });
+    } else {
+      alert(`¡Solo se permiten seleccionar hasta ${maxSelections} eventos!`);
+    }
     } else if (hasRole(roles.admin) || hasRole(roles.instructor)) {
       if (hasRole(roles.instructor) && event.desactivada) {
         alert('No se puede hacer clic en una sesión desactivada');
@@ -631,7 +630,7 @@ const generateTrainingEvents = (sesiones = [], fecha) => {
     const end = moment(fecha).day(sesion.dia).set({ hours, minutes }).toDate();
     const newSesion = {
       id: sesion.numeroSesion,
-      title: `Entrenamiento \n${sesion.numeroSesion} \n${sesion?.count}/${sesion?.cantidadUsuarios}`,
+      title: `Inscritos: ${sesion?.count}/${sesion?.cantidadUsuarios}`,
       start,
       end,
       isValid: sesion.count < sesion.cantidadUsuarios,
@@ -710,7 +709,7 @@ const CustomCalendar = styled(Calendar)`
     border: none;
     font-weight: normal;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    
+    text-shadow: 1px 1px 2px #000, -1px -1px 2px #000, 1px -1px 2px #000, -1px 1px 2px #000;
   }
   
 
