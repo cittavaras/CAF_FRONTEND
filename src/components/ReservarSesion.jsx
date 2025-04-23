@@ -242,19 +242,17 @@ useAxiosInterceptors();
       const sesionesAlumno = props.reservasAlumno
         .map(r => r.sesion.length !== 0 ? { ...r.sesion[0], count: 0 } : null)
         .filter(session => session !== null);
-  
-      setSelectedEvents(generateTrainingEvents(sesionesAlumno, fechaVista));
+
+      setSelectedEvents(generateTrainingEvents(sesionesAlumno, fechaVista, fechaActual, hasRole));
     }
-  }, [props.reservasAlumno]);
+  }, [props.reservasAlumno, fechaVista, fechaActual]);
 
   useEffect(() => {
-    //console.log('USEEFFECT EJECUTING FUNCTION', sesiones)
     if (sesiones.length > 3) {
-      const generatedEvents = generateTrainingEvents(sesiones, fechaVista)
-
+      const generatedEvents = generateTrainingEvents(sesiones, fechaVista, fechaActual, hasRole);
       setEventos(generatedEvents);
     }
-  }, [sesiones, fechaVista]);
+  }, [sesiones, fechaVista, fechaActual]);
 
   useEffect(() => {
     if (props.open === false) {
@@ -297,9 +295,9 @@ useAxiosInterceptors();
       fontSize: fontSize,
     };
     if (!isSelected) {
-      style.backgroundColor = event.isValid ? style.backgroundColor : colorsCalendar.sinCupo
+      style.backgroundColor = event.isValid ? style.backgroundColor : colorsCalendar.sinCupo;
     }
-    style.backgroundColor = !event.desactivada ? style.backgroundColor : colorsCalendar.desactivada;
+    style.backgroundColor = !event.desactivada ? style.backgroundColor : colorsCalendar.desactivada; // Apply "Desactivada" color
     return {
       style,
       children: (
@@ -319,12 +317,16 @@ useAxiosInterceptors();
       ),
     };
   };
-  
 
   const handleEventClick = (event) => {
     if (hasRole(roles.alumno)) {
       const isSelected = selectedEvents.map((e) => e.id).includes(event.id);
       const sameDaySessions = selectedEvents.filter(selected => selected.dia === event.dia);
+      const maxReservationDate = moment(fechaActual).add(14, 'days').endOf('day');
+      if (moment(event.start).isAfter(maxReservationDate)) {
+        alert('No puedes reservar sesiones más allá de dos semanas desde hoy.');
+        return;
+      }
       if (!isSelected && !event.isValid) {
         alert("La sesion esta completa");
         return;
@@ -485,7 +487,7 @@ useAxiosInterceptors();
     setView(view);
     const mes = 5; // mayo
     const anio = 2023;
-    const eventosMes = generateTrainingEventsForMonth(mes, anio, sesiones);
+    const eventosMes = generateTrainingEventsForMonth(mes, anio, sesiones,fechaActual);
     //console.log("eventosMes", eventosMes);
     setEventos(eventosMes);
   };
@@ -621,13 +623,19 @@ useAxiosInterceptors();
   );
 };
 
-const generateTrainingEvents = (sesiones = [], fecha) => {
-  // console.log('INSIDE FUNCTION EVENTS', sesiones)
+const generateTrainingEvents = (sesiones = [], fecha, fechaActual, hasRole) => {
+  const maxReservationDate = moment(fechaActual).add(14, 'days').endOf('day'); // 14-day limit
+
   const newSesiones = sesiones.map(sesion => {
     let [hours, minutes] = sesion.horaIni.split(":");
     const start = moment(fecha).day(sesion.dia).set({ hours, minutes }).toDate();
     [hours, minutes] = sesion.horaFin.split(":");
     const end = moment(fecha).day(sesion.dia).set({ hours, minutes }).toDate();
+
+    let isBeyondLimit = moment(start).isAfter(maxReservationDate);
+    if (hasRole(roles.admin||roles.instructor)) {
+      isBeyondLimit = false;
+    }
     const newSesion = {
       id: sesion.numeroSesion,
       title: `Inscritos: ${sesion?.count}/${sesion?.cantidadUsuarios}`,
@@ -637,14 +645,15 @@ const generateTrainingEvents = (sesiones = [], fecha) => {
       dia: sesion.dia,
       cantidadUsuarios: sesion.count,
       cantidadMax: sesion.cantidadUsuarios,
-      desactivada: sesion.desactivada
+      desactivada: sesion.desactivada || isBeyondLimit, // Mark as desactivada if beyond the limit
     };
     return newSesion;
-  })
+  });
+
   return newSesiones;
 };
 
-const generateTrainingEventsForMonth = (month, year, sesiones) => {
+const generateTrainingEventsForMonth = (month, year, sesiones,fechaActual) => {
   // console.log('INSIDE generateTrainingEventsForMonth', sesiones)
   const startOfMonth = moment(`${year}-${month}-01`, "YYYY-MM-DD").toDate();
   const endOfMonth = moment(startOfMonth).endOf('month').toDate();
@@ -653,7 +662,7 @@ const generateTrainingEventsForMonth = (month, year, sesiones) => {
   for (let day = 1; day <= moment(endOfMonth).date(); day++) {
     const date = moment(`${year}-${month}-${day}`, "YYYY-MM-DD").toDate();
     const sesionesDia = sesiones.filter(sesion => moment(sesion.fecha).isoWeekday() === moment(date).isoWeekday());
-    const eventsDia = generateTrainingEvents(sesionesDia, date);
+    const eventsDia = generateTrainingEvents(sesionesDia, date, fechaActual);
     monthEvents.push(...eventsDia);
   }
   // console.log(monthEvents)
